@@ -1,10 +1,21 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    coffee-script (2.3.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.8.0)
+    execjs (2.2.2)
     rack (1.5.2)
+    rack-coffee (1.0.3)
+      coffee-script
+      rack
+    sass (3.4.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   rack
+  rack-coffee
+  sass
