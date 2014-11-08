@@ -1,3 +1,11 @@
 $ ->
+	variations = [
+			participants: 100
+			conversions: 45
+		,
+			participants: 100
+			conversions: 50
+	]
 
-	console.log 'coffeescript!'
+	calculator = new App.Calculator variations
+	calculator.renderGraph()
