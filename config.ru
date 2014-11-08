@@ -7,7 +7,8 @@ Sass::Plugin.options[:css_location] = './public/stylesheets/compiled'
 
 use Rack::Coffee,
 	:urls => '/js',
-	:root => 'public'
+	:root => 'public',
+	:join => 'all'
 
 use Rack::Static,
 	:urls => ["/images", "/js", "/stylesheets"],
