@@ -25,7 +25,7 @@ gulp.task( 'watch', function() {
 gulp.task( 'css', function () {
 	gulp.src( config.sassPath + '/*.scss' )
 		.pipe( sass() )
-		.pipe( gulp.dest( './stylesheets/compiled' ) );
+		.pipe( gulp.dest( './build/stylesheets' ) );
 });
 
 gulp.task( 'js', function() {
