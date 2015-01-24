@@ -9,6 +9,7 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var SampleProportionsGraph = require( './app/sample-proportions-graph' ),
+	ConversionDataForm = require( './app/conversion-data-form' ),
 	Variation = require( './app/variation' );
 
 var data = {
@@ -44,7 +45,8 @@ for ( var i = 0, l = data.variations.length; i < l; i++ ) {
 // console.log( variations );
 
 React.render(
-	<SampleProportionsGraph width='480' height='250' variations={ variations } />,
+	// <SampleProportionsGraph width='480' height='250' variations={ variations } />,
+	<ConversionDataForm/>,
 	document.getElementById( 'test' )
 );
 

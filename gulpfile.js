@@ -2,6 +2,7 @@
 var gulp = require( 'gulp' ),
 	browserify = require( 'browserify' ),
 	reactify = require( 'reactify' ),
+	rename = require( 'gulp-rename' ),
 	sass = require( 'gulp-sass' ),
 	source = require( 'vinyl-source-stream' ),
 	streamify = require( 'gulp-streamify' )
@@ -9,16 +10,16 @@ var gulp = require( 'gulp' ),
 
 var config = {
 	sassPath: './stylesheets/scss',
-	jsPath: './js'
+	jsPath: './js',
+	buildPath: './build'
 };
 
 gulp.task( 'default', [ 'watch', 'css', 'js' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
-	gulp.watch( config.jsPath + '/main.js', [ 'js' ] );
-	gulp.watch( config.jsPath + '/app/*.js', [ 'js' ] );
-	gulp.watch( config.jsPath + '/app/*.jsx', [ 'js' ] );
+	gulp.watch( config.jsPath + '/**/*.js', [ 'js' ] );
+	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
 } );
 
 gulp.task( 'css', function () {
@@ -34,9 +35,11 @@ gulp.task( 'js', function() {
 		entries: mainPath,
 		extensions: [ '.jsx' ]
 	} )
-		.transform( reactify ).bundle();
+		.transform( reactify )
+		.bundle()
 		.pipe( source( mainPath ) )
-		.pipe( gulp.dest( './bundle.js' ) )
+		.pipe( rename( 'bundle.js' ) )
+		.pipe( gulp.dest( config.buildPath + '/js' ) )
 
 		// Add after bundle.js line for production
 		// .pipe( streamify( uglify() ) )
