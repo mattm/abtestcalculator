@@ -1,15 +1,39 @@
 html {
+	background-color: #3498DB;
 	color: black;
 	font: 14px/20px Helvetica, Arial;
 	padding: 20px;
 }
 
+.wrapper {
+	margin: 0 auto;
+	width: 500px;
+}
+
 h1 {
-	font-size: 28px;
+	color: white;
+	font-size: 34px;
 	font-weight: bold;
-	margin: 1.236em 0 .618em;
+	margin: 20px 0 30px 0;
+	text-align: center;
+}
+
+input[type="text"] {
+	border: 1px solid #eee;
+	font-size: 15px;
+	margin: 2px;
+	padding: 4px;
+	text-align: center;
+	width: 165px;
+}
+
+button {
+	font-size: 16px;
+	margin-left: 2px;
+	padding: 5px 22px;
 }
 
 canvas {
-	background-color: #ddd;
+	margin-top: 5px;
+	background-color: #2980B9;
 }

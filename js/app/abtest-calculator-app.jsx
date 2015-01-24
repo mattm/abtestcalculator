@@ -32,7 +32,7 @@ module.exports = React.createClass( {
 
 	render: function() {
 		return (
-			<div>
+			<div className="wrapper">
 				<h1>A/B Test Calculator</h1>
 				<ConversionDataForm
 					participantsA={ this.state.participantsA }

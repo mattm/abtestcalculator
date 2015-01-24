@@ -27,8 +27,6 @@ module.exports = React.createClass( {
 				<div>
 					<input type="text" ref="participantsB" defaultValue={ this.props.participantsB } />
 					<input type="text" ref="conversionsB" defaultValue={ this.props.conversionsB } />
-				</div>
-				<div>
 					<button onClick={ this.handleFormSubmit }>Calculate</button>
 				</div>
 			</form>
