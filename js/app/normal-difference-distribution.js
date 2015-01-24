@@ -1,14 +1,18 @@
-define( [ './normal-distribution' ], function( NormalDistribution ) {
+'use strict';
 
-	// See: http://mathworld.wolfram.com/NormalDifferenceDistribution.html
-	function NormalDifferenceDistribution( proportionA, proportionB ) {
-		var mean = proportionB.mean - proportionA.mean;
-		var sd = Math.sqrt( proportionA.variance + proportionB.variance );
-		NormalDistribution.call( this, mean, sd );
-	}
+/**
+ * Internal dependencies
+ */
+var NormalDistribution = require( './normal-distribution' );
 
-	NormalDifferenceDistribution.prototype = Object.create( NormalDistribution.prototype );
-	NormalDifferenceDistribution.prototype.constructor = NormalDifferenceDistribution;
+// See: http://mathworld.wolfram.com/NormalDifferenceDistribution.html
+function NormalDifferenceDistribution( proportionA, proportionB ) {
+	var mean = proportionB.mean - proportionA.mean;
+	var sd = Math.sqrt( proportionA.variance + proportionB.variance );
+	NormalDistribution.call( this, mean, sd );
+}
 
-	return NormalDifferenceDistribution;
-} );
+NormalDifferenceDistribution.prototype = Object.create( NormalDistribution.prototype );
+NormalDifferenceDistribution.prototype.constructor = NormalDifferenceDistribution;
+
+module.exports = NormalDifferenceDistribution;

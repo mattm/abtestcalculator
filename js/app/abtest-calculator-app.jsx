@@ -9,7 +9,8 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var ConversionDataForm = require( './conversion-data-form' ),
-	SampleProportionsGraph = require( './sample-proportions-graph' );
+	SampleProportionsGraph = require( './sample-proportions-graph' ),
+	ImprovementGraph = require( './improvement-graph' );
 
 module.exports = React.createClass( {
 	getInitialState: function() {
@@ -41,6 +42,13 @@ module.exports = React.createClass( {
 					conversionsB={ this.state.conversionsB }
 					onUpdate={ this.updateConversionData } />
 				<SampleProportionsGraph
+					participantsA={ this.state.participantsA }
+					conversionsA={ this.state.conversionsA }
+					participantsB={ this.state.participantsB }
+					conversionsB={ this.state.conversionsB }
+					width="480"
+					height="250" />
+				<ImprovementGraph
 					participantsA={ this.state.participantsA }
 					conversionsA={ this.state.conversionsA }
 					participantsB={ this.state.participantsB }
