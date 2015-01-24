@@ -1,5 +1,3 @@
-/.sass-cache
-/stylesheets/*.map
 /stylesheets/compiled/
 /js/bundle.js
 /node_modules
