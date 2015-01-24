@@ -1,6 +1,17 @@
 'use strict';
 
 module.exports = {
+	getPixelRatio: function() {
+		var context = document.createElement( 'canvas' ).getContext( '2d' ),
+			dpr = window.devicePixelRatio || 1,
+			bsr = context.webkitBackingStorePixelRatio ||
+				context.mozBackingStorePixelRatio ||
+				context.msBackingStorePixelRatio ||
+				context.oBackingStorePixelRatio ||
+				context.backingStorePixelRatio || 1;
+		return dpr / bsr;
+	},
+
 	hexToRgb: function( hex ) {
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
 		if ( result ) {
