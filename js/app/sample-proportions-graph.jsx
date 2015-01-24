@@ -9,7 +9,8 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var SampleProportionsGraphRenderer = require( './sample-proportions-graph-renderer' ),
-	Rectangle = require( './rectangle' );
+	Rectangle = require( './rectangle' ),
+	Variation = require( './variation' );
 
 module.exports = React.createClass( {
 	getPixelRatio: function() {
@@ -34,17 +35,30 @@ module.exports = React.createClass( {
 		canvas.getContext( '2d' ).setTransform( pixelRatio, 0, 0, pixelRatio, 0, 0 );
 	},
 
+	getVariations: function() {
+		var variations = [],
+			variationA = new Variation( 'Variation A', '#966F33', this.props.participantsA, this.props.conversionsA ),
+			variationB = new Variation( 'Variation B', '#3158F2', this.props.participantsB, this.props.conversionsB );
+		variations.push( variationA );
+		variations.push( variationB );
+		return variations;
+	},
+
 	renderGraph: function() {
 		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
 			sampleProportionsGraph = new SampleProportionsGraphRenderer( context );
 		sampleProportionsGraph.setRect( new Rectangle( 20, 20, 380, 180 ) );
 		sampleProportionsGraph.renderBackground();
-		sampleProportionsGraph.setVariations( this.props.variations );
+		sampleProportionsGraph.setVariations( this.getVariations() );
 		sampleProportionsGraph.render();
 	},
 
 	componentDidMount: function() {
 		this.convertToHiDPICanvas();
+		this.renderGraph();
+	},
+
+	componentDidUpdate: function() {
 		this.renderGraph();
 	},
 
