@@ -15,9 +15,10 @@ var config = {
 gulp.task( 'default', [ 'watch', 'css', 'js' ] );
 
 gulp.task( 'watch', function() {
-	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] ); 
-	gulp.watch( config.jsPath + '/**/*.js*', [ 'js' ] ); 
-	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] ); 
+	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
+	gulp.watch( config.jsPath + '/main.js', [ 'js' ] );
+	gulp.watch( config.jsPath + '/app/*.js', [ 'js' ] );
+	gulp.watch( config.jsPath + '/app/*.jsx', [ 'js' ] );
 } );
 
 gulp.task( 'css', function () {
@@ -27,14 +28,15 @@ gulp.task( 'css', function () {
 });
 
 gulp.task( 'js', function() {
-	browserify( {
-		entries: config.jsPath + '/main.js',
+	var mainPath = config.jsPath + '/main.js';
+
+	browserify({
+		entries: mainPath,
 		extensions: [ '.jsx' ]
 	} )
-		.transform( reactify )
-		.bundle()
-		.pipe( source( 'bundle.js' ) )
-		.pipe( gulp.dest( './js') );
+		.transform( reactify ).bundle();
+		.pipe( source( mainPath ) )
+		.pipe( gulp.dest( './bundle.js' ) )
 
 		// Add after bundle.js line for production
 		// .pipe( streamify( uglify() ) )
