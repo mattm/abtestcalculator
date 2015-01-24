@@ -21,7 +21,6 @@ module.exports = React.createClass( {
 				context.oBackingStorePixelRatio ||
 				context.backingStorePixelRatio || 1;
 		return dpr / bsr;
-		4+4;
 	},
 
 	convertToHiDPICanvas: function() {
@@ -36,7 +35,6 @@ module.exports = React.createClass( {
 	},
 
 	renderGraph: function() {
-		console.log('rg7');
 		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
 			sampleProportionsGraph = new SampleProportionsGraphRenderer( context );
 		sampleProportionsGraph.setRect( new Rectangle( 20, 20, 380, 180 ) );
