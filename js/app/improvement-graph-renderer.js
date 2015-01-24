@@ -4,7 +4,7 @@
  * External dependencies
  */
 var numeral = require( 'numeral' ),
-	_ = require('lodash');
+	_ = require( 'lodash' );
 
 /**
  * Internal dependencies
