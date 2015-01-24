@@ -20,9 +20,10 @@ module.exports = React.createClass( {
 		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
 			sampleProportionsGraph = new SampleProportionsGraphRenderer( context ),
 			rectangle = new Rectangle( constants.CANVAS_HORIZONTAL_PADDING, constants.CANVAS_PADDING_TOP, constants.CANVAS_WIDTH - 2 * constants.CANVAS_HORIZONTAL_PADDING, constants.CANVAS_HEIGHT - constants.CANVAS_PADDING_TOP - constants.CANVAS_PADDING_BOTTOM );
+		context.clearRect( 0, 0, constants.CANVAS_WIDTH, constants.CANVAS_HEIGHT );
 		sampleProportionsGraph.setRect( rectangle );
 		sampleProportionsGraph.renderBackground();
-		sampleProportionsGraph.setVariations( this.getVariations() );
+		sampleProportionsGraph.setVariations( this.props.variations );
 		sampleProportionsGraph.render();
 	},
 

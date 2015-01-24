@@ -22,11 +22,11 @@ GraphRenderer.prototype = {
 
 	renderBackground: function() {
 		this.ctx.fillStyle = 'rgba(0,0,0,0)';
-		this.ctx.fillRect( this.rect.x, this.rect.y, this.rect.width, this.rect.height );
+		this.ctx.clearRect( this.rect.x, this.rect.y, this.rect.width, this.rect.height );
 	},
 
 	setVariations: function( variations ) {
-		this.variations = variations;
+		this.variations = [ variations.a, variations.b ];
 	},
 
 	getControl: function() {

@@ -10,7 +10,8 @@ var React = require( 'react' );
  */
 var ConversionDataForm = require( './conversion-data-form' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
-	ImprovementGraph = require( './improvement-graph' );
+	ImprovementGraph = require( './improvement-graph' ),
+	Variation = require( './variation' );
 
 module.exports = React.createClass( {
 	getInitialState: function() {
@@ -31,27 +32,22 @@ module.exports = React.createClass( {
 		} );
 	},
 
+	getVariations: function() {
+		return {
+			a: new Variation( 'Variation A', '#F1C40F', this.state.participantsA, this.state.conversionsA ),
+			b: new Variation( 'Variation B', '#B6E2FF', this.state.participantsB, this.state.conversionsB )
+		};
+	},
+
 	render: function() {
+		var variations = this.getVariations();
 		return (
 			<div className="wrapper">
 				<h1>A/B Test Calculator</h1>
-				<ConversionDataForm
-					participantsA={ this.state.participantsA }
-					conversionsA={ this.state.conversionsA }
-					participantsB={ this.state.participantsB }
-					conversionsB={ this.state.conversionsB }
-					onUpdate={ this.updateConversionData } />
+				<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
 				<div className="graphs">
-					<SampleProportionsGraph
-						participantsA={ this.state.participantsA }
-						conversionsA={ this.state.conversionsA }
-						participantsB={ this.state.participantsB }
-						conversionsB={ this.state.conversionsB } />
-					<ImprovementGraph
-						participantsA={ this.state.participantsA }
-						conversionsA={ this.state.conversionsA }
-						participantsB={ this.state.participantsB }
-						conversionsB={ this.state.conversionsB } />
+					<SampleProportionsGraph variations={ variations } />
+					<ImprovementGraph variations={ variations } />
 				</div>
 			</div>
 		);
