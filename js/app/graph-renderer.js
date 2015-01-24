@@ -7,7 +7,7 @@ function GraphRenderer( context ) {
 GraphRenderer.prototype = {
 	OUTLINE_LINE_WIDTH: 2,
 	OUTLINE_OPACITY: 1,
-	FILL_OPACITY: 1,
+	FILL_OPACITY: 0.7,
 
 	X_AXIS_INTERVAL: 0.05,
 	X_AXIS_TICK_FONT_SIZE: 11,
@@ -21,7 +21,7 @@ GraphRenderer.prototype = {
 	},
 
 	renderBackground: function() {
-		this.ctx.fillStyle = 'rgba(0,0,0,1)';
+		this.ctx.fillStyle = 'rgba(0,0,0,0)';
 		this.ctx.fillRect( this.rect.x, this.rect.y, this.rect.width, this.rect.height );
 	},
 

@@ -8,7 +8,8 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var ImprovementGraphRenderer = require( './improvement-graph-renderer' ),
+var constants = require( './constants' ),
+	ImprovementGraphRenderer = require( './improvement-graph-renderer' ),
 	Rectangle = require( './rectangle' ),
 	Variation = require( './variation' );
 
@@ -28,10 +29,10 @@ module.exports = React.createClass( {
 		var pixelRatio = this.getPixelRatio(),
 			canvas = this.refs.canvas.getDOMNode();
 
-		canvas.width = this.props.width * pixelRatio;
-		canvas.height = this.props.height * pixelRatio;
-		canvas.style.width = this.props.width + 'px';
-		canvas.style.height = this.props.height + 'px';
+		canvas.width = constants.CANVAS_WIDTH * pixelRatio;
+		canvas.height = constants.CANVAS_HEIGHT * pixelRatio;
+		canvas.style.width = constants.CANVAS_WIDTH + 'px';
+		canvas.style.height = constants.CANVAS_HEIGHT + 'px';
 		canvas.getContext( '2d' ).setTransform( pixelRatio, 0, 0, pixelRatio, 0, 0 );
 	},
 
@@ -46,8 +47,9 @@ module.exports = React.createClass( {
 
 	renderGraph: function() {
 		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
-			improvementGraph = new ImprovementGraphRenderer( context );
-		improvementGraph.setRect( new Rectangle( 20, 20, 380, 180 ) );
+			improvementGraph = new ImprovementGraphRenderer( context ),
+			rectangle = new Rectangle( constants.CANVAS_HORIZONTAL_PADDING, constants.CANVAS_PADDING_TOP, constants.CANVAS_WIDTH - 2 * constants.CANVAS_HORIZONTAL_PADDING, constants.CANVAS_HEIGHT - constants.CANVAS_PADDING_TOP - constants.CANVAS_PADDING_BOTTOM );
+		improvementGraph.setRect( rectangle );
 		improvementGraph.renderBackground();
 		improvementGraph.setVariations( this.getVariations() );
 		improvementGraph.render();
@@ -64,7 +66,7 @@ module.exports = React.createClass( {
 
 	render: function() {
 		return (
-			<canvas ref='canvas' width={ this.props.width } height={ this.props.height } />
+			<canvas ref='canvas' />
 		);
 	}
 } );

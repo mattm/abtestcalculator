@@ -41,20 +41,18 @@ module.exports = React.createClass( {
 					participantsB={ this.state.participantsB }
 					conversionsB={ this.state.conversionsB }
 					onUpdate={ this.updateConversionData } />
-				<SampleProportionsGraph
-					participantsA={ this.state.participantsA }
-					conversionsA={ this.state.conversionsA }
-					participantsB={ this.state.participantsB }
-					conversionsB={ this.state.conversionsB }
-					width="480"
-					height="250" />
-				<ImprovementGraph
-					participantsA={ this.state.participantsA }
-					conversionsA={ this.state.conversionsA }
-					participantsB={ this.state.participantsB }
-					conversionsB={ this.state.conversionsB }
-					width="480"
-					height="250" />
+				<div className="graphs">
+					<SampleProportionsGraph
+						participantsA={ this.state.participantsA }
+						conversionsA={ this.state.conversionsA }
+						participantsB={ this.state.participantsB }
+						conversionsB={ this.state.conversionsB } />
+					<ImprovementGraph
+						participantsA={ this.state.participantsA }
+						conversionsA={ this.state.conversionsA }
+						participantsB={ this.state.participantsB }
+						conversionsB={ this.state.conversionsB } />
+				</div>
 			</div>
 		);
 	}
