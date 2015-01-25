@@ -22,13 +22,13 @@ module.exports = React.createClass( {
 			<form onSubmit={ this.handleFormSubmit }>
 				<div className="variation">
 					<span>Variation A</span>
-					<input type="text" ref="participantsA" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } />
-					<input type="text" ref="conversionsA" defaultValue={ this.props.variations.a.conversions } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="participantsA" placeholder="Participants A" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="conversionsA" placeholder="Conversions A" defaultValue={ this.props.variations.a.conversions } onChange={ this.handleFormSubmit } />
 				</div>
 				<div className="variation">
 					<span>Variation B</span>
-					<input type="text" ref="participantsB" defaultValue={ this.props.variations.b.participants } onChange={ this.handleFormSubmit } />
-					<input type="text" ref="conversionsB" defaultValue={ this.props.variations.b.conversions } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="participantsB" placeholder="Participants B" defaultValue={ this.props.variations.b.participants } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="conversionsB" placeholder="Conversions B" defaultValue={ this.props.variations.b.conversions } onChange={ this.handleFormSubmit } />
 				</div>
 			</form>
 		);
