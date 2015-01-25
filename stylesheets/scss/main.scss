@@ -6,7 +6,7 @@
 
 html {
 	background-color: #3498DB;
-	color: black;
+	color: #E7F3FF;;
 	font: 14px/20px Helvetica, Arial;
 	padding: 20px;
 }
@@ -24,20 +24,24 @@ h1 {
 	text-align: center;
 }
 
-input[type="text"] {
-	border: 1px solid #eee;
-	font-size: 15px;
-	margin: 2px;
-	padding: 4px;
-	text-align: center;
-	width: 165px;
+form {
+	span {
+		font-size: 16px;
+		margin-right: 20px;
+	}
+
+	input[type="text"] {
+		border: 1px solid #eee;
+		color: #555;
+		font-size: 15px;
+		margin: 2px;
+		padding: 4px;
+		text-align: center;
+		width: 130px;
+	}
 }
 
-button {
-	font-size: 16px;
-	margin-left: 2px;
-	padding: 5px 22px;
-}
+
 
 .graphs {
 	margin: 15px 0;
@@ -53,7 +57,6 @@ button {
 }
 
 .significance {
-	color: #E7F3FF;
 	font-size: 21px;
 	line-height: 1.6em;
 	text-align: center;

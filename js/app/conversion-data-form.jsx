@@ -20,14 +20,15 @@ module.exports = React.createClass( {
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
-				<div>
-					<input type="text" ref="participantsA" defaultValue={ this.props.variations.a.participants } />
-					<input type="text" ref="conversionsA" defaultValue={ this.props.variations.a.conversions } />
+				<div className="variation">
+					<span>Variation A</span>
+					<input type="text" ref="participantsA" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="conversionsA" defaultValue={ this.props.variations.a.conversions } onChange={ this.handleFormSubmit } />
 				</div>
-				<div>
-					<input type="text" ref="participantsB" defaultValue={ this.props.variations.b.participants } />
-					<input type="text" ref="conversionsB" defaultValue={ this.props.variations.b.conversions } />
-					<button onClick={ this.handleFormSubmit }>Calculate</button>
+				<div className="variation">
+					<span>Variation B</span>
+					<input type="text" ref="participantsB" defaultValue={ this.props.variations.b.participants } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="conversionsB" defaultValue={ this.props.variations.b.conversions } onChange={ this.handleFormSubmit } />
 				</div>
 			</form>
 		);
