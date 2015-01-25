@@ -7,7 +7,7 @@
 html {
 	background-color: #3498DB;
 	color: #E7F3FF;;
-	font: 14px/20px Helvetica, Arial;
+	font: 14px/20px 'Lato', Helvetica, Arial;
 	padding: 20px;
 }
 
@@ -18,7 +18,8 @@ html {
 
 h1 {
 	color: white;
-	font-size: 36px;
+	font-size: 28px;
+	font-weight: bold;
 	letter-spacing: 1px;
 	margin: 20px 0 30px 0;
 	text-align: center;
@@ -56,8 +57,13 @@ form {
 	}
 
 	.significance {
+		@include border-radius(10px);
+
+		background-color: #3A5D80;
+		border: 1px solid darken(#3A5D80, 5%);
 		font-size: 21px;
 		line-height: 1.6em;
+		padding: 15px 0;
 		text-align: center;
 	}
 
