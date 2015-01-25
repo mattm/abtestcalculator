@@ -24,7 +24,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 	},
 
 	POSITIVE_COLOR: {
-		value: '#00aa00'
+		value: '#22B722'
 	},
 
 	render: {
