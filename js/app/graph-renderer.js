@@ -13,8 +13,8 @@ GraphRenderer.prototype = {
 	X_AXIS_TICK_FONT_SIZE: 11,
 	X_AXIS_TICK_TICKER_HEIGHT: 6,
 	X_AXIS_TICK_MARGIN_TOP: 8,
-	X_AXIS_TICK_COLOR: '#777',
-	X_AXIS_TEXT_COLOR: '#333',
+	X_AXIS_TICK_COLOR: '#bbb',
+	X_AXIS_TEXT_COLOR: '#ccc',
 
 	setRect: function( rect ) {
 		this.rect = rect;
