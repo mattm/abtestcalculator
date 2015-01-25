@@ -22,8 +22,10 @@ module.exports = React.createClass( {
 
 		if ( variationBImprovement < 0 ) {
 			changeInWords = 'Variation A performed ' + variationAImprovement + '% better than variation A.';
-		} else {
+		} else if ( variationBImprovement > 0 ) {
 			changeInWords = 'Variation B performed ' + variationBImprovement + '% better than variation A.';
+		} else {
+			changeInWords = 'Variation B performed the same as variation A.';
 		}
 
 		if ( variationBImprovement < 0 ) {
