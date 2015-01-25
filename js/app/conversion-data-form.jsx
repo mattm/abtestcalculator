@@ -34,6 +34,12 @@ module.exports = React.createClass( {
 		this.props.onUpdate( participantsA, conversionsA, participantsB, conversionsB );
 	},
 
+	// Hack to place cursor at end of input field on page load
+	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+	setFocus: function( event ) {
+		event.target.value = event.target.value;
+	},
+
 	componentDidMount: function() {
 		this.refs.participantsA.getDOMNode().focus()
 	},
@@ -43,7 +49,7 @@ module.exports = React.createClass( {
 			<form onSubmit={ this.handleFormSubmit }>
 				<div className="variation">
 					<span>Variation A</span>
-					<input type="text" ref="participantsA" placeholder="Participants A" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } />
+					<input type="text" ref="participantsA" placeholder="Participants A" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } onFocus={ this.setFocus } />
 					<input type="text" ref="conversionsA" placeholder="Conversions A" defaultValue={ this.props.variations.a.conversions } onChange={ this.handleFormSubmit } />
 				</div>
 				<div className="variation">
