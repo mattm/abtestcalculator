@@ -13,5 +13,5 @@ var SampleProportionsGraph = require( './app/sample-proportions-graph' ),
 
 React.render(
 	<ABTestCalculator />,
-	document.getElementById( 'test' )
+	document.getElementById( 'content' )
 );

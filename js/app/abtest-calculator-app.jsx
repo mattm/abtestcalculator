@@ -63,8 +63,7 @@ module.exports = React.createClass( {
 			);
 		}
 		return (
-			<div className="wrapper">
-				<h1>A/B Test Calculator</h1>
+			<div>
 				<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
 				{ analysis }
 			</div>
