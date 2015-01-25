@@ -15,21 +15,10 @@ module.exports = React.createClass( {
 
 		event.preventDefault();
 
-		if ( pattern.test( participantsA ) ) {
-			participantsA = +participantsA;
-		}
-
-		if ( pattern.test( conversionsA ) ) {
-			conversionsA = +conversionsA;
-		}
-
-		if ( pattern.test( participantsB ) ) {
-			participantsB = +participantsB;
-		}
-
-		if ( pattern.test( conversionsB ) ) {
-			conversionsB = +conversionsB;
-		}
+		participantsA = pattern.test( participantsA ) ? +participantsA : participantsA;
+		conversionsA = pattern.test( conversionsA ) ? +conversionsA : conversionsA;
+		participantsB = pattern.test( participantsB ) ? +participantsB : participantsB;
+		conversionsB = pattern.test( conversionsB ) ? +conversionsB : conversionsB;
 
 		this.props.onUpdate( participantsA, conversionsA, participantsB, conversionsB );
 	},
