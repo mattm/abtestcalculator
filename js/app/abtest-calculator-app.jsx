@@ -58,7 +58,7 @@ module.exports = React.createClass( {
 		} else {
 			analysis = (
 				<div className="analysis">
-					<p className="error">Participants and conversions must be integers.</p>
+					<p className="error">The number of participants and conversions must be integers.</p>
 				</div>
 			);
 		}
