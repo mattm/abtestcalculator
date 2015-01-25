@@ -40,7 +40,7 @@ button {
 }
 
 .graphs {
-	margin-top: 15px;
+	margin: 15px 0;
 
 	canvas {
 		@include border-radius(10px);
@@ -50,4 +50,11 @@ button {
 			margin-right: 20px;
 		}
 	}
+}
+
+.significance {
+	color: #E7F3FF;
+	font-size: 21px;
+	line-height: 1.6em;
+	text-align: center;
 }

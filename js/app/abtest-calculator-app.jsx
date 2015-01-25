@@ -11,7 +11,8 @@ var React = require( 'react' );
 var ConversionDataForm = require( './conversion-data-form' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ImprovementGraph = require( './improvement-graph' ),
-	Variation = require( './variation' );
+	Variation = require( './variation' ),
+	ABTestSummary = require( './abtest-summary' );
 
 module.exports = React.createClass( {
 	getInitialState: function() {
@@ -49,6 +50,7 @@ module.exports = React.createClass( {
 					<SampleProportionsGraph variations={ variations } />
 					<ImprovementGraph variations={ variations } />
 				</div>
+				<ABTestSummary variations={ variations } />
 			</div>
 		);
 	}

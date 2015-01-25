@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Internal dependencies
+ */
+var NormalDifferenceDistribution = require( './normal-difference-distribution' );
+
 module.exports = {
 	getPixelRatio: function() {
 		var context = document.createElement( 'canvas' ).getContext( '2d' ),
@@ -41,7 +46,7 @@ module.exports = {
 
 	// See: http://blog.42floors.com/math-split-testing-part-2-chance-better/
 	calculateProbabityBIsGratherThanA: function( proportionA, proportionB ) {
-		var normalDifferenceDistribution = new App.NormalDifferenceDistribution( proportionA, proportionB );
+		var normalDifferenceDistribution = new NormalDifferenceDistribution( proportionA, proportionB );
 		var z = ( proportionB.mean - proportionA.mean ) / ( normalDifferenceDistribution.sd * Math.sqrt(2) );
 		return ( 1 + this.erf( z ) ) / 2;
 	},

@@ -26,7 +26,7 @@ module.exports = React.createClass( {
 				</div>
 				<div>
 					<input type="text" ref="participantsB" defaultValue={ this.props.variations.b.participants } />
-					<input type="text" ref="conversionsB" defaultValue={ this.props.variations.a.conversions } />
+					<input type="text" ref="conversionsB" defaultValue={ this.props.variations.b.conversions } />
 					<button onClick={ this.handleFormSubmit }>Calculate</button>
 				</div>
 			</form>
