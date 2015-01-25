@@ -34,6 +34,10 @@ module.exports = React.createClass( {
 		this.props.onUpdate( participantsA, conversionsA, participantsB, conversionsB );
 	},
 
+	componentDidMount: function() {
+		this.refs.participantsA.getDOMNode().focus()
+	},
+
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
