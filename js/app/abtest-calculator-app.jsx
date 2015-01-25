@@ -3,7 +3,8 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+var React = require( 'react' ),
+	isInteger = require( 'is-integer' );
 
 /**
  * Internal dependencies
@@ -41,16 +42,31 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var variations = this.getVariations();
+		var variations = this.getVariations(),
+			analysis;
+
+		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
+			analysis = (
+				<div className="analysis">
+					<div className="graphs">
+						<SampleProportionsGraph variations={ variations } />
+						<ImprovementGraph variations={ variations } />
+					</div>
+					<ABTestSummary variations={ variations } />
+				</div>
+			);
+		} else {
+			analysis = (
+				<div className="analysis">
+					<p className="error">Participants and conversions must be integers.</p>
+				</div>
+			);
+		}
 		return (
 			<div className="wrapper">
 				<h1>A/B Test Calculator</h1>
 				<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
-				<div className="graphs">
-					<SampleProportionsGraph variations={ variations } />
-					<ImprovementGraph variations={ variations } />
-				</div>
-				<ABTestSummary variations={ variations } />
+				{ analysis }
 			</div>
 		);
 	}

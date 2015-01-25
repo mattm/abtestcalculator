@@ -7,14 +7,31 @@ var React = require( 'react' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
+		var participantsA = this.refs.participantsA.getDOMNode().value,
+			conversionsA = this.refs.conversionsA.getDOMNode().value,
+			participantsB = this.refs.participantsB.getDOMNode().value,
+			conversionsB = this.refs.conversionsB.getDOMNode().value,
+			pattern = /^\d+$/;
+
 		event.preventDefault();
 
-		this.props.onUpdate(
-			this.refs.participantsA.getDOMNode().value,
-			this.refs.conversionsA.getDOMNode().value,
-			this.refs.participantsB.getDOMNode().value,
-			this.refs.conversionsB.getDOMNode().value
-		);
+		if ( pattern.test( participantsA ) ) {
+			participantsA = +participantsA;
+		}
+
+		if ( pattern.test( conversionsA ) ) {
+			conversionsA = +conversionsA;
+		}
+
+		if ( pattern.test( participantsB ) ) {
+			participantsB = +participantsB;
+		}
+
+		if ( pattern.test( conversionsB ) ) {
+			conversionsB = +conversionsB;
+		}
+
+		this.props.onUpdate( participantsA, conversionsA, participantsB, conversionsB );
 	},
 
 	render: function() {
