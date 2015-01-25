@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
 	CANVAS_WIDTH: 470,
 	CANVAS_HEIGHT: 240,
