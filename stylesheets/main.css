@@ -1,0 +1,53 @@
+html {
+  background-color: #3498DB;
+  color: #E7F3FF;
+  font: 14px/20px 'Lato', Helvetica, Arial;
+  padding: 20px; }
+
+.wrapper {
+  margin: 0 auto;
+  width: 960px; }
+
+h1 {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 20px 0 30px 0;
+  text-align: center; }
+
+form span {
+  font-size: 16px;
+  margin-right: 20px; }
+form input[type="text"] {
+  border: 1px solid #eee;
+  color: #555;
+  font-size: 15px;
+  margin: 2px;
+  padding: 6px 4px;
+  text-align: center;
+  width: 160px; }
+
+.analysis .graphs {
+  margin: 15px 0; }
+  .analysis .graphs canvas {
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    background-color: #2980B9; }
+    .analysis .graphs canvas:first-of-type {
+      margin-right: 20px; }
+.analysis .significance {
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  background-color: #3A5D80;
+  border: 1px solid #32506e;
+  font-size: 21px;
+  line-height: 1.6em;
+  padding: 15px 0;
+  text-align: center; }
+.analysis .error {
+  color: #F1BEBE;
+  font-size: 21px;
+  margin-top: 15px; }
