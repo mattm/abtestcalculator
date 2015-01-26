@@ -8,8 +8,8 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var SampleProportionsGraph = require( './app/sample-proportions-graph' ),
-	ABTestCalculator = require( './app/abtest-calculator-app' );
+var SampleProportionsGraph = require( './sample-proportions-graph' ),
+	ABTestCalculator = require( './abtest-calculator-app' );
 
 React.render(
 	<ABTestCalculator />,
