@@ -1,5 +1,6 @@
 // var jshint = require('gulp-jshint');
-var gulp = require( 'gulp' ),
+var deploy = require( 'gulp-gh-pages' ),
+	gulp = require( 'gulp' ),
 	browserify = require( 'browserify' ),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
@@ -17,9 +18,15 @@ var config = {
 gulp.task( 'default', [ 'watch', 'css', 'js' ] );
 
 gulp.task( 'watch', function() {
+	gulp.watch( './index.html', [ 'index' ] );
 	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
 	gulp.watch( config.jsPath + '/**/*.js', [ 'js' ] );
 	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
+} );
+
+gulp.task( 'index', function() {
+	gulp.src( './index.html' )
+		.pipe( gulp.dest('./build/' ) );
 } );
 
 gulp.task( 'css', function () {
@@ -44,3 +51,8 @@ gulp.task( 'js', function() {
 		// Add after bundle.js line for production
 		// .pipe( streamify( uglify() ) )
 } );
+
+gulp.task( 'deploy', function () {
+	return gulp.src( './build/**/*' )
+		.pipe( deploy() );
+});
