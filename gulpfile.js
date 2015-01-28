@@ -19,7 +19,9 @@ var config = {
 	buildPath: './build'
 };
 
-gulp.task( 'default', [ 'watch', 'css', 'js', 'index', 'cname' ] );
+gulp.task( 'default', [ 'watch', 'build' ] );
+
+gulp.task( 'build', [ 'css', 'js', 'index', 'cname' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -68,7 +70,7 @@ gulp.task( 'js', function() {
 		// .pipe( streamify( uglify() ) )
 } );
 
-gulp.task( 'deploy', function () {
+gulp.task( 'deploy', [ 'build' ], function () {
 	return gulp.src( './build/**/*' )
 		.pipe( deploy() );
 });
