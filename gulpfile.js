@@ -19,7 +19,7 @@ var config = {
 	buildPath: './build'
 };
 
-gulp.task( 'default', [ 'watch', 'css', 'js' ] );
+gulp.task( 'default', [ 'watch', 'css', 'js', 'index', 'cname' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -30,6 +30,11 @@ gulp.task( 'watch', function() {
 
 gulp.task( 'index', function() {
 	gulp.src( './index.html' )
+		.pipe( gulp.dest('./build/' ) );
+} );
+
+gulp.task( 'cname', function() {
+	gulp.src( './CNAME' )
 		.pipe( gulp.dest('./build/' ) );
 } );
 
