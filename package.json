@@ -23,7 +23,8 @@
   "devDependencies": {
     "event-stream": "^3.2.1",
     "gulp-concat": "^2.4.3",
-    "gulp-gh-pages": "^0.4.0"
+    "gulp-gh-pages": "^0.4.0",
+    "gulp-util": "^3.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

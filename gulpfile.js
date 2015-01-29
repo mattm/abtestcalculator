@@ -4,6 +4,7 @@ var
 	deploy = require( 'gulp-gh-pages' ),
 	es = require( 'event-stream' ),
 	gulp = require( 'gulp' ),
+	gutil = require( 'gulp-util' ),
 	browserify = require( 'browserify' ),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
@@ -62,9 +63,12 @@ gulp.task( 'js', function() {
 	} )
 		.transform( reactify )
 		.bundle()
+		.on('error', function( error ) {
+			gutil.log( error.message );
+		} )
 		.pipe( source( mainPath ) )
 		.pipe( rename( 'bundle.js' ) )
-		.pipe( gulp.dest( config.buildPath + '/js' ) )
+		.pipe( gulp.dest( config.buildPath + '/js' ) );
 
 		// Add after bundle.js line for production
 		// .pipe( streamify( uglify() ) )
