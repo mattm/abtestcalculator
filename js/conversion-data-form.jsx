@@ -7,13 +7,16 @@ var React = require( 'react' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
+		event.preventDefault();
+		this.updateGraphs();
+	},
+
+	updateGraphs: function() {
 		var participantsA = this.refs.participantsA.getDOMNode().value,
 			conversionsA = this.refs.conversionsA.getDOMNode().value,
 			participantsB = this.refs.participantsB.getDOMNode().value,
 			conversionsB = this.refs.conversionsB.getDOMNode().value,
 			pattern = /^\d+$/;
-
-		event.preventDefault();
 
 		participantsA = pattern.test( participantsA ) ? +participantsA : participantsA;
 		conversionsA = pattern.test( conversionsA ) ? +conversionsA : conversionsA;
@@ -29,6 +32,27 @@ module.exports = React.createClass( {
 		event.target.value = event.target.value;
 	},
 
+	adjustInputValue: function( event ) {
+		if ( event.keyCode === 38 ) {
+			event.target.value = parseInt( event.target.value ) + 1;
+			this.updateGraphs()
+			event.preventDefault();
+		} else if ( event.keyCode === 40 ) {
+			if ( parseInt( event.target.value ) > 0 ) {
+				event.target.value = parseInt( event.target.value ) - 1;
+				this.updateGraphs();
+				event.preventDefault();
+			}
+		}
+	},
+
+	// Prevent the cursor position from jumping to the beginning of the input field
+	preventUpDownDefaults: function( event ) {
+		if ( event.keyCode === 38 || event.keyCode === 40 ) {
+			event.preventDefault();
+		}
+	},
+
 	componentDidMount: function() {
 		this.refs.participantsA.getDOMNode().focus()
 	},
@@ -38,13 +62,37 @@ module.exports = React.createClass( {
 			<form onSubmit={ this.handleFormSubmit }>
 				<div className="variation">
 					<span>Variation A</span>
-					<input type="text" ref="participantsA" placeholder="Participants A" defaultValue={ this.props.variations.a.participants } onChange={ this.handleFormSubmit } onFocus={ this.setFocus } />
-					<input type="text" ref="conversionsA" placeholder="Conversions A" defaultValue={ this.props.variations.a.conversions } onChange={ this.handleFormSubmit } />
+					<input
+						type="text"
+						ref="participantsA"
+						placeholder="Participants A"
+						defaultValue={ this.props.variations.a.participants }
+						onChange={ this.handleFormSubmit }
+						onFocus={ this.setFocus }
+						onKeyDown={ this.adjustInputValue } />
+					<input
+						type="text"
+						ref="conversionsA"
+						placeholder="Conversions A"
+						defaultValue={ this.props.variations.a.conversions }
+						onChange={ this.handleFormSubmit }
+						onKeyDown={ this.adjustInputValue } />
 				</div>
 				<div className="variation">
 					<span>Variation B</span>
-					<input type="text" ref="participantsB" placeholder="Participants B" defaultValue={ this.props.variations.b.participants } onChange={ this.handleFormSubmit } />
-					<input type="text" ref="conversionsB" placeholder="Conversions B" defaultValue={ this.props.variations.b.conversions } onChange={ this.handleFormSubmit } />
+					<input type="text"
+						ref="participantsB"
+						placeholder="Participants B"
+						defaultValue={ this.props.variations.b.participants }
+						onChange={ this.handleFormSubmit }
+						onKeyDown={ this.adjustInputValue } />
+					<input
+						type="text"
+						ref="conversionsB"
+						placeholder="Conversions B"
+						defaultValue={ this.props.variations.b.conversions }
+						onChange={ this.handleFormSubmit }
+						onKeyDown={ this.adjustInputValue } />
 				</div>
 			</form>
 		);
