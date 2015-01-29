@@ -35,6 +35,11 @@ module.exports = {
 		return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + opacity + ")";
 	},
 
+	isCanvasSupported: function() {
+		var element = document.createElement( 'canvas' );
+		return !!( element.getContext && element.getContext( '2d' ) );
+	},
+
 	ratioToPercentage: function( ratio ) {
 		return ( ratio * 100 ) + '%';
 	},

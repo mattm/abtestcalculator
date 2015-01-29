@@ -13,7 +13,8 @@ var ConversionDataForm = require( './conversion-data-form' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ImprovementGraph = require( './improvement-graph' ),
 	Variation = require( './variation' ),
-	ABTestSummary = require( './abtest-summary' );
+	ABTestSummary = require( './abtest-summary' ),
+	utils = require( './utils' );
 
 module.exports = React.createClass( {
 	getInitialState: function() {
@@ -46,15 +47,23 @@ module.exports = React.createClass( {
 			analysis;
 
 		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
-			analysis = (
-				<div className="analysis">
-					<div className="graphs">
-						<SampleProportionsGraph variations={ variations } />
-						<ImprovementGraph variations={ variations } />
+			if ( utils.isCanvasSupported() ) {
+				analysis = (
+					<div className="analysis">
+						<div className="graphs">
+							<SampleProportionsGraph variations={ variations } />
+							<ImprovementGraph variations={ variations } />
+						</div>
+						<ABTestSummary variations={ variations } />
 					</div>
-					<ABTestSummary variations={ variations } />
-				</div>
-			);
+				);
+			} else {
+				analysis = (
+					<div className="analysis">
+						<ABTestSummary variations={ variations } />
+					</div>
+				);
+			}
 		} else {
 			analysis = (
 				<div className="analysis">
