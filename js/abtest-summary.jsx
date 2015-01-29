@@ -29,7 +29,7 @@ module.exports = React.createClass( {
 		}
 
 		if ( variationBImprovement < 0 ) {
-			oddsOfImprovementInWords = <p>There is a <strong>{pAGreaterThanB}%</strong> chance that <span className="variation-a">Variation A</span> has a conversion rate.</p>;
+			oddsOfImprovementInWords = <p>There is a <strong>{pAGreaterThanB}%</strong> chance that <span className="variation-a">Variation A</span> has a higher conversion rate.</p>;
 		} else {
 			oddsOfImprovementInWords = <p>There is a <strong>{pBGreaterThanA}%</strong> chance that <span className="variation-b">Variation B</span> has a higher conversion rate.</p>;
 		}
