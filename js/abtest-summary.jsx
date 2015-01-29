@@ -21,17 +21,17 @@ module.exports = React.createClass( {
 			significanceInWords;
 
 		if ( variationBImprovement < 0 ) {
-			changeInWords = <p><span className="variation-a">Variation A</span> performed <strong>{variationAImprovement}% better</strong> than <span className="variation-b">Variation B</span>.</p>;
+			changeInWords = <p><span className="variation-a">Variation A</span> had a <strong>{variationAImprovement}%</strong> higher conversion rate than <span className="variation-b">Variation B</span>.</p>;
 		} else if ( variationBImprovement > 0 ) {
-			changeInWords = <p><span className="variation-b">Variation B</span> performed <strong>{variationBImprovement}% better</strong> than <span className="variation-a">Variation A</span>.</p>;
+			changeInWords = <p><span className="variation-b">Variation B</span> had a <strong>{variationBImprovement}%</strong> higher conversion rate than <span className="variation-a">Variation A</span>.</p>;
 		} else {
-			changeInWords = <p><span className="variation-b">Variation B</span> performed the same as <span className="variation-a">Variation A</span>.</p>;
+			changeInWords = <p><span className="variation-b">Variation B</span> had the same conversion rate as <span className="variation-a">Variation A</span>.</p>;
 		}
 
 		if ( variationBImprovement < 0 ) {
-			oddsOfImprovementInWords = <p>There is a <strong>{pAGreaterThanB}%</strong> chance that the changes in <span className="variation-a">Variation A</span> will improve your conversion rate.</p>;
+			oddsOfImprovementInWords = <p>There is a <strong>{pAGreaterThanB}%</strong> chance that <span className="variation-a">Variation A</span> has a conversion rate.</p>;
 		} else {
-			oddsOfImprovementInWords = <p>There is a <strong>{pBGreaterThanA}%</strong> chance that the changes in <span className="variation-b">Variation B</span> will improve your conversion rate.</p>;
+			oddsOfImprovementInWords = <p>There is a <strong>{pBGreaterThanA}%</strong> chance that <span className="variation-b">Variation B</span> has a higher conversion rate.</p>;
 		}
 
 		if ( pBGreaterThanA >= 80 || pAGreaterThanB >= 80 ) {
