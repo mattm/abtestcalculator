@@ -98,3 +98,21 @@ form {
 		margin-top: 15px;
 	}
 }
+
+.footer {
+	color: #ddd;
+	font-size: 12px;
+	margin-top: 15px;
+	text-align: center;
+
+	a {
+		border-bottom: 1px solid #bbb;
+		color: #ddd;
+		padding-bottom: 2px;
+		text-decoration: none;
+
+		&:hover {
+			color: #eee;
+		}
+	}
+}
