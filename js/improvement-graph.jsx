@@ -28,6 +28,12 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		return <canvas ref='canvas' />;
+		return (
+			<div className="graph">
+				<h3>Change Distribution</h3>
+				<h4>from <span className="variation-a">Variation A</span> to <span className="variation-b">Variation B</span></h4>
+				<canvas ref='canvas' />
+			</div>
+		);
 	}
 } );

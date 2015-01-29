@@ -61,7 +61,7 @@ module.exports = React.createClass( {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
 				<div className="variation">
-					<span>Variation A</span>
+					<span className="variation-a">Variation A</span>
 					<input
 						type="text"
 						ref="participantsA"
@@ -79,7 +79,7 @@ module.exports = React.createClass( {
 						onKeyDown={ this.adjustInputValue } />
 				</div>
 				<div className="variation">
-					<span>Variation B</span>
+					<span className="variation-b">Variation B</span>
 					<input type="text"
 						ref="participantsB"
 						placeholder="Participants B"

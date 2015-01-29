@@ -25,6 +25,18 @@ h1 {
 	text-align: center;
 }
 
+.variation-a {
+	color: #F1C40F;
+}
+
+.variation-b {
+	color: #B6E2FF;
+}
+
+strong {
+	font-weight: bold;
+}
+
 form {
 	span {
 		font-size: 16px;
@@ -46,9 +58,23 @@ form {
 	.graphs {
 		margin: 15px 0;
 
-		canvas {
+		.graph {
 			@include border-radius(10px);
 			background-color: #2980B9;
+			display: inline-block;
+			width: 470px;
+
+			h3 {
+				font-size: 18px;
+				font-weight: bold;
+				margin: 10px 0;
+				text-align: center;
+			}
+
+			h4 {
+				color: #ddd;
+				text-align: center;
+			}
 
 			&:first-of-type {
 				margin-right: 20px;
@@ -58,7 +84,6 @@ form {
 
 	.significance {
 		@include border-radius(10px);
-
 		background-color: #3A5D80;
 		border: 1px solid darken(#3A5D80, 5%);
 		font-size: 21px;

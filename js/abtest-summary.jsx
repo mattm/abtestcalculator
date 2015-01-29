@@ -21,30 +21,30 @@ module.exports = React.createClass( {
 			significanceInWords;
 
 		if ( variationBImprovement < 0 ) {
-			changeInWords = 'Variation A performed ' + variationAImprovement + '% better than variation A.';
+			changeInWords = <p><span className="variation-a">Variation A</span> performed <strong>{variationAImprovement}% better</strong> than <span className="variation-b">Variation B</span>.</p>;
 		} else if ( variationBImprovement > 0 ) {
-			changeInWords = 'Variation B performed ' + variationBImprovement + '% better than variation A.';
+			changeInWords = <p><span className="variation-b">Variation B</span> performed <strong>{variationBImprovement}% better</strong> than <span className="variation-a">Variation A</span>.</p>;
 		} else {
-			changeInWords = 'Variation B performed the same as variation A.';
+			changeInWords = <p><span className="variation-b">Variation B</span> performed the same as <span className="variation-a">Variation A</span>.</p>;
 		}
 
 		if ( variationBImprovement < 0 ) {
-			oddsOfImprovementInWords = 'There is a ' + pAGreaterThanB + '% chages that the changes in variation A will improve your conversion rate.';
+			oddsOfImprovementInWords = <p>There is a <strong>{pAGreaterThanB}%</strong> chance that the changes in <span className="variation-a">Variation A</span> will improve your conversion rate.</p>;
 		} else {
-			oddsOfImprovementInWords = 'There is a ' + pBGreaterThanA + '% chance that the changes in variation B will improve your conversion rate.';
+			oddsOfImprovementInWords = <p>There is a <strong>{pBGreaterThanA}%</strong> chance that the changes in <span className="variation-b">Variation B</span> will improve your conversion rate.</p>;
 		}
 
 		if ( pBGreaterThanA >= 80 || pAGreaterThanB >= 80 ) {
-			significanceInWords = 'Your A/B test is statistically significant!'
+			significanceInWords = <p>Your A/B test is statistically significant!</p>;
 		} else {
-			significanceInWords = 'Your A/B test is NOT statistically significant.'
+			significanceInWords = <p>Your A/B test is NOT statistically significant.</p>;
 		}
 
 		return (
 			<div className='significance'>
-				<p>{ changeInWords }</p>
-				<p>{ oddsOfImprovementInWords }</p>
-				<p>{ significanceInWords }</p>
+				{ changeInWords }
+				{ oddsOfImprovementInWords }
+				{ significanceInWords }
 			</div>
 		);
 	}
