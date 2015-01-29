@@ -12,7 +12,7 @@ var analytics = require( './analytics' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ABTestCalculator = require( './abtest-calculator-app' );
 
-analytics.recordEvent( 'load_abtest_calculator' );
+analytics.recordEvent( 'load abtest calculator' );
 
 React.render(
 	<ABTestCalculator />,
