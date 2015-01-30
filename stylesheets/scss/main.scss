@@ -30,8 +30,21 @@ h1 {
 	font-size: 28px;
 	font-weight: bold;
 	letter-spacing: 1px;
-	margin: 20px 0 30px 0;
+	margin: 20px 0 10px 0;
 	text-align: center;
+}
+
+.view-source {
+	font-size: 12px;
+	margin-bottom: 30px;
+	text-align: center;
+
+	a {
+		border-bottom: 1px dotted #ccc;
+		color: #ddd;
+		padding-bottom: 1px;
+		text-decoration: none;
+	}
 }
 
 .variation-a {
