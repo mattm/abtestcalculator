@@ -27,12 +27,14 @@ h1 {
 strong {
   font-weight: bold; }
 
-form {
-  margin-bottom: 15px; }
-  form span {
+.form-container form {
+  float: left;
+  margin-bottom: 15px;
+  width: 600px; }
+  .form-container form span {
     font-size: 16px;
     margin-right: 20px; }
-  form input[type="text"] {
+  .form-container form input[type="text"] {
     border: 1px solid #eee;
     color: #555;
     font-size: 15px;
@@ -40,40 +42,57 @@ form {
     padding: 6px 4px;
     text-align: center;
     width: 160px; }
+.form-container .copy-url {
+  float: right;
+  margin-top: 40px; }
+  .form-container .copy-url button {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #eee;
+    font-size: 12px;
+    padding: 5px 15px; }
+    .form-container .copy-url button:hover {
+      background: rgba(255, 255, 255, 0.2); }
 
-.analysis .graphs {
-  margin-bottom: 15px; }
-  .analysis .graphs .graph {
+.analysis {
+  clear: both;
+  margin-top: 10px; }
+  .analysis .graphs {
+    margin-bottom: 15px; }
+    .analysis .graphs .graph {
+      border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      background-color: #2980B9;
+      display: inline-block;
+      width: 470px; }
+      .analysis .graphs .graph h3 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+        text-align: center; }
+      .analysis .graphs .graph h4 {
+        color: #ddd;
+        text-align: center; }
+      .analysis .graphs .graph:first-of-type {
+        margin-right: 20px; }
+  .analysis .significance {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
-    background-color: #2980B9;
-    display: inline-block;
-    width: 470px; }
-    .analysis .graphs .graph h3 {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 10px 0;
-      text-align: center; }
-    .analysis .graphs .graph h4 {
-      color: #ddd;
-      text-align: center; }
-    .analysis .graphs .graph:first-of-type {
-      margin-right: 20px; }
-.analysis .significance {
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  background-color: #3A5D80;
-  border: 1px solid #32506e;
-  font-size: 21px;
-  line-height: 1.6em;
-  padding: 15px 0;
-  text-align: center; }
-.analysis .error {
-  color: #F1BEBE;
-  font-size: 21px;
-  margin-top: 15px; }
+    background-color: #3A5D80;
+    border: 1px solid #32506e;
+    font-size: 21px;
+    line-height: 1.6em;
+    padding: 15px 0;
+    text-align: center; }
+  .analysis .error {
+    color: #F1BEBE;
+    font-size: 21px;
+    margin-top: 15px; }
 
 .footer {
   color: #ddd;

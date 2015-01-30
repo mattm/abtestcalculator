@@ -28,6 +28,7 @@ React.render(
  */
 var React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
+	ReactZeroClipboard = require( 'react-zeroclipboard' ),
 	url = require( 'url' );
 
 /**
@@ -92,8 +93,7 @@ module.exports = React.createClass( {displayName: "exports",
 	},
 
 	render: function() {
-		var variations = this.getVariations(),
-			analysis;
+		var variations = this.getVariations(), analysis, copyUrl, resultsUrl;
 
 		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
 			if ( utils.isCanvasSupported() ) {
@@ -104,6 +104,15 @@ module.exports = React.createClass( {displayName: "exports",
 							React.createElement(ImprovementGraph, {variations: variations })
 						), 
 						React.createElement(ABTestSummary, {variations: variations })
+					)
+				);
+
+				resultsUrl = 'http://www.abtestcalculator.com?ap=' + this.state.participantsA + '&ac=' + this.state.conversionsA + '&bp=' + this.state.participantsB + '&bc=' + this.state.conversionsB;
+				copyUrl = (
+					React.createElement("div", {className: "copy-url"}, 
+						React.createElement(ReactZeroClipboard, {text: resultsUrl }, 
+							React.createElement("button", null, "Copy URL to Clipboard")
+						)
 					)
 				);
 			} else {
@@ -117,14 +126,17 @@ module.exports = React.createClass( {displayName: "exports",
 
 		return (
 			React.createElement("div", null, 
-				React.createElement(ConversionDataForm, {variations: variations, onUpdate:  this.updateConversionData}), 
+				React.createElement("div", {className: "form-container"}, 
+					React.createElement(ConversionDataForm, {variations: variations, onUpdate:  this.updateConversionData}), 
+					copyUrl 
+				), 
 				analysis 
 			)
 		);
 	}
 } );
 
-},{"./abtest-summary":3,"./conversion-data-form":6,"./improvement-graph":10,"./sample-proportions-graph":17,"./utils":18,"./variation":19,"is-integer":26,"react":176,"url":25}],3:[function(require,module,exports){
+},{"./abtest-summary":3,"./conversion-data-form":6,"./improvement-graph":10,"./sample-proportions-graph":17,"./utils":18,"./variation":19,"is-integer":26,"react":176,"react-zeroclipboard":29,"url":25}],3:[function(require,module,exports){
 'use strict';
 
 /**
@@ -211,8 +223,7 @@ module.exports = {
 /**
  * External dependencies
  */
-var React = require( 'react' ),
-	ReactZeroClipboard = require( 'react-zeroclipboard' );
+var React = require( 'react' );
 
 module.exports = React.createClass( {displayName: "exports",
 	handleFormSubmit: function( event ) {
@@ -302,16 +313,13 @@ module.exports = React.createClass( {displayName: "exports",
 						defaultValue:  this.props.variations.b.conversions, 
 						onChange:  this.handleFormSubmit, 
 						onKeyDown:  this.adjustInputValue})
-				), 
-				React.createElement(ReactZeroClipboard, {text: "Hello, world!"}, 
-					React.createElement("button", null, "Copy")
 				)
 			)
 		);
 	}
 } );
 
-},{"react":176,"react-zeroclipboard":29}],7:[function(require,module,exports){
+},{"react":176}],7:[function(require,module,exports){
 'use strict';
 
 /**
