@@ -5,6 +5,7 @@
  */
 var React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
+	_ = require( 'lodash' ),
 	ReactZeroClipboard = require( 'react-zeroclipboard' ),
 	url = require( 'url' );
 
@@ -22,12 +23,12 @@ module.exports = React.createClass( {
 	getInitialState: function() {
 		var params = url.parse( document.URL, true ).query,
 			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
-			participantsA = 1000,
-			conversionsA = 90,
-			participantsB = 1000,
-			conversionsB = 120;
+			participantsA = 500,
+			conversionsA = 180,
+			participantsB = 500,
+			conversionsB = 200;
 
-		if ( params ) {
+		if ( ! _.isEmpty( params ) ) {
 			queryParticipantsA = params.ap;
 			queryConversionsA = params.ac;
 			queryParticipantsB = params.bp;
