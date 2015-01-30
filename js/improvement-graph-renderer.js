@@ -159,8 +159,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 
 	calculateXAxisInterval: {
 		value: function() {
-			// Todo: when this is really small, the axis looks shitty.
-			return this.getControl().proportion.mean * 0.20;
+			return this.distribution.xRange.getWidth() / 5;
 		}
 	},
 
