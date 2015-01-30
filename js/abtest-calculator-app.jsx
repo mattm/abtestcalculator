@@ -5,6 +5,7 @@
  */
 var React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
+	ReactZeroClipboard = require( 'react-zeroclipboard' ),
 	url = require( 'url' );
 
 /**
@@ -69,8 +70,7 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var variations = this.getVariations(),
-			analysis;
+		var variations = this.getVariations(), analysis, copyUrl, resultsUrl;
 
 		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
 			if ( utils.isCanvasSupported() ) {
@@ -81,6 +81,15 @@ module.exports = React.createClass( {
 							<ImprovementGraph variations={ variations } />
 						</div>
 						<ABTestSummary variations={ variations } />
+					</div>
+				);
+
+				resultsUrl = 'http://www.abtestcalculator.com?ap=' + this.state.participantsA + '&ac=' + this.state.conversionsA + '&bp=' + this.state.participantsB + '&bc=' + this.state.conversionsB;
+				copyUrl = (
+					<div className="copy-url">
+						<ReactZeroClipboard text={ resultsUrl }>
+							<button>Copy URL to Clipboard</button>
+						</ReactZeroClipboard>
 					</div>
 				);
 			} else {
@@ -94,7 +103,10 @@ module.exports = React.createClass( {
 
 		return (
 			<div>
-				<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
+				<div className="form-container">
+					<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
+					{ copyUrl }
+				</div>
 				{ analysis }
 			</div>
 		);

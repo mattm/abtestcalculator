@@ -3,8 +3,7 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
-	ReactZeroClipboard = require( 'react-zeroclipboard' );
+var React = require( 'react' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
@@ -95,9 +94,6 @@ module.exports = React.createClass( {
 						onChange={ this.handleFormSubmit }
 						onKeyDown={ this.adjustInputValue } />
 				</div>
-				<ReactZeroClipboard text="Hello, world!">
-					<button>Copy</button>
-				</ReactZeroClipboard>
 			</form>
 		);
 	}
