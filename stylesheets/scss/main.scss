@@ -53,6 +53,21 @@ strong {
 		margin-bottom: 15px;
 		width: 600px;
 
+		.header-row {
+			margin-bottom: 5px;
+
+			span {
+				color: #eee;
+				display: inline-block;
+				text-align: center;
+				width: 160px;
+			}
+
+			.participants {
+				margin-left: 100px;
+			}
+		}
+
 		span {
 			font-size: 16px;
 			margin-right: 20px;

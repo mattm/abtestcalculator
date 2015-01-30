@@ -60,6 +60,10 @@ module.exports = React.createClass( {
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
+				<div className="header-row">
+					<span className="participants">Participants</span>
+					<span className="conversions">Conversions</span>
+				</div>
 				<div className="variation">
 					<span className="variation-a">Variation A</span>
 					<input
