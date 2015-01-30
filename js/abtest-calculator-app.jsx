@@ -74,10 +74,24 @@ module.exports = React.createClass( {
 		alert( 'The URL for these results was copied to your clipboard.' );
 	},
 
+	hasValidInputs: function() {
+		var hasIntegers, hasSmallerConversionsThanParticipants;
+
+		hasIntegers = isInteger( this.state.participantsA ) &&
+			isInteger( this.state.conversionsA ) &&
+			isInteger( this.state.participantsB ) &&
+			isInteger( this.state.conversionsB );
+
+		hasSmallerConversionsThanParticipants = this.state.conversionsA <= this.state.participantsA &&
+			this.state.conversionsB <= this.state.participantsB;
+
+		return hasIntegers && hasSmallerConversionsThanParticipants;
+	},
+
 	render: function() {
 		var variations = this.getVariations(), analysis, copyUrl, resultsUrl;
 
-		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
+		if ( this.hasValidInputs() ) {
 			if ( utils.isCanvasSupported() ) {
 				analysis = (
 					<div className="analysis">
