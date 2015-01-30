@@ -4,8 +4,17 @@
 	-moz-border-radius: $radius;
 }
 
+@mixin background-horizontal-gradient($color1, $color2) {
+	background: $color1;
+	background: -webkit-gradient(linear,left top,right top,color-stop(0%,$color1),color-stop(100%,$color2));
+	background: -webkit-linear-gradient(left,$color1 0,$color2 100%);
+	background: -webkit-gradient(linear,left top,right top,from($color1),to($color2));
+	background: linear-gradient(to right,$color1 0,$color2 100%);
+}
+
 html {
-	background-color: #3498DB;
+
+	@include background-horizontal-gradient(#3CAAD7, #2a6fce);;
 	color: #E7F3FF;;
 	font: 14px/20px 'Lato', Helvetica, Arial;
 	padding: 20px;
@@ -88,14 +97,14 @@ strong {
 
 		.graph {
 			@include border-radius(10px);
-			background-color: #2980B9;
+			background-color: #3A5D80;
 			display: inline-block;
 			width: 470px;
 
 			h3 {
-				font-size: 18px;
+				font-size: 20px;
 				font-weight: bold;
-				margin: 10px 0;
+				margin: 15px 0;
 				text-align: center;
 			}
 
