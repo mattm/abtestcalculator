@@ -40,6 +40,10 @@ module.exports = {
 		return !!( element.getContext && element.getContext( '2d' ) );
 	},
 
+	isInteger: function( string ) {
+		return /^\d+$/.test( string );
+	},
+
 	ratioToPercentage: function( ratio ) {
 		return ( ratio * 100 ) + '%';
 	},

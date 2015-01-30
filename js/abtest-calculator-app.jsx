@@ -4,7 +4,8 @@
  * External dependencies
  */
 var React = require( 'react' ),
-	isInteger = require( 'is-integer' );
+	isInteger = require( 'is-integer' ),
+	url = require( 'url' );
 
 /**
  * Internal dependencies
@@ -18,11 +19,36 @@ var ConversionDataForm = require( './conversion-data-form' ),
 
 module.exports = React.createClass( {
 	getInitialState: function() {
+		var params = url.parse( document.URL, true ).query,
+			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
+			participantsA = 1000,
+			conversionsA = 90,
+			participantsB = 1000,
+			conversionsB = 120;
+
+		if ( params ) {
+			queryParticipantsA = params.ap;
+			queryConversionsA = params.ac;
+			queryParticipantsB = params.bp;
+			queryConversionsB = params.bc;
+
+			if ( utils.isInteger( queryParticipantsA ) && utils.isInteger( queryConversionsA ) && utils.isInteger( queryParticipantsB ) && utils.isInteger( queryConversionsB ) ) {
+				participantsA = +queryParticipantsA;
+				conversionsA = +queryConversionsA;
+				participantsB = +queryParticipantsB;
+				conversionsB = +queryConversionsB;
+			} else {
+				// Rather than show an error message about not being able to parse the params
+				// we'll simply not include any defaults in the fields
+				participantsA = conversionsA = participantsB = conversionsB = '';
+			}
+		}
+
 		return {
-			participantsA: 1000,
-			conversionsA: 90,
-			participantsB: 1000,
-			conversionsB: 120
+			participantsA: participantsA,
+			conversionsA: conversionsA,
+			participantsB: participantsB,
+			conversionsB: conversionsB
 		};
 	},
 
@@ -64,13 +90,8 @@ module.exports = React.createClass( {
 					</div>
 				);
 			}
-		} else {
-			analysis = (
-				<div className="analysis">
-					<p className="error">The number of participants and conversions must be integers.</p>
-				</div>
-			);
 		}
+
 		return (
 			<div>
 				<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
