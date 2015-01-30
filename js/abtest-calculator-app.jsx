@@ -91,7 +91,7 @@ module.exports = React.createClass( {
 				resultsUrl = 'http://www.abtestcalculator.com?ap=' + this.state.participantsA + '&ac=' + this.state.conversionsA + '&bp=' + this.state.participantsB + '&bc=' + this.state.conversionsB;
 				copyUrl = (
 					<div className="copy-url">
-						<ReactZeroClipboard text={ resultsUrl } afterCopy={ this.urlCopied }>
+						<ReactZeroClipboard text={ resultsUrl } onAfterCopy={ this.urlCopied }>
 							<button>Copy URL to Clipboard</button>
 						</ReactZeroClipboard>
 					</div>
