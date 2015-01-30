@@ -1091,6 +1091,7 @@ client.on( "ready", function( readyEvent ) {
 	alert( "ZeroClipboard SWF is ready!" );
 
 	client.on( "aftercopy", function( event ) {
+		alert( 'done copying' );
 		// `this` === `client`
 		// `event.target` === the element that was clicked
 		event.target.style.display = "none";
