@@ -13,21 +13,22 @@ var analytics = require( './analytics' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ABTestCalculator = require( './abtest-calculator-app' );
 
-analytics.recordEvent( 'load_abtest_calculator' );
+analytics.recordEvent( 'load abtest calculator' );
 
 React.render(
 	React.createElement(ABTestCalculator, null),
 	document.getElementById( 'content' )
 );
 
-},{"./abtest-calculator-app":2,"./analytics":4,"./sample-proportions-graph":17,"react":169}],2:[function(require,module,exports){
+},{"./abtest-calculator-app":2,"./analytics":4,"./sample-proportions-graph":17,"react":175}],2:[function(require,module,exports){
 'use strict';
 
 /**
  * External dependencies
  */
 var React = require( 'react' ),
-	isInteger = require( 'is-integer' );
+	isInteger = require( 'is-integer' ),
+	url = require( 'url' );
 
 /**
  * Internal dependencies
@@ -36,15 +37,42 @@ var ConversionDataForm = require( './conversion-data-form' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ImprovementGraph = require( './improvement-graph' ),
 	Variation = require( './variation' ),
-	ABTestSummary = require( './abtest-summary' );
+	ABTestSummary = require( './abtest-summary' ),
+	urlCopy = require( './url-copy' ),
+	utils = require( './utils' );
 
 module.exports = React.createClass( {displayName: "exports",
 	getInitialState: function() {
+		var params = url.parse( document.URL, true ).query,
+			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
+			participantsA = 1000,
+			conversionsA = 90,
+			participantsB = 1000,
+			conversionsB = 120;
+
+		if ( params ) {
+			queryParticipantsA = params.ap;
+			queryConversionsA = params.ac;
+			queryParticipantsB = params.bp;
+			queryConversionsB = params.bc;
+
+			if ( utils.isInteger( queryParticipantsA ) && utils.isInteger( queryConversionsA ) && utils.isInteger( queryParticipantsB ) && utils.isInteger( queryConversionsB ) ) {
+				participantsA = +queryParticipantsA;
+				conversionsA = +queryConversionsA;
+				participantsB = +queryParticipantsB;
+				conversionsB = +queryConversionsB;
+			} else {
+				// Rather than show an error message about not being able to parse the params
+				// we'll simply not include any defaults in the fields
+				participantsA = conversionsA = participantsB = conversionsB = '';
+			}
+		}
+
 		return {
-			participantsA: 1000,
-			conversionsA: 90,
-			participantsB: 1000,
-			conversionsB: 120
+			participantsA: participantsA,
+			conversionsA: conversionsA,
+			participantsB: participantsB,
+			conversionsB: conversionsB
 		};
 	},
 
@@ -69,22 +97,25 @@ module.exports = React.createClass( {displayName: "exports",
 			analysis;
 
 		if ( isInteger( this.state.participantsA ) && isInteger( this.state.conversionsA ) && isInteger( this.state.participantsB ) && isInteger( this.state.conversionsB ) ) {
-			analysis = (
-				React.createElement("div", {className: "analysis"}, 
-					React.createElement("div", {className: "graphs"}, 
-						React.createElement(SampleProportionsGraph, {variations: variations }), 
-						React.createElement(ImprovementGraph, {variations: variations })
-					), 
-					React.createElement(ABTestSummary, {variations: variations })
-				)
-			);
-		} else {
-			analysis = (
-				React.createElement("div", {className: "analysis"}, 
-					React.createElement("p", {className: "error"}, "The number of participants and conversions must be integers.")
-				)
-			);
+			if ( utils.isCanvasSupported() ) {
+				analysis = (
+					React.createElement("div", {className: "analysis"}, 
+						React.createElement("div", {className: "graphs"}, 
+							React.createElement(SampleProportionsGraph, {variations: variations }), 
+							React.createElement(ImprovementGraph, {variations: variations })
+						), 
+						React.createElement(ABTestSummary, {variations: variations })
+					)
+				);
+			} else {
+				analysis = (
+					React.createElement("div", {className: "analysis"}, 
+						React.createElement(ABTestSummary, {variations: variations })
+					)
+				);
+			}
 		}
+
 		return (
 			React.createElement("div", null, 
 				React.createElement(ConversionDataForm, {variations: variations, onUpdate:  this.updateConversionData}), 
@@ -94,7 +125,7 @@ module.exports = React.createClass( {displayName: "exports",
 	}
 } );
 
-},{"./abtest-summary":3,"./conversion-data-form":6,"./improvement-graph":10,"./sample-proportions-graph":17,"./variation":19,"is-integer":21,"react":169}],3:[function(require,module,exports){
+},{"./abtest-summary":3,"./conversion-data-form":6,"./improvement-graph":10,"./sample-proportions-graph":17,"./url-copy":18,"./utils":19,"./variation":20,"is-integer":27,"react":175,"url":26}],3:[function(require,module,exports){
 'use strict';
 
 /**
@@ -118,36 +149,36 @@ module.exports = React.createClass( {displayName: "exports",
 			significanceInWords;
 
 		if ( variationBImprovement < 0 ) {
-			changeInWords = 'Variation A performed ' + variationAImprovement + '% better than variation A.';
+			changeInWords = React.createElement("p", null, React.createElement("span", {className: "variation-a"}, "Variation A"), " had a ", React.createElement("strong", null, variationAImprovement, "%"), " higher conversion rate than ", React.createElement("span", {className: "variation-b"}, "Variation B"), ".");
 		} else if ( variationBImprovement > 0 ) {
-			changeInWords = 'Variation B performed ' + variationBImprovement + '% better than variation A.';
+			changeInWords = React.createElement("p", null, React.createElement("span", {className: "variation-b"}, "Variation B"), " had a ", React.createElement("strong", null, variationBImprovement, "%"), " higher conversion rate than ", React.createElement("span", {className: "variation-a"}, "Variation A"), ".");
 		} else {
-			changeInWords = 'Variation B performed the same as variation A.';
+			changeInWords = React.createElement("p", null, React.createElement("span", {className: "variation-b"}, "Variation B"), " had the same conversion rate as ", React.createElement("span", {className: "variation-a"}, "Variation A"), ".");
 		}
 
 		if ( variationBImprovement < 0 ) {
-			oddsOfImprovementInWords = 'There is a ' + pAGreaterThanB + '% chages that the changes in variation A will improve your conversion rate.';
+			oddsOfImprovementInWords = React.createElement("p", null, "There is a ", React.createElement("strong", null, pAGreaterThanB, "%"), " chance that ", React.createElement("span", {className: "variation-a"}, "Variation A"), " has a higher conversion rate.");
 		} else {
-			oddsOfImprovementInWords = 'There is a ' + pBGreaterThanA + '% chance that the changes in variation B will improve your conversion rate.';
+			oddsOfImprovementInWords = React.createElement("p", null, "There is a ", React.createElement("strong", null, pBGreaterThanA, "%"), " chance that ", React.createElement("span", {className: "variation-b"}, "Variation B"), " has a higher conversion rate.");
 		}
 
 		if ( pBGreaterThanA >= 80 || pAGreaterThanB >= 80 ) {
-			significanceInWords = 'Your A/B test is statistically significant!'
+			significanceInWords = React.createElement("p", null, "Your A/B test is statistically significant!");
 		} else {
-			significanceInWords = 'Your A/B test is NOT statistically significant.'
+			significanceInWords = React.createElement("p", null, "Your A/B test is NOT statistically significant.");
 		}
 
 		return (
 			React.createElement("div", {className: "significance"}, 
-				React.createElement("p", null, changeInWords ), 
-				React.createElement("p", null, oddsOfImprovementInWords ), 
-				React.createElement("p", null, significanceInWords )
+				changeInWords, 
+				oddsOfImprovementInWords, 
+				significanceInWords 
 			)
 		);
 	}
 } );
 
-},{"./utils":18,"react":169}],4:[function(require,module,exports){
+},{"./utils":19,"react":175}],4:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -185,13 +216,16 @@ var React = require( 'react' );
 
 module.exports = React.createClass( {displayName: "exports",
 	handleFormSubmit: function( event ) {
+		event.preventDefault();
+		this.updateGraphs();
+	},
+
+	updateGraphs: function() {
 		var participantsA = this.refs.participantsA.getDOMNode().value,
 			conversionsA = this.refs.conversionsA.getDOMNode().value,
 			participantsB = this.refs.participantsB.getDOMNode().value,
 			conversionsB = this.refs.conversionsB.getDOMNode().value,
 			pattern = /^\d+$/;
-
-		event.preventDefault();
 
 		participantsA = pattern.test( participantsA ) ? +participantsA : participantsA;
 		conversionsA = pattern.test( conversionsA ) ? +conversionsA : conversionsA;
@@ -207,6 +241,27 @@ module.exports = React.createClass( {displayName: "exports",
 		event.target.value = event.target.value;
 	},
 
+	adjustInputValue: function( event ) {
+		if ( event.keyCode === 38 ) {
+			event.target.value = parseInt( event.target.value ) + 1;
+			this.updateGraphs()
+			event.preventDefault();
+		} else if ( event.keyCode === 40 ) {
+			if ( parseInt( event.target.value ) > 0 ) {
+				event.target.value = parseInt( event.target.value ) - 1;
+				this.updateGraphs();
+				event.preventDefault();
+			}
+		}
+	},
+
+	// Prevent the cursor position from jumping to the beginning of the input field
+	preventUpDownDefaults: function( event ) {
+		if ( event.keyCode === 38 || event.keyCode === 40 ) {
+			event.preventDefault();
+		}
+	},
+
 	componentDidMount: function() {
 		this.refs.participantsA.getDOMNode().focus()
 	},
@@ -215,21 +270,47 @@ module.exports = React.createClass( {displayName: "exports",
 		return (
 			React.createElement("form", {onSubmit:  this.handleFormSubmit}, 
 				React.createElement("div", {className: "variation"}, 
-					React.createElement("span", null, "Variation A"), 
-					React.createElement("input", {type: "text", ref: "participantsA", placeholder: "Participants A", defaultValue:  this.props.variations.a.participants, onChange:  this.handleFormSubmit, onFocus:  this.setFocus}), 
-					React.createElement("input", {type: "text", ref: "conversionsA", placeholder: "Conversions A", defaultValue:  this.props.variations.a.conversions, onChange:  this.handleFormSubmit})
+					React.createElement("span", {className: "variation-a"}, "Variation A"), 
+					React.createElement("input", {
+						type: "text", 
+						ref: "participantsA", 
+						placeholder: "Participants A", 
+						defaultValue:  this.props.variations.a.participants, 
+						onChange:  this.handleFormSubmit, 
+						onFocus:  this.setFocus, 
+						onKeyDown:  this.adjustInputValue}), 
+					React.createElement("input", {
+						type: "text", 
+						ref: "conversionsA", 
+						placeholder: "Conversions A", 
+						defaultValue:  this.props.variations.a.conversions, 
+						onChange:  this.handleFormSubmit, 
+						onKeyDown:  this.adjustInputValue})
 				), 
 				React.createElement("div", {className: "variation"}, 
-					React.createElement("span", null, "Variation B"), 
-					React.createElement("input", {type: "text", ref: "participantsB", placeholder: "Participants B", defaultValue:  this.props.variations.b.participants, onChange:  this.handleFormSubmit}), 
-					React.createElement("input", {type: "text", ref: "conversionsB", placeholder: "Conversions B", defaultValue:  this.props.variations.b.conversions, onChange:  this.handleFormSubmit})
-				)
+					React.createElement("span", {className: "variation-b"}, "Variation B"), 
+					React.createElement("input", {type: "text", 
+						ref: "participantsB", 
+						placeholder: "Participants B", 
+						defaultValue:  this.props.variations.b.participants, 
+						onChange:  this.handleFormSubmit, 
+						onKeyDown:  this.adjustInputValue}), 
+					React.createElement("input", {
+						type: "text", 
+						ref: "conversionsB", 
+						placeholder: "Conversions B", 
+						defaultValue:  this.props.variations.b.conversions, 
+						onChange:  this.handleFormSubmit, 
+						onKeyDown:  this.adjustInputValue})
+				), 
+				React.createElement("button", {id: "copy-button", "data-clipboard-text": "Copy Me!", title: "Click to copy me."}, "Copy to Clipboard")
+
 			)
 		);
 	}
 } );
 
-},{"react":169}],7:[function(require,module,exports){
+},{"react":175}],7:[function(require,module,exports){
 'use strict';
 
 /**
@@ -260,7 +341,7 @@ module.exports = {
 	},
 };
 
-},{"./constants":5,"./utils":18}],8:[function(require,module,exports){
+},{"./constants":5,"./utils":19}],8:[function(require,module,exports){
 'use strict';
 
 function GraphRenderer( context ) {
@@ -540,7 +621,7 @@ ImprovementGraphRenderer.prototype.constructor = ImprovementGraphRenderer;
 
 module.exports = ImprovementGraphRenderer;
 
-},{"./graph-renderer":8,"./normal-difference-distribution":11,"./range":13,"./utils":18,"lodash":22,"numeral":23}],10:[function(require,module,exports){
+},{"./graph-renderer":8,"./normal-difference-distribution":11,"./range":13,"./utils":19,"lodash":28,"numeral":29}],10:[function(require,module,exports){
 'use strict';
 
 /**
@@ -571,11 +652,17 @@ module.exports = React.createClass( {displayName: "exports",
 	},
 
 	render: function() {
-		return React.createElement("canvas", {ref: "canvas"});
+		return (
+			React.createElement("div", {className: "graph"}, 
+				React.createElement("h3", null, "Improvement Distribution"), 
+				React.createElement("h4", null, "if you change from ", React.createElement("span", {className: "variation-a"}, "Variation A"), " to ", React.createElement("span", {className: "variation-b"}, "Variation B")), 
+				React.createElement("canvas", {ref: "canvas"})
+			)
+		);
 	}
 } );
 
-},{"./constants":5,"./graph-mixin":7,"./improvement-graph-renderer":9,"./rectangle":14,"react":169}],11:[function(require,module,exports){
+},{"./constants":5,"./graph-mixin":7,"./improvement-graph-renderer":9,"./rectangle":14,"react":175}],11:[function(require,module,exports){
 'use strict';
 
 /**
@@ -949,7 +1036,7 @@ SampleProportionsGraphRenderer.prototype.constructor = SampleProportionsGraphRen
 
 module.exports = SampleProportionsGraphRenderer;
 
-},{"./graph-renderer":8,"./range":13,"./utils":18,"numeral":23}],17:[function(require,module,exports){
+},{"./graph-renderer":8,"./range":13,"./utils":19,"numeral":29}],17:[function(require,module,exports){
 'use strict';
 
 /**
@@ -980,11 +1067,40 @@ module.exports = React.createClass( {displayName: "exports",
 	},
 
 	render: function() {
-		return React.createElement("canvas", {ref: "canvas"});
+		return (
+			React.createElement("div", {className: "graph"}, 
+				React.createElement("h3", null, "Sample Proportion Distributions"), 
+				React.createElement("h4", null, React.createElement("span", {className: "variation-a"}, "Variation A"), " vs ", React.createElement("span", {className: "variation-b"}, "Variation B")), 
+				React.createElement("canvas", {ref: "canvas"})
+			)
+		);
 	}
 } );
 
-},{"./constants":5,"./graph-mixin":7,"./rectangle":14,"./sample-proportions-graph-renderer":16,"react":169}],18:[function(require,module,exports){
+},{"./constants":5,"./graph-mixin":7,"./rectangle":14,"./sample-proportions-graph-renderer":16,"react":175}],18:[function(require,module,exports){
+/**
+ * External dependencies
+ */
+var ZeroClipboard = require( 'zeroclipboard' );
+
+ZeroClipboard.config( { swfPath: '../ZeroClipboard.swf' } );
+
+var client = new ZeroClipboard( document.getElementById("copy-button") );
+
+client.on( "ready", function( readyEvent ) {
+	alert( "ZeroClipboard SWF is ready!" );
+
+	client.on( "aftercopy", function( event ) {
+		// `this` === `client`
+		// `event.target` === the element that was clicked
+		event.target.style.display = "none";
+		alert("Copied text to clipboard: " + event.data["text/plain"] );
+	} );
+} );
+
+module.exports = client;
+
+},{"zeroclipboard":176}],19:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1022,6 +1138,15 @@ module.exports = {
 		return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + opacity + ")";
 	},
 
+	isCanvasSupported: function() {
+		var element = document.createElement( 'canvas' );
+		return !!( element.getContext && element.getContext( '2d' ) );
+	},
+
+	isInteger: function( string ) {
+		return /^\d+$/.test( string );
+	},
+
 	ratioToPercentage: function( ratio ) {
 		return ( ratio * 100 ) + '%';
 	},
@@ -1057,7 +1182,7 @@ module.exports = {
 	}
 };
 
-},{"./normal-difference-distribution":11}],19:[function(require,module,exports){
+},{"./normal-difference-distribution":11}],20:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1075,7 +1200,7 @@ function Variation( name, color, participants, conversions ) {
 
 module.exports = Variation;
 
-},{"./sample-proportion":15}],20:[function(require,module,exports){
+},{"./sample-proportion":15}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1163,7 +1288,1406 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
+(function (global){
+/*! http://mths.be/punycode v1.2.4 by @mathias */
+;(function(root) {
+
+	/** Detect free variables */
+	var freeExports = typeof exports == 'object' && exports;
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
+
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^ -~]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /\x2E|\u3002|\uFF0E|\uFF61/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		while (length--) {
+			array[length] = fn(array[length]);
+		}
+		return array;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings.
+	 * @private
+	 * @param {String} domain The domain name.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		return map(string.split(regexSeparators), fn).join('.');
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <http://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * http://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols to a Punycode string of ASCII-only
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name to Unicode. Only the
+	 * Punycoded parts of the domain name will be converted, i.e. it doesn't
+	 * matter if you call it on a string that has already been converted to
+	 * Unicode.
+	 * @memberOf punycode
+	 * @param {String} domain The Punycode domain name to convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(domain) {
+		return mapDomain(domain, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name to Punycode. Only the
+	 * non-ASCII parts of the domain name will be converted, i.e. it doesn't
+	 * matter if you call it with a domain that's already in ASCII.
+	 * @memberOf punycode
+	 * @param {String} domain The domain name to convert, as a Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name.
+	 */
+	function toASCII(domain) {
+		return mapDomain(domain, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.2.4',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <http://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define('punycode', function() {
+			return punycode;
+		});
+	} else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = punycode;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			for (key in punycode) {
+				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.punycode = punycode;
+	}
+
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],23:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],24:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],25:[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":23,"./encode":24}],26:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var punycode = require('punycode');
+
+exports.parse = urlParse;
+exports.resolve = urlResolve;
+exports.resolveObject = urlResolveObject;
+exports.format = urlFormat;
+
+exports.Url = Url;
+
+function Url() {
+  this.protocol = null;
+  this.slashes = null;
+  this.auth = null;
+  this.host = null;
+  this.port = null;
+  this.hostname = null;
+  this.hash = null;
+  this.search = null;
+  this.query = null;
+  this.pathname = null;
+  this.path = null;
+  this.href = null;
+}
+
+// Reference: RFC 3986, RFC 1808, RFC 2396
+
+// define these here so at least they only have to be
+// compiled once on the first module load.
+var protocolPattern = /^([a-z0-9.+-]+:)/i,
+    portPattern = /:[0-9]*$/,
+
+    // RFC 2396: characters reserved for delimiting URLs.
+    // We actually just auto-escape these.
+    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+
+    // RFC 2396: characters not allowed for various reasons.
+    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+
+    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+    autoEscape = ['\''].concat(unwise),
+    // Characters that are never ever allowed in a hostname.
+    // Note that any invalid chars are also handled, but these
+    // are the ones that are *expected* to be seen, so we fast-path
+    // them.
+    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+    hostEndingChars = ['/', '?', '#'],
+    hostnameMaxLen = 255,
+    hostnamePartPattern = /^[a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart = /^([a-z0-9A-Z_-]{0,63})(.*)$/,
+    // protocols that can allow "unsafe" and "unwise" chars.
+    unsafeProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that never have a hostname.
+    hostlessProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that always contain a // bit.
+    slashedProtocol = {
+      'http': true,
+      'https': true,
+      'ftp': true,
+      'gopher': true,
+      'file': true,
+      'http:': true,
+      'https:': true,
+      'ftp:': true,
+      'gopher:': true,
+      'file:': true
+    },
+    querystring = require('querystring');
+
+function urlParse(url, parseQueryString, slashesDenoteHost) {
+  if (url && isObject(url) && url instanceof Url) return url;
+
+  var u = new Url;
+  u.parse(url, parseQueryString, slashesDenoteHost);
+  return u;
+}
+
+Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+  if (!isString(url)) {
+    throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
+  }
+
+  var rest = url;
+
+  // trim before proceeding.
+  // This is to support parse stuff like "  http://foo.com  \n"
+  rest = rest.trim();
+
+  var proto = protocolPattern.exec(rest);
+  if (proto) {
+    proto = proto[0];
+    var lowerProto = proto.toLowerCase();
+    this.protocol = lowerProto;
+    rest = rest.substr(proto.length);
+  }
+
+  // figure out if it's got a host
+  // user@server is *always* interpreted as a hostname, and url
+  // resolution will treat //foo/bar as host=foo,path=bar because that's
+  // how the browser resolves relative URLs.
+  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
+    var slashes = rest.substr(0, 2) === '//';
+    if (slashes && !(proto && hostlessProtocol[proto])) {
+      rest = rest.substr(2);
+      this.slashes = true;
+    }
+  }
+
+  if (!hostlessProtocol[proto] &&
+      (slashes || (proto && !slashedProtocol[proto]))) {
+
+    // there's a hostname.
+    // the first instance of /, ?, ;, or # ends the host.
+    //
+    // If there is an @ in the hostname, then non-host chars *are* allowed
+    // to the left of the last @ sign, unless some host-ending character
+    // comes *before* the @-sign.
+    // URLs are obnoxious.
+    //
+    // ex:
+    // http://a@b@c/ => user:a@b host:c
+    // http://a@b?@c => user:a host:c path:/?@c
+
+    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
+    // Review our test case against browsers more comprehensively.
+
+    // find the first instance of any hostEndingChars
+    var hostEnd = -1;
+    for (var i = 0; i < hostEndingChars.length; i++) {
+      var hec = rest.indexOf(hostEndingChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+
+    // at this point, either we have an explicit point where the
+    // auth portion cannot go past, or the last @ char is the decider.
+    var auth, atSign;
+    if (hostEnd === -1) {
+      // atSign can be anywhere.
+      atSign = rest.lastIndexOf('@');
+    } else {
+      // atSign must be in auth portion.
+      // http://a@b/c@d => host:b auth:a path:/c@d
+      atSign = rest.lastIndexOf('@', hostEnd);
+    }
+
+    // Now we have a portion which is definitely the auth.
+    // Pull that off.
+    if (atSign !== -1) {
+      auth = rest.slice(0, atSign);
+      rest = rest.slice(atSign + 1);
+      this.auth = decodeURIComponent(auth);
+    }
+
+    // the host is the remaining to the left of the first non-host char
+    hostEnd = -1;
+    for (var i = 0; i < nonHostChars.length; i++) {
+      var hec = rest.indexOf(nonHostChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+    // if we still have not hit it, then the entire thing is a host.
+    if (hostEnd === -1)
+      hostEnd = rest.length;
+
+    this.host = rest.slice(0, hostEnd);
+    rest = rest.slice(hostEnd);
+
+    // pull out port.
+    this.parseHost();
+
+    // we've indicated that there is a hostname,
+    // so even if it's empty, it has to be present.
+    this.hostname = this.hostname || '';
+
+    // if hostname begins with [ and ends with ]
+    // assume that it's an IPv6 address.
+    var ipv6Hostname = this.hostname[0] === '[' &&
+        this.hostname[this.hostname.length - 1] === ']';
+
+    // validate a little.
+    if (!ipv6Hostname) {
+      var hostparts = this.hostname.split(/\./);
+      for (var i = 0, l = hostparts.length; i < l; i++) {
+        var part = hostparts[i];
+        if (!part) continue;
+        if (!part.match(hostnamePartPattern)) {
+          var newpart = '';
+          for (var j = 0, k = part.length; j < k; j++) {
+            if (part.charCodeAt(j) > 127) {
+              // we replace non-ASCII char with a temporary placeholder
+              // we need this to make sure size of hostname is not
+              // broken by replacing non-ASCII by nothing
+              newpart += 'x';
+            } else {
+              newpart += part[j];
+            }
+          }
+          // we test again with ASCII char only
+          if (!newpart.match(hostnamePartPattern)) {
+            var validParts = hostparts.slice(0, i);
+            var notHost = hostparts.slice(i + 1);
+            var bit = part.match(hostnamePartStart);
+            if (bit) {
+              validParts.push(bit[1]);
+              notHost.unshift(bit[2]);
+            }
+            if (notHost.length) {
+              rest = '/' + notHost.join('.') + rest;
+            }
+            this.hostname = validParts.join('.');
+            break;
+          }
+        }
+      }
+    }
+
+    if (this.hostname.length > hostnameMaxLen) {
+      this.hostname = '';
+    } else {
+      // hostnames are always lower case.
+      this.hostname = this.hostname.toLowerCase();
+    }
+
+    if (!ipv6Hostname) {
+      // IDNA Support: Returns a puny coded representation of "domain".
+      // It only converts the part of the domain name that
+      // has non ASCII characters. I.e. it dosent matter if
+      // you call it with a domain that already is in ASCII.
+      var domainArray = this.hostname.split('.');
+      var newOut = [];
+      for (var i = 0; i < domainArray.length; ++i) {
+        var s = domainArray[i];
+        newOut.push(s.match(/[^A-Za-z0-9_-]/) ?
+            'xn--' + punycode.encode(s) : s);
+      }
+      this.hostname = newOut.join('.');
+    }
+
+    var p = this.port ? ':' + this.port : '';
+    var h = this.hostname || '';
+    this.host = h + p;
+    this.href += this.host;
+
+    // strip [ and ] from the hostname
+    // the host field still retains them, though
+    if (ipv6Hostname) {
+      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
+      if (rest[0] !== '/') {
+        rest = '/' + rest;
+      }
+    }
+  }
+
+  // now rest is set to the post-host stuff.
+  // chop off any delim chars.
+  if (!unsafeProtocol[lowerProto]) {
+
+    // First, make 100% sure that any "autoEscape" chars get
+    // escaped, even if encodeURIComponent doesn't think they
+    // need to be.
+    for (var i = 0, l = autoEscape.length; i < l; i++) {
+      var ae = autoEscape[i];
+      var esc = encodeURIComponent(ae);
+      if (esc === ae) {
+        esc = escape(ae);
+      }
+      rest = rest.split(ae).join(esc);
+    }
+  }
+
+
+  // chop off from the tail first.
+  var hash = rest.indexOf('#');
+  if (hash !== -1) {
+    // got a fragment string.
+    this.hash = rest.substr(hash);
+    rest = rest.slice(0, hash);
+  }
+  var qm = rest.indexOf('?');
+  if (qm !== -1) {
+    this.search = rest.substr(qm);
+    this.query = rest.substr(qm + 1);
+    if (parseQueryString) {
+      this.query = querystring.parse(this.query);
+    }
+    rest = rest.slice(0, qm);
+  } else if (parseQueryString) {
+    // no query string, but parseQueryString still requested
+    this.search = '';
+    this.query = {};
+  }
+  if (rest) this.pathname = rest;
+  if (slashedProtocol[lowerProto] &&
+      this.hostname && !this.pathname) {
+    this.pathname = '/';
+  }
+
+  //to support http.request
+  if (this.pathname || this.search) {
+    var p = this.pathname || '';
+    var s = this.search || '';
+    this.path = p + s;
+  }
+
+  // finally, reconstruct the href based on what has been validated.
+  this.href = this.format();
+  return this;
+};
+
+// format a parsed object into a url string
+function urlFormat(obj) {
+  // ensure it's an object, and not a string url.
+  // If it's an obj, this is a no-op.
+  // this way, you can call url_format() on strings
+  // to clean up potentially wonky urls.
+  if (isString(obj)) obj = urlParse(obj);
+  if (!(obj instanceof Url)) return Url.prototype.format.call(obj);
+  return obj.format();
+}
+
+Url.prototype.format = function() {
+  var auth = this.auth || '';
+  if (auth) {
+    auth = encodeURIComponent(auth);
+    auth = auth.replace(/%3A/i, ':');
+    auth += '@';
+  }
+
+  var protocol = this.protocol || '',
+      pathname = this.pathname || '',
+      hash = this.hash || '',
+      host = false,
+      query = '';
+
+  if (this.host) {
+    host = auth + this.host;
+  } else if (this.hostname) {
+    host = auth + (this.hostname.indexOf(':') === -1 ?
+        this.hostname :
+        '[' + this.hostname + ']');
+    if (this.port) {
+      host += ':' + this.port;
+    }
+  }
+
+  if (this.query &&
+      isObject(this.query) &&
+      Object.keys(this.query).length) {
+    query = querystring.stringify(this.query);
+  }
+
+  var search = this.search || (query && ('?' + query)) || '';
+
+  if (protocol && protocol.substr(-1) !== ':') protocol += ':';
+
+  // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
+  // unless they had them to begin with.
+  if (this.slashes ||
+      (!protocol || slashedProtocol[protocol]) && host !== false) {
+    host = '//' + (host || '');
+    if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
+  } else if (!host) {
+    host = '';
+  }
+
+  if (hash && hash.charAt(0) !== '#') hash = '#' + hash;
+  if (search && search.charAt(0) !== '?') search = '?' + search;
+
+  pathname = pathname.replace(/[?#]/g, function(match) {
+    return encodeURIComponent(match);
+  });
+  search = search.replace('#', '%23');
+
+  return protocol + host + pathname + search + hash;
+};
+
+function urlResolve(source, relative) {
+  return urlParse(source, false, true).resolve(relative);
+}
+
+Url.prototype.resolve = function(relative) {
+  return this.resolveObject(urlParse(relative, false, true)).format();
+};
+
+function urlResolveObject(source, relative) {
+  if (!source) return relative;
+  return urlParse(source, false, true).resolveObject(relative);
+}
+
+Url.prototype.resolveObject = function(relative) {
+  if (isString(relative)) {
+    var rel = new Url();
+    rel.parse(relative, false, true);
+    relative = rel;
+  }
+
+  var result = new Url();
+  Object.keys(this).forEach(function(k) {
+    result[k] = this[k];
+  }, this);
+
+  // hash is always overridden, no matter what.
+  // even href="" will remove it.
+  result.hash = relative.hash;
+
+  // if the relative url is empty, then there's nothing left to do here.
+  if (relative.href === '') {
+    result.href = result.format();
+    return result;
+  }
+
+  // hrefs like //foo/bar always cut to the protocol.
+  if (relative.slashes && !relative.protocol) {
+    // take everything except the protocol from relative
+    Object.keys(relative).forEach(function(k) {
+      if (k !== 'protocol')
+        result[k] = relative[k];
+    });
+
+    //urlParse appends trailing / to urls like http://www.example.com
+    if (slashedProtocol[result.protocol] &&
+        result.hostname && !result.pathname) {
+      result.path = result.pathname = '/';
+    }
+
+    result.href = result.format();
+    return result;
+  }
+
+  if (relative.protocol && relative.protocol !== result.protocol) {
+    // if it's a known url protocol, then changing
+    // the protocol does weird things
+    // first, if it's not file:, then we MUST have a host,
+    // and if there was a path
+    // to begin with, then we MUST have a path.
+    // if it is file:, then the host is dropped,
+    // because that's known to be hostless.
+    // anything else is assumed to be absolute.
+    if (!slashedProtocol[relative.protocol]) {
+      Object.keys(relative).forEach(function(k) {
+        result[k] = relative[k];
+      });
+      result.href = result.format();
+      return result;
+    }
+
+    result.protocol = relative.protocol;
+    if (!relative.host && !hostlessProtocol[relative.protocol]) {
+      var relPath = (relative.pathname || '').split('/');
+      while (relPath.length && !(relative.host = relPath.shift()));
+      if (!relative.host) relative.host = '';
+      if (!relative.hostname) relative.hostname = '';
+      if (relPath[0] !== '') relPath.unshift('');
+      if (relPath.length < 2) relPath.unshift('');
+      result.pathname = relPath.join('/');
+    } else {
+      result.pathname = relative.pathname;
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    result.host = relative.host || '';
+    result.auth = relative.auth;
+    result.hostname = relative.hostname || relative.host;
+    result.port = relative.port;
+    // to support http.request
+    if (result.pathname || result.search) {
+      var p = result.pathname || '';
+      var s = result.search || '';
+      result.path = p + s;
+    }
+    result.slashes = result.slashes || relative.slashes;
+    result.href = result.format();
+    return result;
+  }
+
+  var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
+      isRelAbs = (
+          relative.host ||
+          relative.pathname && relative.pathname.charAt(0) === '/'
+      ),
+      mustEndAbs = (isRelAbs || isSourceAbs ||
+                    (result.host && relative.pathname)),
+      removeAllDots = mustEndAbs,
+      srcPath = result.pathname && result.pathname.split('/') || [],
+      relPath = relative.pathname && relative.pathname.split('/') || [],
+      psychotic = result.protocol && !slashedProtocol[result.protocol];
+
+  // if the url is a non-slashed url, then relative
+  // links like ../.. should be able
+  // to crawl up to the hostname, as well.  This is strange.
+  // result.protocol has already been set by now.
+  // Later on, put the first path part into the host field.
+  if (psychotic) {
+    result.hostname = '';
+    result.port = null;
+    if (result.host) {
+      if (srcPath[0] === '') srcPath[0] = result.host;
+      else srcPath.unshift(result.host);
+    }
+    result.host = '';
+    if (relative.protocol) {
+      relative.hostname = null;
+      relative.port = null;
+      if (relative.host) {
+        if (relPath[0] === '') relPath[0] = relative.host;
+        else relPath.unshift(relative.host);
+      }
+      relative.host = null;
+    }
+    mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
+  }
+
+  if (isRelAbs) {
+    // it's absolute.
+    result.host = (relative.host || relative.host === '') ?
+                  relative.host : result.host;
+    result.hostname = (relative.hostname || relative.hostname === '') ?
+                      relative.hostname : result.hostname;
+    result.search = relative.search;
+    result.query = relative.query;
+    srcPath = relPath;
+    // fall through to the dot-handling below.
+  } else if (relPath.length) {
+    // it's relative
+    // throw away the existing file, and take the new path instead.
+    if (!srcPath) srcPath = [];
+    srcPath.pop();
+    srcPath = srcPath.concat(relPath);
+    result.search = relative.search;
+    result.query = relative.query;
+  } else if (!isNullOrUndefined(relative.search)) {
+    // just pull out the search.
+    // like href='?foo'.
+    // Put this after the other two cases because it simplifies the booleans
+    if (psychotic) {
+      result.hostname = result.host = srcPath.shift();
+      //occationaly the auth can get stuck only in host
+      //this especialy happens in cases like
+      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+      var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                       result.host.split('@') : false;
+      if (authInHost) {
+        result.auth = authInHost.shift();
+        result.host = result.hostname = authInHost.shift();
+      }
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    //to support http.request
+    if (!isNull(result.pathname) || !isNull(result.search)) {
+      result.path = (result.pathname ? result.pathname : '') +
+                    (result.search ? result.search : '');
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  if (!srcPath.length) {
+    // no path at all.  easy.
+    // we've already handled the other stuff above.
+    result.pathname = null;
+    //to support http.request
+    if (result.search) {
+      result.path = '/' + result.search;
+    } else {
+      result.path = null;
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  // if a url ENDs in . or .., then it must get a trailing slash.
+  // however, if it ends in anything else non-slashy,
+  // then it must NOT get a trailing slash.
+  var last = srcPath.slice(-1)[0];
+  var hasTrailingSlash = (
+      (result.host || relative.host) && (last === '.' || last === '..') ||
+      last === '');
+
+  // strip single dots, resolve double dots to parent dir
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = srcPath.length; i >= 0; i--) {
+    last = srcPath[i];
+    if (last == '.') {
+      srcPath.splice(i, 1);
+    } else if (last === '..') {
+      srcPath.splice(i, 1);
+      up++;
+    } else if (up) {
+      srcPath.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (!mustEndAbs && !removeAllDots) {
+    for (; up--; up) {
+      srcPath.unshift('..');
+    }
+  }
+
+  if (mustEndAbs && srcPath[0] !== '' &&
+      (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
+    srcPath.unshift('');
+  }
+
+  if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
+    srcPath.push('');
+  }
+
+  var isAbsolute = srcPath[0] === '' ||
+      (srcPath[0] && srcPath[0].charAt(0) === '/');
+
+  // put the host back
+  if (psychotic) {
+    result.hostname = result.host = isAbsolute ? '' :
+                                    srcPath.length ? srcPath.shift() : '';
+    //occationaly the auth can get stuck only in host
+    //this especialy happens in cases like
+    //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+    var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                     result.host.split('@') : false;
+    if (authInHost) {
+      result.auth = authInHost.shift();
+      result.host = result.hostname = authInHost.shift();
+    }
+  }
+
+  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+  if (mustEndAbs && !isAbsolute) {
+    srcPath.unshift('');
+  }
+
+  if (!srcPath.length) {
+    result.pathname = null;
+    result.path = null;
+  } else {
+    result.pathname = srcPath.join('/');
+  }
+
+  //to support request.http
+  if (!isNull(result.pathname) || !isNull(result.search)) {
+    result.path = (result.pathname ? result.pathname : '') +
+                  (result.search ? result.search : '');
+  }
+  result.auth = relative.auth || result.auth;
+  result.slashes = result.slashes || relative.slashes;
+  result.href = result.format();
+  return result;
+};
+
+Url.prototype.parseHost = function() {
+  var host = this.host;
+  var port = portPattern.exec(host);
+  if (port) {
+    port = port[0];
+    if (port !== ':') {
+      this.port = port.substr(1);
+    }
+    host = host.substr(0, host.length - port.length);
+  }
+  if (host) this.hostname = host;
+};
+
+function isString(arg) {
+  return typeof arg === "string";
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isNull(arg) {
+  return arg === null;
+}
+function isNullOrUndefined(arg) {
+  return  arg == null;
+}
+
+},{"punycode":22,"querystring":25}],27:[function(require,module,exports){
 // https://github.com/paulmillr/es6-shim
 // ES6 isInteger Polyfill https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger#Polyfill
 module.exports = Number.isInteger || function(val) {
@@ -1175,7 +2699,7 @@ module.exports = Number.isInteger || function(val) {
 		parseInt(val, 10) === val;
 };
 
-},{}],22:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -7964,7 +9488,7 @@ module.exports = Number.isInteger || function(val) {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],23:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*!
  * numeral.js
  * version : 1.5.3
@@ -8645,7 +10169,7 @@ module.exports = Number.isInteger || function(val) {
     }
 }).call(this);
 
-},{}],24:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -8672,7 +10196,7 @@ var AutoFocusMixin = {
 
 module.exports = AutoFocusMixin;
 
-},{"./focusNode":134}],25:[function(require,module,exports){
+},{"./focusNode":140}],31:[function(require,module,exports){
 /**
  * Copyright 2013 Facebook, Inc.
  * All rights reserved.
@@ -8894,7 +10418,7 @@ var BeforeInputEventPlugin = {
 
 module.exports = BeforeInputEventPlugin;
 
-},{"./EventConstants":38,"./EventPropagators":43,"./ExecutionEnvironment":44,"./SyntheticInputEvent":112,"./keyOf":156}],26:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPropagators":49,"./ExecutionEnvironment":50,"./SyntheticInputEvent":118,"./keyOf":162}],32:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -9013,7 +10537,7 @@ var CSSProperty = {
 
 module.exports = CSSProperty;
 
-},{}],27:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -9148,7 +10672,7 @@ var CSSPropertyOperations = {
 module.exports = CSSPropertyOperations;
 
 }).call(this,require('_process'))
-},{"./CSSProperty":26,"./ExecutionEnvironment":44,"./camelizeStyleName":123,"./dangerousStyleValue":128,"./hyphenateStyleName":147,"./memoizeStringOnly":158,"./warning":168,"_process":20}],28:[function(require,module,exports){
+},{"./CSSProperty":32,"./ExecutionEnvironment":50,"./camelizeStyleName":129,"./dangerousStyleValue":134,"./hyphenateStyleName":153,"./memoizeStringOnly":164,"./warning":174,"_process":21}],34:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -9248,7 +10772,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 module.exports = CallbackQueue;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./PooledClass":50,"./invariant":149,"_process":20}],29:[function(require,module,exports){
+},{"./Object.assign":55,"./PooledClass":56,"./invariant":155,"_process":21}],35:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -9630,7 +11154,7 @@ var ChangeEventPlugin = {
 
 module.exports = ChangeEventPlugin;
 
-},{"./EventConstants":38,"./EventPluginHub":40,"./EventPropagators":43,"./ExecutionEnvironment":44,"./ReactUpdates":102,"./SyntheticEvent":110,"./isEventSupported":150,"./isTextInputElement":152,"./keyOf":156}],30:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPluginHub":46,"./EventPropagators":49,"./ExecutionEnvironment":50,"./ReactUpdates":108,"./SyntheticEvent":116,"./isEventSupported":156,"./isTextInputElement":158,"./keyOf":162}],36:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -9655,7 +11179,7 @@ var ClientReactRootIndex = {
 
 module.exports = ClientReactRootIndex;
 
-},{}],31:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -9914,7 +11438,7 @@ var CompositionEventPlugin = {
 
 module.exports = CompositionEventPlugin;
 
-},{"./EventConstants":38,"./EventPropagators":43,"./ExecutionEnvironment":44,"./ReactInputSelection":82,"./SyntheticCompositionEvent":108,"./getTextContentAccessor":144,"./keyOf":156}],32:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPropagators":49,"./ExecutionEnvironment":50,"./ReactInputSelection":88,"./SyntheticCompositionEvent":114,"./getTextContentAccessor":150,"./keyOf":162}],38:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -10089,7 +11613,7 @@ var DOMChildrenOperations = {
 module.exports = DOMChildrenOperations;
 
 }).call(this,require('_process'))
-},{"./Danger":35,"./ReactMultiChildUpdateTypes":88,"./getTextContentAccessor":144,"./invariant":149,"_process":20}],33:[function(require,module,exports){
+},{"./Danger":41,"./ReactMultiChildUpdateTypes":94,"./getTextContentAccessor":150,"./invariant":155,"_process":21}],39:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -10388,7 +11912,7 @@ var DOMProperty = {
 module.exports = DOMProperty;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],34:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],40:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -10585,7 +12109,7 @@ var DOMPropertyOperations = {
 module.exports = DOMPropertyOperations;
 
 }).call(this,require('_process'))
-},{"./DOMProperty":33,"./escapeTextForBrowser":132,"./memoizeStringOnly":158,"./warning":168,"_process":20}],35:[function(require,module,exports){
+},{"./DOMProperty":39,"./escapeTextForBrowser":138,"./memoizeStringOnly":164,"./warning":174,"_process":21}],41:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -10771,7 +12295,7 @@ var Danger = {
 module.exports = Danger;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":44,"./createNodesFromMarkup":127,"./emptyFunction":130,"./getMarkupWrap":141,"./invariant":149,"_process":20}],36:[function(require,module,exports){
+},{"./ExecutionEnvironment":50,"./createNodesFromMarkup":133,"./emptyFunction":136,"./getMarkupWrap":147,"./invariant":155,"_process":21}],42:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -10811,7 +12335,7 @@ var DefaultEventPluginOrder = [
 
 module.exports = DefaultEventPluginOrder;
 
-},{"./keyOf":156}],37:[function(require,module,exports){
+},{"./keyOf":162}],43:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -10951,7 +12475,7 @@ var EnterLeaveEventPlugin = {
 
 module.exports = EnterLeaveEventPlugin;
 
-},{"./EventConstants":38,"./EventPropagators":43,"./ReactMount":86,"./SyntheticMouseEvent":114,"./keyOf":156}],38:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPropagators":49,"./ReactMount":92,"./SyntheticMouseEvent":120,"./keyOf":162}],44:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -11023,7 +12547,7 @@ var EventConstants = {
 
 module.exports = EventConstants;
 
-},{"./keyMirror":155}],39:[function(require,module,exports){
+},{"./keyMirror":161}],45:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -11113,7 +12637,7 @@ var EventListener = {
 module.exports = EventListener;
 
 }).call(this,require('_process'))
-},{"./emptyFunction":130,"_process":20}],40:[function(require,module,exports){
+},{"./emptyFunction":136,"_process":21}],46:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -11389,7 +12913,7 @@ var EventPluginHub = {
 module.exports = EventPluginHub;
 
 }).call(this,require('_process'))
-},{"./EventPluginRegistry":41,"./EventPluginUtils":42,"./accumulateInto":120,"./forEachAccumulated":135,"./invariant":149,"_process":20}],41:[function(require,module,exports){
+},{"./EventPluginRegistry":47,"./EventPluginUtils":48,"./accumulateInto":126,"./forEachAccumulated":141,"./invariant":155,"_process":21}],47:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -11669,7 +13193,7 @@ var EventPluginRegistry = {
 module.exports = EventPluginRegistry;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],42:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],48:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -11890,7 +13414,7 @@ var EventPluginUtils = {
 module.exports = EventPluginUtils;
 
 }).call(this,require('_process'))
-},{"./EventConstants":38,"./invariant":149,"_process":20}],43:[function(require,module,exports){
+},{"./EventConstants":44,"./invariant":155,"_process":21}],49:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -12032,7 +13556,7 @@ var EventPropagators = {
 module.exports = EventPropagators;
 
 }).call(this,require('_process'))
-},{"./EventConstants":38,"./EventPluginHub":40,"./accumulateInto":120,"./forEachAccumulated":135,"_process":20}],44:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPluginHub":46,"./accumulateInto":126,"./forEachAccumulated":141,"_process":21}],50:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -12077,7 +13601,7 @@ var ExecutionEnvironment = {
 
 module.exports = ExecutionEnvironment;
 
-},{}],45:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -12269,7 +13793,7 @@ var HTMLDOMPropertyConfig = {
 
 module.exports = HTMLDOMPropertyConfig;
 
-},{"./DOMProperty":33,"./ExecutionEnvironment":44}],46:[function(require,module,exports){
+},{"./DOMProperty":39,"./ExecutionEnvironment":50}],52:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -12425,7 +13949,7 @@ var LinkedValueUtils = {
 module.exports = LinkedValueUtils;
 
 }).call(this,require('_process'))
-},{"./ReactPropTypes":95,"./invariant":149,"_process":20}],47:[function(require,module,exports){
+},{"./ReactPropTypes":101,"./invariant":155,"_process":21}],53:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -12475,7 +13999,7 @@ var LocalEventTrapMixin = {
 module.exports = LocalEventTrapMixin;
 
 }).call(this,require('_process'))
-},{"./ReactBrowserEventEmitter":53,"./accumulateInto":120,"./forEachAccumulated":135,"./invariant":149,"_process":20}],48:[function(require,module,exports){
+},{"./ReactBrowserEventEmitter":59,"./accumulateInto":126,"./forEachAccumulated":141,"./invariant":155,"_process":21}],54:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -12533,7 +14057,7 @@ var MobileSafariClickEventPlugin = {
 
 module.exports = MobileSafariClickEventPlugin;
 
-},{"./EventConstants":38,"./emptyFunction":130}],49:[function(require,module,exports){
+},{"./EventConstants":44,"./emptyFunction":136}],55:[function(require,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -12580,7 +14104,7 @@ function assign(target, sources) {
 
 module.exports = assign;
 
-},{}],50:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -12696,7 +14220,7 @@ var PooledClass = {
 module.exports = PooledClass;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],51:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],57:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -12884,7 +14408,7 @@ React.version = '0.12.2';
 module.exports = React;
 
 }).call(this,require('_process'))
-},{"./DOMPropertyOperations":34,"./EventPluginUtils":42,"./ExecutionEnvironment":44,"./Object.assign":49,"./ReactChildren":54,"./ReactComponent":55,"./ReactCompositeComponent":57,"./ReactContext":58,"./ReactCurrentOwner":59,"./ReactDOM":60,"./ReactDOMComponent":62,"./ReactDefaultInjection":72,"./ReactElement":75,"./ReactElementValidator":76,"./ReactInstanceHandles":83,"./ReactLegacyElement":84,"./ReactMount":86,"./ReactMultiChild":87,"./ReactPerf":91,"./ReactPropTypes":95,"./ReactServerRendering":99,"./ReactTextComponent":101,"./deprecated":129,"./onlyChild":160,"_process":20}],52:[function(require,module,exports){
+},{"./DOMPropertyOperations":40,"./EventPluginUtils":48,"./ExecutionEnvironment":50,"./Object.assign":55,"./ReactChildren":60,"./ReactComponent":61,"./ReactCompositeComponent":63,"./ReactContext":64,"./ReactCurrentOwner":65,"./ReactDOM":66,"./ReactDOMComponent":68,"./ReactDefaultInjection":78,"./ReactElement":81,"./ReactElementValidator":82,"./ReactInstanceHandles":89,"./ReactLegacyElement":90,"./ReactMount":92,"./ReactMultiChild":93,"./ReactPerf":97,"./ReactPropTypes":101,"./ReactServerRendering":105,"./ReactTextComponent":107,"./deprecated":135,"./onlyChild":166,"_process":21}],58:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -12927,7 +14451,7 @@ var ReactBrowserComponentMixin = {
 module.exports = ReactBrowserComponentMixin;
 
 }).call(this,require('_process'))
-},{"./ReactEmptyComponent":77,"./ReactMount":86,"./invariant":149,"_process":20}],53:[function(require,module,exports){
+},{"./ReactEmptyComponent":83,"./ReactMount":92,"./invariant":155,"_process":21}],59:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -13282,7 +14806,7 @@ var ReactBrowserEventEmitter = assign({}, ReactEventEmitterMixin, {
 
 module.exports = ReactBrowserEventEmitter;
 
-},{"./EventConstants":38,"./EventPluginHub":40,"./EventPluginRegistry":41,"./Object.assign":49,"./ReactEventEmitterMixin":79,"./ViewportMetrics":119,"./isEventSupported":150}],54:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPluginHub":46,"./EventPluginRegistry":47,"./Object.assign":55,"./ReactEventEmitterMixin":85,"./ViewportMetrics":125,"./isEventSupported":156}],60:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -13432,7 +14956,7 @@ var ReactChildren = {
 module.exports = ReactChildren;
 
 }).call(this,require('_process'))
-},{"./PooledClass":50,"./traverseAllChildren":167,"./warning":168,"_process":20}],55:[function(require,module,exports){
+},{"./PooledClass":56,"./traverseAllChildren":173,"./warning":174,"_process":21}],61:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -13875,7 +15399,7 @@ var ReactComponent = {
 module.exports = ReactComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./ReactElement":75,"./ReactOwner":90,"./ReactUpdates":102,"./invariant":149,"./keyMirror":155,"_process":20}],56:[function(require,module,exports){
+},{"./Object.assign":55,"./ReactElement":81,"./ReactOwner":96,"./ReactUpdates":108,"./invariant":155,"./keyMirror":161,"_process":21}],62:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -13997,7 +15521,7 @@ var ReactComponentBrowserEnvironment = {
 module.exports = ReactComponentBrowserEnvironment;
 
 }).call(this,require('_process'))
-},{"./ReactDOMIDOperations":64,"./ReactMarkupChecksum":85,"./ReactMount":86,"./ReactPerf":91,"./ReactReconcileTransaction":97,"./getReactRootElementInContainer":143,"./invariant":149,"./setInnerHTML":163,"_process":20}],57:[function(require,module,exports){
+},{"./ReactDOMIDOperations":70,"./ReactMarkupChecksum":91,"./ReactMount":92,"./ReactPerf":97,"./ReactReconcileTransaction":103,"./getReactRootElementInContainer":149,"./invariant":155,"./setInnerHTML":169,"_process":21}],63:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -15437,7 +16961,7 @@ var ReactCompositeComponent = {
 module.exports = ReactCompositeComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./ReactComponent":55,"./ReactContext":58,"./ReactCurrentOwner":59,"./ReactElement":75,"./ReactElementValidator":76,"./ReactEmptyComponent":77,"./ReactErrorUtils":78,"./ReactLegacyElement":84,"./ReactOwner":90,"./ReactPerf":91,"./ReactPropTransferer":92,"./ReactPropTypeLocationNames":93,"./ReactPropTypeLocations":94,"./ReactUpdates":102,"./instantiateReactComponent":148,"./invariant":149,"./keyMirror":155,"./keyOf":156,"./mapObject":157,"./monitorCodeUse":159,"./shouldUpdateReactComponent":165,"./warning":168,"_process":20}],58:[function(require,module,exports){
+},{"./Object.assign":55,"./ReactComponent":61,"./ReactContext":64,"./ReactCurrentOwner":65,"./ReactElement":81,"./ReactElementValidator":82,"./ReactEmptyComponent":83,"./ReactErrorUtils":84,"./ReactLegacyElement":90,"./ReactOwner":96,"./ReactPerf":97,"./ReactPropTransferer":98,"./ReactPropTypeLocationNames":99,"./ReactPropTypeLocations":100,"./ReactUpdates":108,"./instantiateReactComponent":154,"./invariant":155,"./keyMirror":161,"./keyOf":162,"./mapObject":163,"./monitorCodeUse":165,"./shouldUpdateReactComponent":171,"./warning":174,"_process":21}],64:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -15499,7 +17023,7 @@ var ReactContext = {
 
 module.exports = ReactContext;
 
-},{"./Object.assign":49}],59:[function(require,module,exports){
+},{"./Object.assign":55}],65:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -15533,7 +17057,7 @@ var ReactCurrentOwner = {
 
 module.exports = ReactCurrentOwner;
 
-},{}],60:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -15716,7 +17240,7 @@ var ReactDOM = mapObject({
 module.exports = ReactDOM;
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./ReactElementValidator":76,"./ReactLegacyElement":84,"./mapObject":157,"_process":20}],61:[function(require,module,exports){
+},{"./ReactElement":81,"./ReactElementValidator":82,"./ReactLegacyElement":90,"./mapObject":163,"_process":21}],67:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -15781,7 +17305,7 @@ var ReactDOMButton = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMButton;
 
-},{"./AutoFocusMixin":24,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75,"./keyMirror":155}],62:[function(require,module,exports){
+},{"./AutoFocusMixin":30,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81,"./keyMirror":161}],68:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -16268,7 +17792,7 @@ assign(
 module.exports = ReactDOMComponent;
 
 }).call(this,require('_process'))
-},{"./CSSPropertyOperations":27,"./DOMProperty":33,"./DOMPropertyOperations":34,"./Object.assign":49,"./ReactBrowserComponentMixin":52,"./ReactBrowserEventEmitter":53,"./ReactComponent":55,"./ReactMount":86,"./ReactMultiChild":87,"./ReactPerf":91,"./escapeTextForBrowser":132,"./invariant":149,"./isEventSupported":150,"./keyOf":156,"./monitorCodeUse":159,"_process":20}],63:[function(require,module,exports){
+},{"./CSSPropertyOperations":33,"./DOMProperty":39,"./DOMPropertyOperations":40,"./Object.assign":55,"./ReactBrowserComponentMixin":58,"./ReactBrowserEventEmitter":59,"./ReactComponent":61,"./ReactMount":92,"./ReactMultiChild":93,"./ReactPerf":97,"./escapeTextForBrowser":138,"./invariant":155,"./isEventSupported":156,"./keyOf":162,"./monitorCodeUse":165,"_process":21}],69:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -16318,7 +17842,7 @@ var ReactDOMForm = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMForm;
 
-},{"./EventConstants":38,"./LocalEventTrapMixin":47,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75}],64:[function(require,module,exports){
+},{"./EventConstants":44,"./LocalEventTrapMixin":53,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81}],70:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -16504,7 +18028,7 @@ var ReactDOMIDOperations = {
 module.exports = ReactDOMIDOperations;
 
 }).call(this,require('_process'))
-},{"./CSSPropertyOperations":27,"./DOMChildrenOperations":32,"./DOMPropertyOperations":34,"./ReactMount":86,"./ReactPerf":91,"./invariant":149,"./setInnerHTML":163,"_process":20}],65:[function(require,module,exports){
+},{"./CSSPropertyOperations":33,"./DOMChildrenOperations":38,"./DOMPropertyOperations":40,"./ReactMount":92,"./ReactPerf":97,"./invariant":155,"./setInnerHTML":169,"_process":21}],71:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -16552,7 +18076,7 @@ var ReactDOMImg = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMImg;
 
-},{"./EventConstants":38,"./LocalEventTrapMixin":47,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75}],66:[function(require,module,exports){
+},{"./EventConstants":44,"./LocalEventTrapMixin":53,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81}],72:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -16730,7 +18254,7 @@ var ReactDOMInput = ReactCompositeComponent.createClass({
 module.exports = ReactDOMInput;
 
 }).call(this,require('_process'))
-},{"./AutoFocusMixin":24,"./DOMPropertyOperations":34,"./LinkedValueUtils":46,"./Object.assign":49,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75,"./ReactMount":86,"./ReactUpdates":102,"./invariant":149,"_process":20}],67:[function(require,module,exports){
+},{"./AutoFocusMixin":30,"./DOMPropertyOperations":40,"./LinkedValueUtils":52,"./Object.assign":55,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81,"./ReactMount":92,"./ReactUpdates":108,"./invariant":155,"_process":21}],73:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -16783,7 +18307,7 @@ var ReactDOMOption = ReactCompositeComponent.createClass({
 module.exports = ReactDOMOption;
 
 }).call(this,require('_process'))
-},{"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75,"./warning":168,"_process":20}],68:[function(require,module,exports){
+},{"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81,"./warning":174,"_process":21}],74:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -16967,7 +18491,7 @@ var ReactDOMSelect = ReactCompositeComponent.createClass({
 
 module.exports = ReactDOMSelect;
 
-},{"./AutoFocusMixin":24,"./LinkedValueUtils":46,"./Object.assign":49,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75,"./ReactUpdates":102}],69:[function(require,module,exports){
+},{"./AutoFocusMixin":30,"./LinkedValueUtils":52,"./Object.assign":55,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81,"./ReactUpdates":108}],75:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -17176,7 +18700,7 @@ var ReactDOMSelection = {
 
 module.exports = ReactDOMSelection;
 
-},{"./ExecutionEnvironment":44,"./getNodeForCharacterOffset":142,"./getTextContentAccessor":144}],70:[function(require,module,exports){
+},{"./ExecutionEnvironment":50,"./getNodeForCharacterOffset":148,"./getTextContentAccessor":150}],76:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -17317,7 +18841,7 @@ var ReactDOMTextarea = ReactCompositeComponent.createClass({
 module.exports = ReactDOMTextarea;
 
 }).call(this,require('_process'))
-},{"./AutoFocusMixin":24,"./DOMPropertyOperations":34,"./LinkedValueUtils":46,"./Object.assign":49,"./ReactBrowserComponentMixin":52,"./ReactCompositeComponent":57,"./ReactDOM":60,"./ReactElement":75,"./ReactUpdates":102,"./invariant":149,"./warning":168,"_process":20}],71:[function(require,module,exports){
+},{"./AutoFocusMixin":30,"./DOMPropertyOperations":40,"./LinkedValueUtils":52,"./Object.assign":55,"./ReactBrowserComponentMixin":58,"./ReactCompositeComponent":63,"./ReactDOM":66,"./ReactElement":81,"./ReactUpdates":108,"./invariant":155,"./warning":174,"_process":21}],77:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -17390,7 +18914,7 @@ var ReactDefaultBatchingStrategy = {
 
 module.exports = ReactDefaultBatchingStrategy;
 
-},{"./Object.assign":49,"./ReactUpdates":102,"./Transaction":118,"./emptyFunction":130}],72:[function(require,module,exports){
+},{"./Object.assign":55,"./ReactUpdates":108,"./Transaction":124,"./emptyFunction":136}],78:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -17519,7 +19043,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./BeforeInputEventPlugin":25,"./ChangeEventPlugin":29,"./ClientReactRootIndex":30,"./CompositionEventPlugin":31,"./DefaultEventPluginOrder":36,"./EnterLeaveEventPlugin":37,"./ExecutionEnvironment":44,"./HTMLDOMPropertyConfig":45,"./MobileSafariClickEventPlugin":48,"./ReactBrowserComponentMixin":52,"./ReactComponentBrowserEnvironment":56,"./ReactDOMButton":61,"./ReactDOMComponent":62,"./ReactDOMForm":63,"./ReactDOMImg":65,"./ReactDOMInput":66,"./ReactDOMOption":67,"./ReactDOMSelect":68,"./ReactDOMTextarea":70,"./ReactDefaultBatchingStrategy":71,"./ReactDefaultPerf":73,"./ReactEventListener":80,"./ReactInjection":81,"./ReactInstanceHandles":83,"./ReactMount":86,"./SVGDOMPropertyConfig":103,"./SelectEventPlugin":104,"./ServerReactRootIndex":105,"./SimpleEventPlugin":106,"./createFullPageComponent":126,"_process":20}],73:[function(require,module,exports){
+},{"./BeforeInputEventPlugin":31,"./ChangeEventPlugin":35,"./ClientReactRootIndex":36,"./CompositionEventPlugin":37,"./DefaultEventPluginOrder":42,"./EnterLeaveEventPlugin":43,"./ExecutionEnvironment":50,"./HTMLDOMPropertyConfig":51,"./MobileSafariClickEventPlugin":54,"./ReactBrowserComponentMixin":58,"./ReactComponentBrowserEnvironment":62,"./ReactDOMButton":67,"./ReactDOMComponent":68,"./ReactDOMForm":69,"./ReactDOMImg":71,"./ReactDOMInput":72,"./ReactDOMOption":73,"./ReactDOMSelect":74,"./ReactDOMTextarea":76,"./ReactDefaultBatchingStrategy":77,"./ReactDefaultPerf":79,"./ReactEventListener":86,"./ReactInjection":87,"./ReactInstanceHandles":89,"./ReactMount":92,"./SVGDOMPropertyConfig":109,"./SelectEventPlugin":110,"./ServerReactRootIndex":111,"./SimpleEventPlugin":112,"./createFullPageComponent":132,"_process":21}],79:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -17779,7 +19303,7 @@ var ReactDefaultPerf = {
 
 module.exports = ReactDefaultPerf;
 
-},{"./DOMProperty":33,"./ReactDefaultPerfAnalysis":74,"./ReactMount":86,"./ReactPerf":91,"./performanceNow":162}],74:[function(require,module,exports){
+},{"./DOMProperty":39,"./ReactDefaultPerfAnalysis":80,"./ReactMount":92,"./ReactPerf":97,"./performanceNow":168}],80:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -17985,7 +19509,7 @@ var ReactDefaultPerfAnalysis = {
 
 module.exports = ReactDefaultPerfAnalysis;
 
-},{"./Object.assign":49}],75:[function(require,module,exports){
+},{"./Object.assign":55}],81:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -18231,7 +19755,7 @@ ReactElement.isValidElement = function(object) {
 module.exports = ReactElement;
 
 }).call(this,require('_process'))
-},{"./ReactContext":58,"./ReactCurrentOwner":59,"./warning":168,"_process":20}],76:[function(require,module,exports){
+},{"./ReactContext":64,"./ReactCurrentOwner":65,"./warning":174,"_process":21}],82:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -18513,7 +20037,7 @@ var ReactElementValidator = {
 module.exports = ReactElementValidator;
 
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":59,"./ReactElement":75,"./ReactPropTypeLocations":94,"./monitorCodeUse":159,"./warning":168,"_process":20}],77:[function(require,module,exports){
+},{"./ReactCurrentOwner":65,"./ReactElement":81,"./ReactPropTypeLocations":100,"./monitorCodeUse":165,"./warning":174,"_process":21}],83:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -18590,7 +20114,7 @@ var ReactEmptyComponent = {
 module.exports = ReactEmptyComponent;
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./invariant":149,"_process":20}],78:[function(require,module,exports){
+},{"./ReactElement":81,"./invariant":155,"_process":21}],84:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -18622,7 +20146,7 @@ var ReactErrorUtils = {
 
 module.exports = ReactErrorUtils;
 
-},{}],79:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -18672,7 +20196,7 @@ var ReactEventEmitterMixin = {
 
 module.exports = ReactEventEmitterMixin;
 
-},{"./EventPluginHub":40}],80:[function(require,module,exports){
+},{"./EventPluginHub":46}],86:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -18856,7 +20380,7 @@ var ReactEventListener = {
 
 module.exports = ReactEventListener;
 
-},{"./EventListener":39,"./ExecutionEnvironment":44,"./Object.assign":49,"./PooledClass":50,"./ReactInstanceHandles":83,"./ReactMount":86,"./ReactUpdates":102,"./getEventTarget":140,"./getUnboundedScrollPosition":145}],81:[function(require,module,exports){
+},{"./EventListener":45,"./ExecutionEnvironment":50,"./Object.assign":55,"./PooledClass":56,"./ReactInstanceHandles":89,"./ReactMount":92,"./ReactUpdates":108,"./getEventTarget":146,"./getUnboundedScrollPosition":151}],87:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -18896,7 +20420,7 @@ var ReactInjection = {
 
 module.exports = ReactInjection;
 
-},{"./DOMProperty":33,"./EventPluginHub":40,"./ReactBrowserEventEmitter":53,"./ReactComponent":55,"./ReactCompositeComponent":57,"./ReactEmptyComponent":77,"./ReactNativeComponent":89,"./ReactPerf":91,"./ReactRootIndex":98,"./ReactUpdates":102}],82:[function(require,module,exports){
+},{"./DOMProperty":39,"./EventPluginHub":46,"./ReactBrowserEventEmitter":59,"./ReactComponent":61,"./ReactCompositeComponent":63,"./ReactEmptyComponent":83,"./ReactNativeComponent":95,"./ReactPerf":97,"./ReactRootIndex":104,"./ReactUpdates":108}],88:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -19032,7 +20556,7 @@ var ReactInputSelection = {
 
 module.exports = ReactInputSelection;
 
-},{"./ReactDOMSelection":69,"./containsNode":124,"./focusNode":134,"./getActiveElement":136}],83:[function(require,module,exports){
+},{"./ReactDOMSelection":75,"./containsNode":130,"./focusNode":140,"./getActiveElement":142}],89:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -19367,7 +20891,7 @@ var ReactInstanceHandles = {
 module.exports = ReactInstanceHandles;
 
 }).call(this,require('_process'))
-},{"./ReactRootIndex":98,"./invariant":149,"_process":20}],84:[function(require,module,exports){
+},{"./ReactRootIndex":104,"./invariant":155,"_process":21}],90:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -19614,7 +21138,7 @@ ReactLegacyElementFactory._isLegacyCallWarningEnabled = true;
 module.exports = ReactLegacyElementFactory;
 
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":59,"./invariant":149,"./monitorCodeUse":159,"./warning":168,"_process":20}],85:[function(require,module,exports){
+},{"./ReactCurrentOwner":65,"./invariant":155,"./monitorCodeUse":165,"./warning":174,"_process":21}],91:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -19662,7 +21186,7 @@ var ReactMarkupChecksum = {
 
 module.exports = ReactMarkupChecksum;
 
-},{"./adler32":121}],86:[function(require,module,exports){
+},{"./adler32":127}],92:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -20360,7 +21884,7 @@ ReactMount.renderComponent = deprecated(
 module.exports = ReactMount;
 
 }).call(this,require('_process'))
-},{"./DOMProperty":33,"./ReactBrowserEventEmitter":53,"./ReactCurrentOwner":59,"./ReactElement":75,"./ReactInstanceHandles":83,"./ReactLegacyElement":84,"./ReactPerf":91,"./containsNode":124,"./deprecated":129,"./getReactRootElementInContainer":143,"./instantiateReactComponent":148,"./invariant":149,"./shouldUpdateReactComponent":165,"./warning":168,"_process":20}],87:[function(require,module,exports){
+},{"./DOMProperty":39,"./ReactBrowserEventEmitter":59,"./ReactCurrentOwner":65,"./ReactElement":81,"./ReactInstanceHandles":89,"./ReactLegacyElement":90,"./ReactPerf":97,"./containsNode":130,"./deprecated":135,"./getReactRootElementInContainer":149,"./instantiateReactComponent":154,"./invariant":155,"./shouldUpdateReactComponent":171,"./warning":174,"_process":21}],93:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -20788,7 +22312,7 @@ var ReactMultiChild = {
 
 module.exports = ReactMultiChild;
 
-},{"./ReactComponent":55,"./ReactMultiChildUpdateTypes":88,"./flattenChildren":133,"./instantiateReactComponent":148,"./shouldUpdateReactComponent":165}],88:[function(require,module,exports){
+},{"./ReactComponent":61,"./ReactMultiChildUpdateTypes":94,"./flattenChildren":139,"./instantiateReactComponent":154,"./shouldUpdateReactComponent":171}],94:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -20821,7 +22345,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 
 module.exports = ReactMultiChildUpdateTypes;
 
-},{"./keyMirror":155}],89:[function(require,module,exports){
+},{"./keyMirror":161}],95:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -20894,7 +22418,7 @@ var ReactNativeComponent = {
 module.exports = ReactNativeComponent;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./invariant":149,"_process":20}],90:[function(require,module,exports){
+},{"./Object.assign":55,"./invariant":155,"_process":21}],96:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -21050,7 +22574,7 @@ var ReactOwner = {
 module.exports = ReactOwner;
 
 }).call(this,require('_process'))
-},{"./emptyObject":131,"./invariant":149,"_process":20}],91:[function(require,module,exports){
+},{"./emptyObject":137,"./invariant":155,"_process":21}],97:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -21134,7 +22658,7 @@ function _noMeasure(objName, fnName, func) {
 module.exports = ReactPerf;
 
 }).call(this,require('_process'))
-},{"_process":20}],92:[function(require,module,exports){
+},{"_process":21}],98:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -21301,7 +22825,7 @@ var ReactPropTransferer = {
 module.exports = ReactPropTransferer;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./emptyFunction":130,"./invariant":149,"./joinClasses":154,"./warning":168,"_process":20}],93:[function(require,module,exports){
+},{"./Object.assign":55,"./emptyFunction":136,"./invariant":155,"./joinClasses":160,"./warning":174,"_process":21}],99:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -21329,7 +22853,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = ReactPropTypeLocationNames;
 
 }).call(this,require('_process'))
-},{"_process":20}],94:[function(require,module,exports){
+},{"_process":21}],100:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -21353,7 +22877,7 @@ var ReactPropTypeLocations = keyMirror({
 
 module.exports = ReactPropTypeLocations;
 
-},{"./keyMirror":155}],95:[function(require,module,exports){
+},{"./keyMirror":161}],101:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -21707,7 +23231,7 @@ function getPreciseType(propValue) {
 
 module.exports = ReactPropTypes;
 
-},{"./ReactElement":75,"./ReactPropTypeLocationNames":93,"./deprecated":129,"./emptyFunction":130}],96:[function(require,module,exports){
+},{"./ReactElement":81,"./ReactPropTypeLocationNames":99,"./deprecated":135,"./emptyFunction":136}],102:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -21763,7 +23287,7 @@ PooledClass.addPoolingTo(ReactPutListenerQueue);
 
 module.exports = ReactPutListenerQueue;
 
-},{"./Object.assign":49,"./PooledClass":50,"./ReactBrowserEventEmitter":53}],97:[function(require,module,exports){
+},{"./Object.assign":55,"./PooledClass":56,"./ReactBrowserEventEmitter":59}],103:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -21939,7 +23463,7 @@ PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
 
-},{"./CallbackQueue":28,"./Object.assign":49,"./PooledClass":50,"./ReactBrowserEventEmitter":53,"./ReactInputSelection":82,"./ReactPutListenerQueue":96,"./Transaction":118}],98:[function(require,module,exports){
+},{"./CallbackQueue":34,"./Object.assign":55,"./PooledClass":56,"./ReactBrowserEventEmitter":59,"./ReactInputSelection":88,"./ReactPutListenerQueue":102,"./Transaction":124}],104:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -21970,7 +23494,7 @@ var ReactRootIndex = {
 
 module.exports = ReactRootIndex;
 
-},{}],99:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -22050,7 +23574,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./ReactInstanceHandles":83,"./ReactMarkupChecksum":85,"./ReactServerRenderingTransaction":100,"./instantiateReactComponent":148,"./invariant":149,"_process":20}],100:[function(require,module,exports){
+},{"./ReactElement":81,"./ReactInstanceHandles":89,"./ReactMarkupChecksum":91,"./ReactServerRenderingTransaction":106,"./instantiateReactComponent":154,"./invariant":155,"_process":21}],106:[function(require,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -22163,7 +23687,7 @@ PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
 
-},{"./CallbackQueue":28,"./Object.assign":49,"./PooledClass":50,"./ReactPutListenerQueue":96,"./Transaction":118,"./emptyFunction":130}],101:[function(require,module,exports){
+},{"./CallbackQueue":34,"./Object.assign":55,"./PooledClass":56,"./ReactPutListenerQueue":102,"./Transaction":124,"./emptyFunction":136}],107:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -22269,7 +23793,7 @@ ReactTextComponentFactory.type = ReactTextComponent;
 
 module.exports = ReactTextComponentFactory;
 
-},{"./DOMPropertyOperations":34,"./Object.assign":49,"./ReactComponent":55,"./ReactElement":75,"./escapeTextForBrowser":132}],102:[function(require,module,exports){
+},{"./DOMPropertyOperations":40,"./Object.assign":55,"./ReactComponent":61,"./ReactElement":81,"./escapeTextForBrowser":138}],108:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -22559,7 +24083,7 @@ var ReactUpdates = {
 module.exports = ReactUpdates;
 
 }).call(this,require('_process'))
-},{"./CallbackQueue":28,"./Object.assign":49,"./PooledClass":50,"./ReactCurrentOwner":59,"./ReactPerf":91,"./Transaction":118,"./invariant":149,"./warning":168,"_process":20}],103:[function(require,module,exports){
+},{"./CallbackQueue":34,"./Object.assign":55,"./PooledClass":56,"./ReactCurrentOwner":65,"./ReactPerf":97,"./Transaction":124,"./invariant":155,"./warning":174,"_process":21}],109:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -22651,7 +24175,7 @@ var SVGDOMPropertyConfig = {
 
 module.exports = SVGDOMPropertyConfig;
 
-},{"./DOMProperty":33}],104:[function(require,module,exports){
+},{"./DOMProperty":39}],110:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -22846,7 +24370,7 @@ var SelectEventPlugin = {
 
 module.exports = SelectEventPlugin;
 
-},{"./EventConstants":38,"./EventPropagators":43,"./ReactInputSelection":82,"./SyntheticEvent":110,"./getActiveElement":136,"./isTextInputElement":152,"./keyOf":156,"./shallowEqual":164}],105:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPropagators":49,"./ReactInputSelection":88,"./SyntheticEvent":116,"./getActiveElement":142,"./isTextInputElement":158,"./keyOf":162,"./shallowEqual":170}],111:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -22877,7 +24401,7 @@ var ServerReactRootIndex = {
 
 module.exports = ServerReactRootIndex;
 
-},{}],106:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -23305,7 +24829,7 @@ var SimpleEventPlugin = {
 module.exports = SimpleEventPlugin;
 
 }).call(this,require('_process'))
-},{"./EventConstants":38,"./EventPluginUtils":42,"./EventPropagators":43,"./SyntheticClipboardEvent":107,"./SyntheticDragEvent":109,"./SyntheticEvent":110,"./SyntheticFocusEvent":111,"./SyntheticKeyboardEvent":113,"./SyntheticMouseEvent":114,"./SyntheticTouchEvent":115,"./SyntheticUIEvent":116,"./SyntheticWheelEvent":117,"./getEventCharCode":137,"./invariant":149,"./keyOf":156,"./warning":168,"_process":20}],107:[function(require,module,exports){
+},{"./EventConstants":44,"./EventPluginUtils":48,"./EventPropagators":49,"./SyntheticClipboardEvent":113,"./SyntheticDragEvent":115,"./SyntheticEvent":116,"./SyntheticFocusEvent":117,"./SyntheticKeyboardEvent":119,"./SyntheticMouseEvent":120,"./SyntheticTouchEvent":121,"./SyntheticUIEvent":122,"./SyntheticWheelEvent":123,"./getEventCharCode":143,"./invariant":155,"./keyOf":162,"./warning":174,"_process":21}],113:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23351,7 +24875,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 module.exports = SyntheticClipboardEvent;
 
 
-},{"./SyntheticEvent":110}],108:[function(require,module,exports){
+},{"./SyntheticEvent":116}],114:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23397,7 +24921,7 @@ SyntheticEvent.augmentClass(
 module.exports = SyntheticCompositionEvent;
 
 
-},{"./SyntheticEvent":110}],109:[function(require,module,exports){
+},{"./SyntheticEvent":116}],115:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23436,7 +24960,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
 
-},{"./SyntheticMouseEvent":114}],110:[function(require,module,exports){
+},{"./SyntheticMouseEvent":120}],116:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23594,7 +25118,7 @@ PooledClass.addPoolingTo(SyntheticEvent, PooledClass.threeArgumentPooler);
 
 module.exports = SyntheticEvent;
 
-},{"./Object.assign":49,"./PooledClass":50,"./emptyFunction":130,"./getEventTarget":140}],111:[function(require,module,exports){
+},{"./Object.assign":55,"./PooledClass":56,"./emptyFunction":136,"./getEventTarget":146}],117:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23633,7 +25157,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
 
-},{"./SyntheticUIEvent":116}],112:[function(require,module,exports){
+},{"./SyntheticUIEvent":122}],118:[function(require,module,exports){
 /**
  * Copyright 2013 Facebook, Inc.
  * All rights reserved.
@@ -23680,7 +25204,7 @@ SyntheticEvent.augmentClass(
 module.exports = SyntheticInputEvent;
 
 
-},{"./SyntheticEvent":110}],113:[function(require,module,exports){
+},{"./SyntheticEvent":116}],119:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23767,7 +25291,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
 
-},{"./SyntheticUIEvent":116,"./getEventCharCode":137,"./getEventKey":138,"./getEventModifierState":139}],114:[function(require,module,exports){
+},{"./SyntheticUIEvent":122,"./getEventCharCode":143,"./getEventKey":144,"./getEventModifierState":145}],120:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23850,7 +25374,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
 
-},{"./SyntheticUIEvent":116,"./ViewportMetrics":119,"./getEventModifierState":139}],115:[function(require,module,exports){
+},{"./SyntheticUIEvent":122,"./ViewportMetrics":125,"./getEventModifierState":145}],121:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23898,7 +25422,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
 
-},{"./SyntheticUIEvent":116,"./getEventModifierState":139}],116:[function(require,module,exports){
+},{"./SyntheticUIEvent":122,"./getEventModifierState":145}],122:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -23960,7 +25484,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
 
-},{"./SyntheticEvent":110,"./getEventTarget":140}],117:[function(require,module,exports){
+},{"./SyntheticEvent":116,"./getEventTarget":146}],123:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24021,7 +25545,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
 
-},{"./SyntheticMouseEvent":114}],118:[function(require,module,exports){
+},{"./SyntheticMouseEvent":120}],124:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -24262,7 +25786,7 @@ var Transaction = {
 module.exports = Transaction;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],119:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],125:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24294,7 +25818,7 @@ var ViewportMetrics = {
 
 module.exports = ViewportMetrics;
 
-},{"./getUnboundedScrollPosition":145}],120:[function(require,module,exports){
+},{"./getUnboundedScrollPosition":151}],126:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -24360,7 +25884,7 @@ function accumulateInto(current, next) {
 module.exports = accumulateInto;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],121:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],127:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24394,7 +25918,7 @@ function adler32(data) {
 
 module.exports = adler32;
 
-},{}],122:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24426,7 +25950,7 @@ function camelize(string) {
 
 module.exports = camelize;
 
-},{}],123:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -24468,7 +25992,7 @@ function camelizeStyleName(string) {
 
 module.exports = camelizeStyleName;
 
-},{"./camelize":122}],124:[function(require,module,exports){
+},{"./camelize":128}],130:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24512,7 +26036,7 @@ function containsNode(outerNode, innerNode) {
 
 module.exports = containsNode;
 
-},{"./isTextNode":153}],125:[function(require,module,exports){
+},{"./isTextNode":159}],131:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24598,7 +26122,7 @@ function createArrayFrom(obj) {
 
 module.exports = createArrayFrom;
 
-},{"./toArray":166}],126:[function(require,module,exports){
+},{"./toArray":172}],132:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -24659,7 +26183,7 @@ function createFullPageComponent(tag) {
 module.exports = createFullPageComponent;
 
 }).call(this,require('_process'))
-},{"./ReactCompositeComponent":57,"./ReactElement":75,"./invariant":149,"_process":20}],127:[function(require,module,exports){
+},{"./ReactCompositeComponent":63,"./ReactElement":81,"./invariant":155,"_process":21}],133:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -24749,7 +26273,7 @@ function createNodesFromMarkup(markup, handleScript) {
 module.exports = createNodesFromMarkup;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":44,"./createArrayFrom":125,"./getMarkupWrap":141,"./invariant":149,"_process":20}],128:[function(require,module,exports){
+},{"./ExecutionEnvironment":50,"./createArrayFrom":131,"./getMarkupWrap":147,"./invariant":155,"_process":21}],134:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24807,7 +26331,7 @@ function dangerousStyleValue(name, value) {
 
 module.exports = dangerousStyleValue;
 
-},{"./CSSProperty":26}],129:[function(require,module,exports){
+},{"./CSSProperty":32}],135:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -24858,7 +26382,7 @@ function deprecated(namespace, oldName, newName, ctx, fn) {
 module.exports = deprecated;
 
 }).call(this,require('_process'))
-},{"./Object.assign":49,"./warning":168,"_process":20}],130:[function(require,module,exports){
+},{"./Object.assign":55,"./warning":174,"_process":21}],136:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24892,7 +26416,7 @@ emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
 module.exports = emptyFunction;
 
-},{}],131:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -24916,7 +26440,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = emptyObject;
 
 }).call(this,require('_process'))
-},{"_process":20}],132:[function(require,module,exports){
+},{"_process":21}],138:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -24957,7 +26481,7 @@ function escapeTextForBrowser(text) {
 
 module.exports = escapeTextForBrowser;
 
-},{}],133:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -25026,7 +26550,7 @@ function flattenChildren(children) {
 module.exports = flattenChildren;
 
 }).call(this,require('_process'))
-},{"./ReactTextComponent":101,"./traverseAllChildren":167,"./warning":168,"_process":20}],134:[function(require,module,exports){
+},{"./ReactTextComponent":107,"./traverseAllChildren":173,"./warning":174,"_process":21}],140:[function(require,module,exports){
 /**
  * Copyright 2014, Facebook, Inc.
  * All rights reserved.
@@ -25055,7 +26579,7 @@ function focusNode(node) {
 
 module.exports = focusNode;
 
-},{}],135:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25086,7 +26610,7 @@ var forEachAccumulated = function(arr, cb, scope) {
 
 module.exports = forEachAccumulated;
 
-},{}],136:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25115,7 +26639,7 @@ function getActiveElement() /*?DOMElement*/ {
 
 module.exports = getActiveElement;
 
-},{}],137:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25167,7 +26691,7 @@ function getEventCharCode(nativeEvent) {
 
 module.exports = getEventCharCode;
 
-},{}],138:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25272,7 +26796,7 @@ function getEventKey(nativeEvent) {
 
 module.exports = getEventKey;
 
-},{"./getEventCharCode":137}],139:[function(require,module,exports){
+},{"./getEventCharCode":143}],145:[function(require,module,exports){
 /**
  * Copyright 2013 Facebook, Inc.
  * All rights reserved.
@@ -25319,7 +26843,7 @@ function getEventModifierState(nativeEvent) {
 
 module.exports = getEventModifierState;
 
-},{}],140:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25350,7 +26874,7 @@ function getEventTarget(nativeEvent) {
 
 module.exports = getEventTarget;
 
-},{}],141:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -25467,7 +26991,7 @@ function getMarkupWrap(nodeName) {
 module.exports = getMarkupWrap;
 
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":44,"./invariant":149,"_process":20}],142:[function(require,module,exports){
+},{"./ExecutionEnvironment":50,"./invariant":155,"_process":21}],148:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25542,7 +27066,7 @@ function getNodeForCharacterOffset(root, offset) {
 
 module.exports = getNodeForCharacterOffset;
 
-},{}],143:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25577,7 +27101,7 @@ function getReactRootElementInContainer(container) {
 
 module.exports = getReactRootElementInContainer;
 
-},{}],144:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25614,7 +27138,7 @@ function getTextContentAccessor() {
 
 module.exports = getTextContentAccessor;
 
-},{"./ExecutionEnvironment":44}],145:[function(require,module,exports){
+},{"./ExecutionEnvironment":50}],151:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25654,7 +27178,7 @@ function getUnboundedScrollPosition(scrollable) {
 
 module.exports = getUnboundedScrollPosition;
 
-},{}],146:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25687,7 +27211,7 @@ function hyphenate(string) {
 
 module.exports = hyphenate;
 
-},{}],147:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25728,7 +27252,7 @@ function hyphenateStyleName(string) {
 
 module.exports = hyphenateStyleName;
 
-},{"./hyphenate":146}],148:[function(require,module,exports){
+},{"./hyphenate":152}],154:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -25842,7 +27366,7 @@ function instantiateReactComponent(element, parentCompositeType) {
 module.exports = instantiateReactComponent;
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./ReactEmptyComponent":77,"./ReactLegacyElement":84,"./ReactNativeComponent":89,"./warning":168,"_process":20}],149:[function(require,module,exports){
+},{"./ReactElement":81,"./ReactEmptyComponent":83,"./ReactLegacyElement":90,"./ReactNativeComponent":95,"./warning":174,"_process":21}],155:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -25899,7 +27423,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":20}],150:[function(require,module,exports){
+},{"_process":21}],156:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25964,7 +27488,7 @@ function isEventSupported(eventNameSuffix, capture) {
 
 module.exports = isEventSupported;
 
-},{"./ExecutionEnvironment":44}],151:[function(require,module,exports){
+},{"./ExecutionEnvironment":50}],157:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -25992,7 +27516,7 @@ function isNode(object) {
 
 module.exports = isNode;
 
-},{}],152:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26036,7 +27560,7 @@ function isTextInputElement(elem) {
 
 module.exports = isTextInputElement;
 
-},{}],153:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26061,7 +27585,7 @@ function isTextNode(object) {
 
 module.exports = isTextNode;
 
-},{"./isNode":151}],154:[function(require,module,exports){
+},{"./isNode":157}],160:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26102,7 +27626,7 @@ function joinClasses(className/*, ... */) {
 
 module.exports = joinClasses;
 
-},{}],155:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -26157,7 +27681,7 @@ var keyMirror = function(obj) {
 module.exports = keyMirror;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],156:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],162:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26193,7 +27717,7 @@ var keyOf = function(oneKeyObj) {
 
 module.exports = keyOf;
 
-},{}],157:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26246,7 +27770,7 @@ function mapObject(object, callback, context) {
 
 module.exports = mapObject;
 
-},{}],158:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26280,7 +27804,7 @@ function memoizeStringOnly(callback) {
 
 module.exports = memoizeStringOnly;
 
-},{}],159:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -26314,7 +27838,7 @@ function monitorCodeUse(eventName, data) {
 module.exports = monitorCodeUse;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],160:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],166:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -26354,7 +27878,7 @@ function onlyChild(children) {
 module.exports = onlyChild;
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./invariant":149,"_process":20}],161:[function(require,module,exports){
+},{"./ReactElement":81,"./invariant":155,"_process":21}],167:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26382,7 +27906,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = performance || {};
 
-},{"./ExecutionEnvironment":44}],162:[function(require,module,exports){
+},{"./ExecutionEnvironment":50}],168:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26410,7 +27934,7 @@ var performanceNow = performance.now.bind(performance);
 
 module.exports = performanceNow;
 
-},{"./performance":161}],163:[function(require,module,exports){
+},{"./performance":167}],169:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26488,7 +28012,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = setInnerHTML;
 
-},{"./ExecutionEnvironment":44}],164:[function(require,module,exports){
+},{"./ExecutionEnvironment":50}],170:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26532,7 +28056,7 @@ function shallowEqual(objA, objB) {
 
 module.exports = shallowEqual;
 
-},{}],165:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 /**
  * Copyright 2013-2014, Facebook, Inc.
  * All rights reserved.
@@ -26570,7 +28094,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 
 module.exports = shouldUpdateReactComponent;
 
-},{}],166:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -26642,7 +28166,7 @@ function toArray(obj) {
 module.exports = toArray;
 
 }).call(this,require('_process'))
-},{"./invariant":149,"_process":20}],167:[function(require,module,exports){
+},{"./invariant":155,"_process":21}],173:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2014, Facebook, Inc.
@@ -26825,7 +28349,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 module.exports = traverseAllChildren;
 
 }).call(this,require('_process'))
-},{"./ReactElement":75,"./ReactInstanceHandles":83,"./invariant":149,"_process":20}],168:[function(require,module,exports){
+},{"./ReactElement":81,"./ReactInstanceHandles":89,"./invariant":155,"_process":21}],174:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014, Facebook, Inc.
@@ -26870,7 +28394,2589 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"./emptyFunction":130,"_process":20}],169:[function(require,module,exports){
+},{"./emptyFunction":136,"_process":21}],175:[function(require,module,exports){
 module.exports = require('./lib/React');
 
-},{"./lib/React":51}]},{},[1]);
+},{"./lib/React":57}],176:[function(require,module,exports){
+/*!
+ * ZeroClipboard
+ * The ZeroClipboard library provides an easy way to copy text to the clipboard using an invisible Adobe Flash movie and a JavaScript interface.
+ * Copyright (c) 2009-2014 Jon Rohan, James M. Greene
+ * Licensed MIT
+ * http://zeroclipboard.org/
+ * v2.2.0
+ */
+(function(window, undefined) {
+  "use strict";
+  /**
+ * Store references to critically important global functions that may be
+ * overridden on certain web pages.
+ */
+  var _window = window, _document = _window.document, _navigator = _window.navigator, _setTimeout = _window.setTimeout, _clearTimeout = _window.clearTimeout, _setInterval = _window.setInterval, _clearInterval = _window.clearInterval, _getComputedStyle = _window.getComputedStyle, _encodeURIComponent = _window.encodeURIComponent, _ActiveXObject = _window.ActiveXObject, _Error = _window.Error, _parseInt = _window.Number.parseInt || _window.parseInt, _parseFloat = _window.Number.parseFloat || _window.parseFloat, _isNaN = _window.Number.isNaN || _window.isNaN, _now = _window.Date.now, _keys = _window.Object.keys, _defineProperty = _window.Object.defineProperty, _hasOwn = _window.Object.prototype.hasOwnProperty, _slice = _window.Array.prototype.slice, _unwrap = function() {
+    var unwrapper = function(el) {
+      return el;
+    };
+    if (typeof _window.wrap === "function" && typeof _window.unwrap === "function") {
+      try {
+        var div = _document.createElement("div");
+        var unwrappedDiv = _window.unwrap(div);
+        if (div.nodeType === 1 && unwrappedDiv && unwrappedDiv.nodeType === 1) {
+          unwrapper = _window.unwrap;
+        }
+      } catch (e) {}
+    }
+    return unwrapper;
+  }();
+  /**
+ * Convert an `arguments` object into an Array.
+ *
+ * @returns The arguments as an Array
+ * @private
+ */
+  var _args = function(argumentsObj) {
+    return _slice.call(argumentsObj, 0);
+  };
+  /**
+ * Shallow-copy the owned, enumerable properties of one object over to another, similar to jQuery's `$.extend`.
+ *
+ * @returns The target object, augmented
+ * @private
+ */
+  var _extend = function() {
+    var i, len, arg, prop, src, copy, args = _args(arguments), target = args[0] || {};
+    for (i = 1, len = args.length; i < len; i++) {
+      if ((arg = args[i]) != null) {
+        for (prop in arg) {
+          if (_hasOwn.call(arg, prop)) {
+            src = target[prop];
+            copy = arg[prop];
+            if (target !== copy && copy !== undefined) {
+              target[prop] = copy;
+            }
+          }
+        }
+      }
+    }
+    return target;
+  };
+  /**
+ * Return a deep copy of the source object or array.
+ *
+ * @returns Object or Array
+ * @private
+ */
+  var _deepCopy = function(source) {
+    var copy, i, len, prop;
+    if (typeof source !== "object" || source == null || typeof source.nodeType === "number") {
+      copy = source;
+    } else if (typeof source.length === "number") {
+      copy = [];
+      for (i = 0, len = source.length; i < len; i++) {
+        if (_hasOwn.call(source, i)) {
+          copy[i] = _deepCopy(source[i]);
+        }
+      }
+    } else {
+      copy = {};
+      for (prop in source) {
+        if (_hasOwn.call(source, prop)) {
+          copy[prop] = _deepCopy(source[prop]);
+        }
+      }
+    }
+    return copy;
+  };
+  /**
+ * Makes a shallow copy of `obj` (like `_extend`) but filters its properties based on a list of `keys` to keep.
+ * The inverse of `_omit`, mostly. The big difference is that these properties do NOT need to be enumerable to
+ * be kept.
+ *
+ * @returns A new filtered object.
+ * @private
+ */
+  var _pick = function(obj, keys) {
+    var newObj = {};
+    for (var i = 0, len = keys.length; i < len; i++) {
+      if (keys[i] in obj) {
+        newObj[keys[i]] = obj[keys[i]];
+      }
+    }
+    return newObj;
+  };
+  /**
+ * Makes a shallow copy of `obj` (like `_extend`) but filters its properties based on a list of `keys` to omit.
+ * The inverse of `_pick`.
+ *
+ * @returns A new filtered object.
+ * @private
+ */
+  var _omit = function(obj, keys) {
+    var newObj = {};
+    for (var prop in obj) {
+      if (keys.indexOf(prop) === -1) {
+        newObj[prop] = obj[prop];
+      }
+    }
+    return newObj;
+  };
+  /**
+ * Remove all owned, enumerable properties from an object.
+ *
+ * @returns The original object without its owned, enumerable properties.
+ * @private
+ */
+  var _deleteOwnProperties = function(obj) {
+    if (obj) {
+      for (var prop in obj) {
+        if (_hasOwn.call(obj, prop)) {
+          delete obj[prop];
+        }
+      }
+    }
+    return obj;
+  };
+  /**
+ * Determine if an element is contained within another element.
+ *
+ * @returns Boolean
+ * @private
+ */
+  var _containedBy = function(el, ancestorEl) {
+    if (el && el.nodeType === 1 && el.ownerDocument && ancestorEl && (ancestorEl.nodeType === 1 && ancestorEl.ownerDocument && ancestorEl.ownerDocument === el.ownerDocument || ancestorEl.nodeType === 9 && !ancestorEl.ownerDocument && ancestorEl === el.ownerDocument)) {
+      do {
+        if (el === ancestorEl) {
+          return true;
+        }
+        el = el.parentNode;
+      } while (el);
+    }
+    return false;
+  };
+  /**
+ * Get the URL path's parent directory.
+ *
+ * @returns String or `undefined`
+ * @private
+ */
+  var _getDirPathOfUrl = function(url) {
+    var dir;
+    if (typeof url === "string" && url) {
+      dir = url.split("#")[0].split("?")[0];
+      dir = url.slice(0, url.lastIndexOf("/") + 1);
+    }
+    return dir;
+  };
+  /**
+ * Get the current script's URL by throwing an `Error` and analyzing it.
+ *
+ * @returns String or `undefined`
+ * @private
+ */
+  var _getCurrentScriptUrlFromErrorStack = function(stack) {
+    var url, matches;
+    if (typeof stack === "string" && stack) {
+      matches = stack.match(/^(?:|[^:@]*@|.+\)@(?=http[s]?|file)|.+?\s+(?: at |@)(?:[^:\(]+ )*[\(]?)((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/);
+      if (matches && matches[1]) {
+        url = matches[1];
+      } else {
+        matches = stack.match(/\)@((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/);
+        if (matches && matches[1]) {
+          url = matches[1];
+        }
+      }
+    }
+    return url;
+  };
+  /**
+ * Get the current script's URL by throwing an `Error` and analyzing it.
+ *
+ * @returns String or `undefined`
+ * @private
+ */
+  var _getCurrentScriptUrlFromError = function() {
+    var url, err;
+    try {
+      throw new _Error();
+    } catch (e) {
+      err = e;
+    }
+    if (err) {
+      url = err.sourceURL || err.fileName || _getCurrentScriptUrlFromErrorStack(err.stack);
+    }
+    return url;
+  };
+  /**
+ * Get the current script's URL.
+ *
+ * @returns String or `undefined`
+ * @private
+ */
+  var _getCurrentScriptUrl = function() {
+    var jsPath, scripts, i;
+    if (_document.currentScript && (jsPath = _document.currentScript.src)) {
+      return jsPath;
+    }
+    scripts = _document.getElementsByTagName("script");
+    if (scripts.length === 1) {
+      return scripts[0].src || undefined;
+    }
+    if ("readyState" in scripts[0]) {
+      for (i = scripts.length; i--; ) {
+        if (scripts[i].readyState === "interactive" && (jsPath = scripts[i].src)) {
+          return jsPath;
+        }
+      }
+    }
+    if (_document.readyState === "loading" && (jsPath = scripts[scripts.length - 1].src)) {
+      return jsPath;
+    }
+    if (jsPath = _getCurrentScriptUrlFromError()) {
+      return jsPath;
+    }
+    return undefined;
+  };
+  /**
+ * Get the unanimous parent directory of ALL script tags.
+ * If any script tags are either (a) inline or (b) from differing parent
+ * directories, this method must return `undefined`.
+ *
+ * @returns String or `undefined`
+ * @private
+ */
+  var _getUnanimousScriptParentDir = function() {
+    var i, jsDir, jsPath, scripts = _document.getElementsByTagName("script");
+    for (i = scripts.length; i--; ) {
+      if (!(jsPath = scripts[i].src)) {
+        jsDir = null;
+        break;
+      }
+      jsPath = _getDirPathOfUrl(jsPath);
+      if (jsDir == null) {
+        jsDir = jsPath;
+      } else if (jsDir !== jsPath) {
+        jsDir = null;
+        break;
+      }
+    }
+    return jsDir || undefined;
+  };
+  /**
+ * Get the presumed location of the "ZeroClipboard.swf" file, based on the location
+ * of the executing JavaScript file (e.g. "ZeroClipboard.js", etc.).
+ *
+ * @returns String
+ * @private
+ */
+  var _getDefaultSwfPath = function() {
+    var jsDir = _getDirPathOfUrl(_getCurrentScriptUrl()) || _getUnanimousScriptParentDir() || "";
+    return jsDir + "ZeroClipboard.swf";
+  };
+  /**
+ * Keep track of if the page is framed (in an `iframe`). This can never change.
+ * @private
+ */
+  var _pageIsFramed = function() {
+    return window.opener == null && (!!window.top && window != window.top || !!window.parent && window != window.parent);
+  }();
+  /**
+ * Keep track of the state of the Flash object.
+ * @private
+ */
+  var _flashState = {
+    bridge: null,
+    version: "0.0.0",
+    pluginType: "unknown",
+    disabled: null,
+    outdated: null,
+    sandboxed: null,
+    unavailable: null,
+    degraded: null,
+    deactivated: null,
+    overdue: null,
+    ready: null
+  };
+  /**
+ * The minimum Flash Player version required to use ZeroClipboard completely.
+ * @readonly
+ * @private
+ */
+  var _minimumFlashVersion = "11.0.0";
+  /**
+ * The ZeroClipboard library version number, as reported by Flash, at the time the SWF was compiled.
+ */
+  var _zcSwfVersion;
+  /**
+ * Keep track of all event listener registrations.
+ * @private
+ */
+  var _handlers = {};
+  /**
+ * Keep track of the currently activated element.
+ * @private
+ */
+  var _currentElement;
+  /**
+ * Keep track of the element that was activated when a `copy` process started.
+ * @private
+ */
+  var _copyTarget;
+  /**
+ * Keep track of data for the pending clipboard transaction.
+ * @private
+ */
+  var _clipData = {};
+  /**
+ * Keep track of data formats for the pending clipboard transaction.
+ * @private
+ */
+  var _clipDataFormatMap = null;
+  /**
+ * Keep track of the Flash availability check timeout.
+ * @private
+ */
+  var _flashCheckTimeout = 0;
+  /**
+ * Keep track of SWF network errors interval polling.
+ * @private
+ */
+  var _swfFallbackCheckInterval = 0;
+  /**
+ * The `message` store for events
+ * @private
+ */
+  var _eventMessages = {
+    ready: "Flash communication is established",
+    error: {
+      "flash-disabled": "Flash is disabled or not installed. May also be attempting to run Flash in a sandboxed iframe, which is impossible.",
+      "flash-outdated": "Flash is too outdated to support ZeroClipboard",
+      "flash-sandboxed": "Attempting to run Flash in a sandboxed iframe, which is impossible",
+      "flash-unavailable": "Flash is unable to communicate bidirectionally with JavaScript",
+      "flash-degraded": "Flash is unable to preserve data fidelity when communicating with JavaScript",
+      "flash-deactivated": "Flash is too outdated for your browser and/or is configured as click-to-activate.\nThis may also mean that the ZeroClipboard SWF object could not be loaded, so please check your `swfPath` configuration and/or network connectivity.\nMay also be attempting to run Flash in a sandboxed iframe, which is impossible.",
+      "flash-overdue": "Flash communication was established but NOT within the acceptable time limit",
+      "version-mismatch": "ZeroClipboard JS version number does not match ZeroClipboard SWF version number",
+      "clipboard-error": "At least one error was thrown while ZeroClipboard was attempting to inject your data into the clipboard",
+      "config-mismatch": "ZeroClipboard configuration does not match Flash's reality",
+      "swf-not-found": "The ZeroClipboard SWF object could not be loaded, so please check your `swfPath` configuration and/or network connectivity"
+    }
+  };
+  /**
+ * The `name`s of `error` events that can only occur is Flash has at least
+ * been able to load the SWF successfully.
+ * @private
+ */
+  var _errorsThatOnlyOccurAfterFlashLoads = [ "flash-unavailable", "flash-degraded", "flash-overdue", "version-mismatch", "config-mismatch", "clipboard-error" ];
+  /**
+ * The `name`s of `error` events that should likely result in the `_flashState`
+ * variable's property values being updated.
+ * @private
+ */
+  var _flashStateErrorNames = [ "flash-disabled", "flash-outdated", "flash-sandboxed", "flash-unavailable", "flash-degraded", "flash-deactivated", "flash-overdue" ];
+  /**
+ * A RegExp to match the `name` property of `error` events related to Flash.
+ * @private
+ */
+  var _flashStateErrorNameMatchingRegex = new RegExp("^flash-(" + _flashStateErrorNames.map(function(errorName) {
+    return errorName.replace(/^flash-/, "");
+  }).join("|") + ")$");
+  /**
+ * A RegExp to match the `name` property of `error` events related to Flash,
+ * which is enabled.
+ * @private
+ */
+  var _flashStateEnabledErrorNameMatchingRegex = new RegExp("^flash-(" + _flashStateErrorNames.slice(1).map(function(errorName) {
+    return errorName.replace(/^flash-/, "");
+  }).join("|") + ")$");
+  /**
+ * ZeroClipboard configuration defaults for the Core module.
+ * @private
+ */
+  var _globalConfig = {
+    swfPath: _getDefaultSwfPath(),
+    trustedDomains: window.location.host ? [ window.location.host ] : [],
+    cacheBust: true,
+    forceEnhancedClipboard: false,
+    flashLoadTimeout: 3e4,
+    autoActivate: true,
+    bubbleEvents: true,
+    containerId: "global-zeroclipboard-html-bridge",
+    containerClass: "global-zeroclipboard-container",
+    swfObjectId: "global-zeroclipboard-flash-bridge",
+    hoverClass: "zeroclipboard-is-hover",
+    activeClass: "zeroclipboard-is-active",
+    forceHandCursor: false,
+    title: null,
+    zIndex: 999999999
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.config`.
+ * @private
+ */
+  var _config = function(options) {
+    if (typeof options === "object" && options !== null) {
+      for (var prop in options) {
+        if (_hasOwn.call(options, prop)) {
+          if (/^(?:forceHandCursor|title|zIndex|bubbleEvents)$/.test(prop)) {
+            _globalConfig[prop] = options[prop];
+          } else if (_flashState.bridge == null) {
+            if (prop === "containerId" || prop === "swfObjectId") {
+              if (_isValidHtml4Id(options[prop])) {
+                _globalConfig[prop] = options[prop];
+              } else {
+                throw new Error("The specified `" + prop + "` value is not valid as an HTML4 Element ID");
+              }
+            } else {
+              _globalConfig[prop] = options[prop];
+            }
+          }
+        }
+      }
+    }
+    if (typeof options === "string" && options) {
+      if (_hasOwn.call(_globalConfig, options)) {
+        return _globalConfig[options];
+      }
+      return;
+    }
+    return _deepCopy(_globalConfig);
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.state`.
+ * @private
+ */
+  var _state = function() {
+    _detectSandbox();
+    return {
+      browser: _pick(_navigator, [ "userAgent", "platform", "appName" ]),
+      flash: _omit(_flashState, [ "bridge" ]),
+      zeroclipboard: {
+        version: ZeroClipboard.version,
+        config: ZeroClipboard.config()
+      }
+    };
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.isFlashUnusable`.
+ * @private
+ */
+  var _isFlashUnusable = function() {
+    return !!(_flashState.disabled || _flashState.outdated || _flashState.sandboxed || _flashState.unavailable || _flashState.degraded || _flashState.deactivated);
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.on`.
+ * @private
+ */
+  var _on = function(eventType, listener) {
+    var i, len, events, added = {};
+    if (typeof eventType === "string" && eventType) {
+      events = eventType.toLowerCase().split(/\s+/);
+    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
+      for (i in eventType) {
+        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
+          ZeroClipboard.on(i, eventType[i]);
+        }
+      }
+    }
+    if (events && events.length) {
+      for (i = 0, len = events.length; i < len; i++) {
+        eventType = events[i].replace(/^on/, "");
+        added[eventType] = true;
+        if (!_handlers[eventType]) {
+          _handlers[eventType] = [];
+        }
+        _handlers[eventType].push(listener);
+      }
+      if (added.ready && _flashState.ready) {
+        ZeroClipboard.emit({
+          type: "ready"
+        });
+      }
+      if (added.error) {
+        for (i = 0, len = _flashStateErrorNames.length; i < len; i++) {
+          if (_flashState[_flashStateErrorNames[i].replace(/^flash-/, "")] === true) {
+            ZeroClipboard.emit({
+              type: "error",
+              name: _flashStateErrorNames[i]
+            });
+            break;
+          }
+        }
+        if (_zcSwfVersion !== undefined && ZeroClipboard.version !== _zcSwfVersion) {
+          ZeroClipboard.emit({
+            type: "error",
+            name: "version-mismatch",
+            jsVersion: ZeroClipboard.version,
+            swfVersion: _zcSwfVersion
+          });
+        }
+      }
+    }
+    return ZeroClipboard;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.off`.
+ * @private
+ */
+  var _off = function(eventType, listener) {
+    var i, len, foundIndex, events, perEventHandlers;
+    if (arguments.length === 0) {
+      events = _keys(_handlers);
+    } else if (typeof eventType === "string" && eventType) {
+      events = eventType.split(/\s+/);
+    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
+      for (i in eventType) {
+        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
+          ZeroClipboard.off(i, eventType[i]);
+        }
+      }
+    }
+    if (events && events.length) {
+      for (i = 0, len = events.length; i < len; i++) {
+        eventType = events[i].toLowerCase().replace(/^on/, "");
+        perEventHandlers = _handlers[eventType];
+        if (perEventHandlers && perEventHandlers.length) {
+          if (listener) {
+            foundIndex = perEventHandlers.indexOf(listener);
+            while (foundIndex !== -1) {
+              perEventHandlers.splice(foundIndex, 1);
+              foundIndex = perEventHandlers.indexOf(listener, foundIndex);
+            }
+          } else {
+            perEventHandlers.length = 0;
+          }
+        }
+      }
+    }
+    return ZeroClipboard;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.handlers`.
+ * @private
+ */
+  var _listeners = function(eventType) {
+    var copy;
+    if (typeof eventType === "string" && eventType) {
+      copy = _deepCopy(_handlers[eventType]) || null;
+    } else {
+      copy = _deepCopy(_handlers);
+    }
+    return copy;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.emit`.
+ * @private
+ */
+  var _emit = function(event) {
+    var eventCopy, returnVal, tmp;
+    event = _createEvent(event);
+    if (!event) {
+      return;
+    }
+    if (_preprocessEvent(event)) {
+      return;
+    }
+    if (event.type === "ready" && _flashState.overdue === true) {
+      return ZeroClipboard.emit({
+        type: "error",
+        name: "flash-overdue"
+      });
+    }
+    eventCopy = _extend({}, event);
+    _dispatchCallbacks.call(this, eventCopy);
+    if (event.type === "copy") {
+      tmp = _mapClipDataToFlash(_clipData);
+      returnVal = tmp.data;
+      _clipDataFormatMap = tmp.formatMap;
+    }
+    return returnVal;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.create`.
+ * @private
+ */
+  var _create = function() {
+    var previousState = _flashState.sandboxed;
+    _detectSandbox();
+    if (typeof _flashState.ready !== "boolean") {
+      _flashState.ready = false;
+    }
+    if (_flashState.sandboxed !== previousState && _flashState.sandboxed === true) {
+      _flashState.ready = false;
+      ZeroClipboard.emit({
+        type: "error",
+        name: "flash-sandboxed"
+      });
+    } else if (!ZeroClipboard.isFlashUnusable() && _flashState.bridge === null) {
+      var maxWait = _globalConfig.flashLoadTimeout;
+      if (typeof maxWait === "number" && maxWait >= 0) {
+        _flashCheckTimeout = _setTimeout(function() {
+          if (typeof _flashState.deactivated !== "boolean") {
+            _flashState.deactivated = true;
+          }
+          if (_flashState.deactivated === true) {
+            ZeroClipboard.emit({
+              type: "error",
+              name: "flash-deactivated"
+            });
+          }
+        }, maxWait);
+      }
+      _flashState.overdue = false;
+      _embedSwf();
+    }
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.destroy`.
+ * @private
+ */
+  var _destroy = function() {
+    ZeroClipboard.clearData();
+    ZeroClipboard.blur();
+    ZeroClipboard.emit("destroy");
+    _unembedSwf();
+    ZeroClipboard.off();
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.setData`.
+ * @private
+ */
+  var _setData = function(format, data) {
+    var dataObj;
+    if (typeof format === "object" && format && typeof data === "undefined") {
+      dataObj = format;
+      ZeroClipboard.clearData();
+    } else if (typeof format === "string" && format) {
+      dataObj = {};
+      dataObj[format] = data;
+    } else {
+      return;
+    }
+    for (var dataFormat in dataObj) {
+      if (typeof dataFormat === "string" && dataFormat && _hasOwn.call(dataObj, dataFormat) && typeof dataObj[dataFormat] === "string" && dataObj[dataFormat]) {
+        _clipData[dataFormat] = dataObj[dataFormat];
+      }
+    }
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.clearData`.
+ * @private
+ */
+  var _clearData = function(format) {
+    if (typeof format === "undefined") {
+      _deleteOwnProperties(_clipData);
+      _clipDataFormatMap = null;
+    } else if (typeof format === "string" && _hasOwn.call(_clipData, format)) {
+      delete _clipData[format];
+    }
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.getData`.
+ * @private
+ */
+  var _getData = function(format) {
+    if (typeof format === "undefined") {
+      return _deepCopy(_clipData);
+    } else if (typeof format === "string" && _hasOwn.call(_clipData, format)) {
+      return _clipData[format];
+    }
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.focus`/`ZeroClipboard.activate`.
+ * @private
+ */
+  var _focus = function(element) {
+    if (!(element && element.nodeType === 1)) {
+      return;
+    }
+    if (_currentElement) {
+      _removeClass(_currentElement, _globalConfig.activeClass);
+      if (_currentElement !== element) {
+        _removeClass(_currentElement, _globalConfig.hoverClass);
+      }
+    }
+    _currentElement = element;
+    _addClass(element, _globalConfig.hoverClass);
+    var newTitle = element.getAttribute("title") || _globalConfig.title;
+    if (typeof newTitle === "string" && newTitle) {
+      var htmlBridge = _getHtmlBridge(_flashState.bridge);
+      if (htmlBridge) {
+        htmlBridge.setAttribute("title", newTitle);
+      }
+    }
+    var useHandCursor = _globalConfig.forceHandCursor === true || _getStyle(element, "cursor") === "pointer";
+    _setHandCursor(useHandCursor);
+    _reposition();
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.blur`/`ZeroClipboard.deactivate`.
+ * @private
+ */
+  var _blur = function() {
+    var htmlBridge = _getHtmlBridge(_flashState.bridge);
+    if (htmlBridge) {
+      htmlBridge.removeAttribute("title");
+      htmlBridge.style.left = "0px";
+      htmlBridge.style.top = "-9999px";
+      htmlBridge.style.width = "1px";
+      htmlBridge.style.height = "1px";
+    }
+    if (_currentElement) {
+      _removeClass(_currentElement, _globalConfig.hoverClass);
+      _removeClass(_currentElement, _globalConfig.activeClass);
+      _currentElement = null;
+    }
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.activeElement`.
+ * @private
+ */
+  var _activeElement = function() {
+    return _currentElement || null;
+  };
+  /**
+ * Check if a value is a valid HTML4 `ID` or `Name` token.
+ * @private
+ */
+  var _isValidHtml4Id = function(id) {
+    return typeof id === "string" && id && /^[A-Za-z][A-Za-z0-9_:\-\.]*$/.test(id);
+  };
+  /**
+ * Create or update an `event` object, based on the `eventType`.
+ * @private
+ */
+  var _createEvent = function(event) {
+    var eventType;
+    if (typeof event === "string" && event) {
+      eventType = event;
+      event = {};
+    } else if (typeof event === "object" && event && typeof event.type === "string" && event.type) {
+      eventType = event.type;
+    }
+    if (!eventType) {
+      return;
+    }
+    eventType = eventType.toLowerCase();
+    if (!event.target && (/^(copy|aftercopy|_click)$/.test(eventType) || eventType === "error" && event.name === "clipboard-error")) {
+      event.target = _copyTarget;
+    }
+    _extend(event, {
+      type: eventType,
+      target: event.target || _currentElement || null,
+      relatedTarget: event.relatedTarget || null,
+      currentTarget: _flashState && _flashState.bridge || null,
+      timeStamp: event.timeStamp || _now() || null
+    });
+    var msg = _eventMessages[event.type];
+    if (event.type === "error" && event.name && msg) {
+      msg = msg[event.name];
+    }
+    if (msg) {
+      event.message = msg;
+    }
+    if (event.type === "ready") {
+      _extend(event, {
+        target: null,
+        version: _flashState.version
+      });
+    }
+    if (event.type === "error") {
+      if (_flashStateErrorNameMatchingRegex.test(event.name)) {
+        _extend(event, {
+          target: null,
+          minimumVersion: _minimumFlashVersion
+        });
+      }
+      if (_flashStateEnabledErrorNameMatchingRegex.test(event.name)) {
+        _extend(event, {
+          version: _flashState.version
+        });
+      }
+    }
+    if (event.type === "copy") {
+      event.clipboardData = {
+        setData: ZeroClipboard.setData,
+        clearData: ZeroClipboard.clearData
+      };
+    }
+    if (event.type === "aftercopy") {
+      event = _mapClipResultsFromFlash(event, _clipDataFormatMap);
+    }
+    if (event.target && !event.relatedTarget) {
+      event.relatedTarget = _getRelatedTarget(event.target);
+    }
+    return _addMouseData(event);
+  };
+  /**
+ * Get a relatedTarget from the target's `data-clipboard-target` attribute
+ * @private
+ */
+  var _getRelatedTarget = function(targetEl) {
+    var relatedTargetId = targetEl && targetEl.getAttribute && targetEl.getAttribute("data-clipboard-target");
+    return relatedTargetId ? _document.getElementById(relatedTargetId) : null;
+  };
+  /**
+ * Add element and position data to `MouseEvent` instances
+ * @private
+ */
+  var _addMouseData = function(event) {
+    if (event && /^_(?:click|mouse(?:over|out|down|up|move))$/.test(event.type)) {
+      var srcElement = event.target;
+      var fromElement = event.type === "_mouseover" && event.relatedTarget ? event.relatedTarget : undefined;
+      var toElement = event.type === "_mouseout" && event.relatedTarget ? event.relatedTarget : undefined;
+      var pos = _getElementPosition(srcElement);
+      var screenLeft = _window.screenLeft || _window.screenX || 0;
+      var screenTop = _window.screenTop || _window.screenY || 0;
+      var scrollLeft = _document.body.scrollLeft + _document.documentElement.scrollLeft;
+      var scrollTop = _document.body.scrollTop + _document.documentElement.scrollTop;
+      var pageX = pos.left + (typeof event._stageX === "number" ? event._stageX : 0);
+      var pageY = pos.top + (typeof event._stageY === "number" ? event._stageY : 0);
+      var clientX = pageX - scrollLeft;
+      var clientY = pageY - scrollTop;
+      var screenX = screenLeft + clientX;
+      var screenY = screenTop + clientY;
+      var moveX = typeof event.movementX === "number" ? event.movementX : 0;
+      var moveY = typeof event.movementY === "number" ? event.movementY : 0;
+      delete event._stageX;
+      delete event._stageY;
+      _extend(event, {
+        srcElement: srcElement,
+        fromElement: fromElement,
+        toElement: toElement,
+        screenX: screenX,
+        screenY: screenY,
+        pageX: pageX,
+        pageY: pageY,
+        clientX: clientX,
+        clientY: clientY,
+        x: clientX,
+        y: clientY,
+        movementX: moveX,
+        movementY: moveY,
+        offsetX: 0,
+        offsetY: 0,
+        layerX: 0,
+        layerY: 0
+      });
+    }
+    return event;
+  };
+  /**
+ * Determine if an event's registered handlers should be execute synchronously or asynchronously.
+ *
+ * @returns {boolean}
+ * @private
+ */
+  var _shouldPerformAsync = function(event) {
+    var eventType = event && typeof event.type === "string" && event.type || "";
+    return !/^(?:(?:before)?copy|destroy)$/.test(eventType);
+  };
+  /**
+ * Control if a callback should be executed asynchronously or not.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _dispatchCallback = function(func, context, args, async) {
+    if (async) {
+      _setTimeout(function() {
+        func.apply(context, args);
+      }, 0);
+    } else {
+      func.apply(context, args);
+    }
+  };
+  /**
+ * Handle the actual dispatching of events to client instances.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _dispatchCallbacks = function(event) {
+    if (!(typeof event === "object" && event && event.type)) {
+      return;
+    }
+    var async = _shouldPerformAsync(event);
+    var wildcardTypeHandlers = _handlers["*"] || [];
+    var specificTypeHandlers = _handlers[event.type] || [];
+    var handlers = wildcardTypeHandlers.concat(specificTypeHandlers);
+    if (handlers && handlers.length) {
+      var i, len, func, context, eventCopy, originalContext = this;
+      for (i = 0, len = handlers.length; i < len; i++) {
+        func = handlers[i];
+        context = originalContext;
+        if (typeof func === "string" && typeof _window[func] === "function") {
+          func = _window[func];
+        }
+        if (typeof func === "object" && func && typeof func.handleEvent === "function") {
+          context = func;
+          func = func.handleEvent;
+        }
+        if (typeof func === "function") {
+          eventCopy = _extend({}, event);
+          _dispatchCallback(func, context, [ eventCopy ], async);
+        }
+      }
+    }
+    return this;
+  };
+  /**
+ * Check an `error` event's `name` property to see if Flash has
+ * already loaded, which rules out possible `iframe` sandboxing.
+ * @private
+ */
+  var _getSandboxStatusFromErrorEvent = function(event) {
+    var isSandboxed = null;
+    if (_pageIsFramed === false || event && event.type === "error" && event.name && _errorsThatOnlyOccurAfterFlashLoads.indexOf(event.name) !== -1) {
+      isSandboxed = false;
+    }
+    return isSandboxed;
+  };
+  /**
+ * Preprocess any special behaviors, reactions, or state changes after receiving this event.
+ * Executes only once per event emitted, NOT once per client.
+ * @private
+ */
+  var _preprocessEvent = function(event) {
+    var element = event.target || _currentElement || null;
+    var sourceIsSwf = event._source === "swf";
+    delete event._source;
+    switch (event.type) {
+     case "error":
+      var isSandboxed = event.name === "flash-sandboxed" || _getSandboxStatusFromErrorEvent(event);
+      if (typeof isSandboxed === "boolean") {
+        _flashState.sandboxed = isSandboxed;
+      }
+      if (_flashStateErrorNames.indexOf(event.name) !== -1) {
+        _extend(_flashState, {
+          disabled: event.name === "flash-disabled",
+          outdated: event.name === "flash-outdated",
+          unavailable: event.name === "flash-unavailable",
+          degraded: event.name === "flash-degraded",
+          deactivated: event.name === "flash-deactivated",
+          overdue: event.name === "flash-overdue",
+          ready: false
+        });
+      } else if (event.name === "version-mismatch") {
+        _zcSwfVersion = event.swfVersion;
+        _extend(_flashState, {
+          disabled: false,
+          outdated: false,
+          unavailable: false,
+          degraded: false,
+          deactivated: false,
+          overdue: false,
+          ready: false
+        });
+      }
+      _clearTimeoutsAndPolling();
+      break;
+
+     case "ready":
+      _zcSwfVersion = event.swfVersion;
+      var wasDeactivated = _flashState.deactivated === true;
+      _extend(_flashState, {
+        disabled: false,
+        outdated: false,
+        sandboxed: false,
+        unavailable: false,
+        degraded: false,
+        deactivated: false,
+        overdue: wasDeactivated,
+        ready: !wasDeactivated
+      });
+      _clearTimeoutsAndPolling();
+      break;
+
+     case "beforecopy":
+      _copyTarget = element;
+      break;
+
+     case "copy":
+      var textContent, htmlContent, targetEl = event.relatedTarget;
+      if (!(_clipData["text/html"] || _clipData["text/plain"]) && targetEl && (htmlContent = targetEl.value || targetEl.outerHTML || targetEl.innerHTML) && (textContent = targetEl.value || targetEl.textContent || targetEl.innerText)) {
+        event.clipboardData.clearData();
+        event.clipboardData.setData("text/plain", textContent);
+        if (htmlContent !== textContent) {
+          event.clipboardData.setData("text/html", htmlContent);
+        }
+      } else if (!_clipData["text/plain"] && event.target && (textContent = event.target.getAttribute("data-clipboard-text"))) {
+        event.clipboardData.clearData();
+        event.clipboardData.setData("text/plain", textContent);
+      }
+      break;
+
+     case "aftercopy":
+      _queueEmitClipboardErrors(event);
+      ZeroClipboard.clearData();
+      if (element && element !== _safeActiveElement() && element.focus) {
+        element.focus();
+      }
+      break;
+
+     case "_mouseover":
+      ZeroClipboard.focus(element);
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        if (element && element !== event.relatedTarget && !_containedBy(event.relatedTarget, element)) {
+          _fireMouseEvent(_extend({}, event, {
+            type: "mouseenter",
+            bubbles: false,
+            cancelable: false
+          }));
+        }
+        _fireMouseEvent(_extend({}, event, {
+          type: "mouseover"
+        }));
+      }
+      break;
+
+     case "_mouseout":
+      ZeroClipboard.blur();
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        if (element && element !== event.relatedTarget && !_containedBy(event.relatedTarget, element)) {
+          _fireMouseEvent(_extend({}, event, {
+            type: "mouseleave",
+            bubbles: false,
+            cancelable: false
+          }));
+        }
+        _fireMouseEvent(_extend({}, event, {
+          type: "mouseout"
+        }));
+      }
+      break;
+
+     case "_mousedown":
+      _addClass(element, _globalConfig.activeClass);
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        _fireMouseEvent(_extend({}, event, {
+          type: event.type.slice(1)
+        }));
+      }
+      break;
+
+     case "_mouseup":
+      _removeClass(element, _globalConfig.activeClass);
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        _fireMouseEvent(_extend({}, event, {
+          type: event.type.slice(1)
+        }));
+      }
+      break;
+
+     case "_click":
+      _copyTarget = null;
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        _fireMouseEvent(_extend({}, event, {
+          type: event.type.slice(1)
+        }));
+      }
+      break;
+
+     case "_mousemove":
+      if (_globalConfig.bubbleEvents === true && sourceIsSwf) {
+        _fireMouseEvent(_extend({}, event, {
+          type: event.type.slice(1)
+        }));
+      }
+      break;
+    }
+    if (/^_(?:click|mouse(?:over|out|down|up|move))$/.test(event.type)) {
+      return true;
+    }
+  };
+  /**
+ * Check an "aftercopy" event for clipboard errors and emit a corresponding "error" event.
+ * @private
+ */
+  var _queueEmitClipboardErrors = function(aftercopyEvent) {
+    if (aftercopyEvent.errors && aftercopyEvent.errors.length > 0) {
+      var errorEvent = _deepCopy(aftercopyEvent);
+      _extend(errorEvent, {
+        type: "error",
+        name: "clipboard-error"
+      });
+      delete errorEvent.success;
+      _setTimeout(function() {
+        ZeroClipboard.emit(errorEvent);
+      }, 0);
+    }
+  };
+  /**
+ * Dispatch a synthetic MouseEvent.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _fireMouseEvent = function(event) {
+    if (!(event && typeof event.type === "string" && event)) {
+      return;
+    }
+    var e, target = event.target || null, doc = target && target.ownerDocument || _document, defaults = {
+      view: doc.defaultView || _window,
+      canBubble: true,
+      cancelable: true,
+      detail: event.type === "click" ? 1 : 0,
+      button: typeof event.which === "number" ? event.which - 1 : typeof event.button === "number" ? event.button : doc.createEvent ? 0 : 1
+    }, args = _extend(defaults, event);
+    if (!target) {
+      return;
+    }
+    if (doc.createEvent && target.dispatchEvent) {
+      args = [ args.type, args.canBubble, args.cancelable, args.view, args.detail, args.screenX, args.screenY, args.clientX, args.clientY, args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button, args.relatedTarget ];
+      e = doc.createEvent("MouseEvents");
+      if (e.initMouseEvent) {
+        e.initMouseEvent.apply(e, args);
+        e._source = "js";
+        target.dispatchEvent(e);
+      }
+    }
+  };
+  /**
+ * Continuously poll the DOM until either:
+ *  (a) the fallback content becomes visible, or
+ *  (b) we receive an event from SWF (handled elsewhere)
+ *
+ * IMPORTANT:
+ * This is NOT a necessary check but it can result in significantly faster
+ * detection of bad `swfPath` configuration and/or network/server issues [in
+ * supported browsers] than waiting for the entire `flashLoadTimeout` duration
+ * to elapse before detecting that the SWF cannot be loaded. The detection
+ * duration can be anywhere from 10-30 times faster [in supported browsers] by
+ * using this approach.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _watchForSwfFallbackContent = function() {
+    var maxWait = _globalConfig.flashLoadTimeout;
+    if (typeof maxWait === "number" && maxWait >= 0) {
+      var pollWait = Math.min(1e3, maxWait / 10);
+      var fallbackContentId = _globalConfig.swfObjectId + "_fallbackContent";
+      _swfFallbackCheckInterval = _setInterval(function() {
+        var el = _document.getElementById(fallbackContentId);
+        if (_isElementVisible(el)) {
+          _clearTimeoutsAndPolling();
+          _flashState.deactivated = null;
+          ZeroClipboard.emit({
+            type: "error",
+            name: "swf-not-found"
+          });
+        }
+      }, pollWait);
+    }
+  };
+  /**
+ * Create the HTML bridge element to embed the Flash object into.
+ * @private
+ */
+  var _createHtmlBridge = function() {
+    var container = _document.createElement("div");
+    container.id = _globalConfig.containerId;
+    container.className = _globalConfig.containerClass;
+    container.style.position = "absolute";
+    container.style.left = "0px";
+    container.style.top = "-9999px";
+    container.style.width = "1px";
+    container.style.height = "1px";
+    container.style.zIndex = "" + _getSafeZIndex(_globalConfig.zIndex);
+    return container;
+  };
+  /**
+ * Get the HTML element container that wraps the Flash bridge object/element.
+ * @private
+ */
+  var _getHtmlBridge = function(flashBridge) {
+    var htmlBridge = flashBridge && flashBridge.parentNode;
+    while (htmlBridge && htmlBridge.nodeName === "OBJECT" && htmlBridge.parentNode) {
+      htmlBridge = htmlBridge.parentNode;
+    }
+    return htmlBridge || null;
+  };
+  /**
+ * Create the SWF object.
+ *
+ * @returns The SWF object reference.
+ * @private
+ */
+  var _embedSwf = function() {
+    var len, flashBridge = _flashState.bridge, container = _getHtmlBridge(flashBridge);
+    if (!flashBridge) {
+      var allowScriptAccess = _determineScriptAccess(_window.location.host, _globalConfig);
+      var allowNetworking = allowScriptAccess === "never" ? "none" : "all";
+      var flashvars = _vars(_extend({
+        jsVersion: ZeroClipboard.version
+      }, _globalConfig));
+      var swfUrl = _globalConfig.swfPath + _cacheBust(_globalConfig.swfPath, _globalConfig);
+      container = _createHtmlBridge();
+      var divToBeReplaced = _document.createElement("div");
+      container.appendChild(divToBeReplaced);
+      _document.body.appendChild(container);
+      var tmpDiv = _document.createElement("div");
+      var usingActiveX = _flashState.pluginType === "activex";
+      tmpDiv.innerHTML = '<object id="' + _globalConfig.swfObjectId + '" name="' + _globalConfig.swfObjectId + '" ' + 'width="100%" height="100%" ' + (usingActiveX ? 'classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"' : 'type="application/x-shockwave-flash" data="' + swfUrl + '"') + ">" + (usingActiveX ? '<param name="movie" value="' + swfUrl + '"/>' : "") + '<param name="allowScriptAccess" value="' + allowScriptAccess + '"/>' + '<param name="allowNetworking" value="' + allowNetworking + '"/>' + '<param name="menu" value="false"/>' + '<param name="wmode" value="transparent"/>' + '<param name="flashvars" value="' + flashvars + '"/>' + '<div id="' + _globalConfig.swfObjectId + '_fallbackContent">&nbsp;</div>' + "</object>";
+      flashBridge = tmpDiv.firstChild;
+      tmpDiv = null;
+      _unwrap(flashBridge).ZeroClipboard = ZeroClipboard;
+      container.replaceChild(flashBridge, divToBeReplaced);
+      _watchForSwfFallbackContent();
+    }
+    if (!flashBridge) {
+      flashBridge = _document[_globalConfig.swfObjectId];
+      if (flashBridge && (len = flashBridge.length)) {
+        flashBridge = flashBridge[len - 1];
+      }
+      if (!flashBridge && container) {
+        flashBridge = container.firstChild;
+      }
+    }
+    _flashState.bridge = flashBridge || null;
+    return flashBridge;
+  };
+  /**
+ * Destroy the SWF object.
+ * @private
+ */
+  var _unembedSwf = function() {
+    var flashBridge = _flashState.bridge;
+    if (flashBridge) {
+      var htmlBridge = _getHtmlBridge(flashBridge);
+      if (htmlBridge) {
+        if (_flashState.pluginType === "activex" && "readyState" in flashBridge) {
+          flashBridge.style.display = "none";
+          (function removeSwfFromIE() {
+            if (flashBridge.readyState === 4) {
+              for (var prop in flashBridge) {
+                if (typeof flashBridge[prop] === "function") {
+                  flashBridge[prop] = null;
+                }
+              }
+              if (flashBridge.parentNode) {
+                flashBridge.parentNode.removeChild(flashBridge);
+              }
+              if (htmlBridge.parentNode) {
+                htmlBridge.parentNode.removeChild(htmlBridge);
+              }
+            } else {
+              _setTimeout(removeSwfFromIE, 10);
+            }
+          })();
+        } else {
+          if (flashBridge.parentNode) {
+            flashBridge.parentNode.removeChild(flashBridge);
+          }
+          if (htmlBridge.parentNode) {
+            htmlBridge.parentNode.removeChild(htmlBridge);
+          }
+        }
+      }
+      _clearTimeoutsAndPolling();
+      _flashState.ready = null;
+      _flashState.bridge = null;
+      _flashState.deactivated = null;
+      _zcSwfVersion = undefined;
+    }
+  };
+  /**
+ * Map the data format names of the "clipData" to Flash-friendly names.
+ *
+ * @returns A new transformed object.
+ * @private
+ */
+  var _mapClipDataToFlash = function(clipData) {
+    var newClipData = {}, formatMap = {};
+    if (!(typeof clipData === "object" && clipData)) {
+      return;
+    }
+    for (var dataFormat in clipData) {
+      if (dataFormat && _hasOwn.call(clipData, dataFormat) && typeof clipData[dataFormat] === "string" && clipData[dataFormat]) {
+        switch (dataFormat.toLowerCase()) {
+         case "text/plain":
+         case "text":
+         case "air:text":
+         case "flash:text":
+          newClipData.text = clipData[dataFormat];
+          formatMap.text = dataFormat;
+          break;
+
+         case "text/html":
+         case "html":
+         case "air:html":
+         case "flash:html":
+          newClipData.html = clipData[dataFormat];
+          formatMap.html = dataFormat;
+          break;
+
+         case "application/rtf":
+         case "text/rtf":
+         case "rtf":
+         case "richtext":
+         case "air:rtf":
+         case "flash:rtf":
+          newClipData.rtf = clipData[dataFormat];
+          formatMap.rtf = dataFormat;
+          break;
+
+         default:
+          break;
+        }
+      }
+    }
+    return {
+      data: newClipData,
+      formatMap: formatMap
+    };
+  };
+  /**
+ * Map the data format names from Flash-friendly names back to their original "clipData" names (via a format mapping).
+ *
+ * @returns A new transformed object.
+ * @private
+ */
+  var _mapClipResultsFromFlash = function(clipResults, formatMap) {
+    if (!(typeof clipResults === "object" && clipResults && typeof formatMap === "object" && formatMap)) {
+      return clipResults;
+    }
+    var newResults = {};
+    for (var prop in clipResults) {
+      if (_hasOwn.call(clipResults, prop)) {
+        if (prop === "errors") {
+          newResults[prop] = clipResults[prop] ? clipResults[prop].slice() : [];
+          for (var i = 0, len = newResults[prop].length; i < len; i++) {
+            newResults[prop][i].format = formatMap[newResults[prop][i].format];
+          }
+        } else if (prop !== "success" && prop !== "data") {
+          newResults[prop] = clipResults[prop];
+        } else {
+          newResults[prop] = {};
+          var tmpHash = clipResults[prop];
+          for (var dataFormat in tmpHash) {
+            if (dataFormat && _hasOwn.call(tmpHash, dataFormat) && _hasOwn.call(formatMap, dataFormat)) {
+              newResults[prop][formatMap[dataFormat]] = tmpHash[dataFormat];
+            }
+          }
+        }
+      }
+    }
+    return newResults;
+  };
+  /**
+ * Will look at a path, and will create a "?noCache={time}" or "&noCache={time}"
+ * query param string to return. Does NOT append that string to the original path.
+ * This is useful because ExternalInterface often breaks when a Flash SWF is cached.
+ *
+ * @returns The `noCache` query param with necessary "?"/"&" prefix.
+ * @private
+ */
+  var _cacheBust = function(path, options) {
+    var cacheBust = options == null || options && options.cacheBust === true;
+    if (cacheBust) {
+      return (path.indexOf("?") === -1 ? "?" : "&") + "noCache=" + _now();
+    } else {
+      return "";
+    }
+  };
+  /**
+ * Creates a query string for the FlashVars param.
+ * Does NOT include the cache-busting query param.
+ *
+ * @returns FlashVars query string
+ * @private
+ */
+  var _vars = function(options) {
+    var i, len, domain, domains, str = "", trustedOriginsExpanded = [];
+    if (options.trustedDomains) {
+      if (typeof options.trustedDomains === "string") {
+        domains = [ options.trustedDomains ];
+      } else if (typeof options.trustedDomains === "object" && "length" in options.trustedDomains) {
+        domains = options.trustedDomains;
+      }
+    }
+    if (domains && domains.length) {
+      for (i = 0, len = domains.length; i < len; i++) {
+        if (_hasOwn.call(domains, i) && domains[i] && typeof domains[i] === "string") {
+          domain = _extractDomain(domains[i]);
+          if (!domain) {
+            continue;
+          }
+          if (domain === "*") {
+            trustedOriginsExpanded.length = 0;
+            trustedOriginsExpanded.push(domain);
+            break;
+          }
+          trustedOriginsExpanded.push.apply(trustedOriginsExpanded, [ domain, "//" + domain, _window.location.protocol + "//" + domain ]);
+        }
+      }
+    }
+    if (trustedOriginsExpanded.length) {
+      str += "trustedOrigins=" + _encodeURIComponent(trustedOriginsExpanded.join(","));
+    }
+    if (options.forceEnhancedClipboard === true) {
+      str += (str ? "&" : "") + "forceEnhancedClipboard=true";
+    }
+    if (typeof options.swfObjectId === "string" && options.swfObjectId) {
+      str += (str ? "&" : "") + "swfObjectId=" + _encodeURIComponent(options.swfObjectId);
+    }
+    if (typeof options.jsVersion === "string" && options.jsVersion) {
+      str += (str ? "&" : "") + "jsVersion=" + _encodeURIComponent(options.jsVersion);
+    }
+    return str;
+  };
+  /**
+ * Extract the domain (e.g. "github.com") from an origin (e.g. "https://github.com") or
+ * URL (e.g. "https://github.com/zeroclipboard/zeroclipboard/").
+ *
+ * @returns the domain
+ * @private
+ */
+  var _extractDomain = function(originOrUrl) {
+    if (originOrUrl == null || originOrUrl === "") {
+      return null;
+    }
+    originOrUrl = originOrUrl.replace(/^\s+|\s+$/g, "");
+    if (originOrUrl === "") {
+      return null;
+    }
+    var protocolIndex = originOrUrl.indexOf("//");
+    originOrUrl = protocolIndex === -1 ? originOrUrl : originOrUrl.slice(protocolIndex + 2);
+    var pathIndex = originOrUrl.indexOf("/");
+    originOrUrl = pathIndex === -1 ? originOrUrl : protocolIndex === -1 || pathIndex === 0 ? null : originOrUrl.slice(0, pathIndex);
+    if (originOrUrl && originOrUrl.slice(-4).toLowerCase() === ".swf") {
+      return null;
+    }
+    return originOrUrl || null;
+  };
+  /**
+ * Set `allowScriptAccess` based on `trustedDomains` and `window.location.host` vs. `swfPath`.
+ *
+ * @returns The appropriate script access level.
+ * @private
+ */
+  var _determineScriptAccess = function() {
+    var _extractAllDomains = function(origins) {
+      var i, len, tmp, resultsArray = [];
+      if (typeof origins === "string") {
+        origins = [ origins ];
+      }
+      if (!(typeof origins === "object" && origins && typeof origins.length === "number")) {
+        return resultsArray;
+      }
+      for (i = 0, len = origins.length; i < len; i++) {
+        if (_hasOwn.call(origins, i) && (tmp = _extractDomain(origins[i]))) {
+          if (tmp === "*") {
+            resultsArray.length = 0;
+            resultsArray.push("*");
+            break;
+          }
+          if (resultsArray.indexOf(tmp) === -1) {
+            resultsArray.push(tmp);
+          }
+        }
+      }
+      return resultsArray;
+    };
+    return function(currentDomain, configOptions) {
+      var swfDomain = _extractDomain(configOptions.swfPath);
+      if (swfDomain === null) {
+        swfDomain = currentDomain;
+      }
+      var trustedDomains = _extractAllDomains(configOptions.trustedDomains);
+      var len = trustedDomains.length;
+      if (len > 0) {
+        if (len === 1 && trustedDomains[0] === "*") {
+          return "always";
+        }
+        if (trustedDomains.indexOf(currentDomain) !== -1) {
+          if (len === 1 && currentDomain === swfDomain) {
+            return "sameDomain";
+          }
+          return "always";
+        }
+      }
+      return "never";
+    };
+  }();
+  /**
+ * Get the currently active/focused DOM element.
+ *
+ * @returns the currently active/focused element, or `null`
+ * @private
+ */
+  var _safeActiveElement = function() {
+    try {
+      return _document.activeElement;
+    } catch (err) {
+      return null;
+    }
+  };
+  /**
+ * Add a class to an element, if it doesn't already have it.
+ *
+ * @returns The element, with its new class added.
+ * @private
+ */
+  var _addClass = function(element, value) {
+    var c, cl, className, classNames = [];
+    if (typeof value === "string" && value) {
+      classNames = value.split(/\s+/);
+    }
+    if (element && element.nodeType === 1 && classNames.length > 0) {
+      if (element.classList) {
+        for (c = 0, cl = classNames.length; c < cl; c++) {
+          element.classList.add(classNames[c]);
+        }
+      } else if (element.hasOwnProperty("className")) {
+        className = " " + element.className + " ";
+        for (c = 0, cl = classNames.length; c < cl; c++) {
+          if (className.indexOf(" " + classNames[c] + " ") === -1) {
+            className += classNames[c] + " ";
+          }
+        }
+        element.className = className.replace(/^\s+|\s+$/g, "");
+      }
+    }
+    return element;
+  };
+  /**
+ * Remove a class from an element, if it has it.
+ *
+ * @returns The element, with its class removed.
+ * @private
+ */
+  var _removeClass = function(element, value) {
+    var c, cl, className, classNames = [];
+    if (typeof value === "string" && value) {
+      classNames = value.split(/\s+/);
+    }
+    if (element && element.nodeType === 1 && classNames.length > 0) {
+      if (element.classList && element.classList.length > 0) {
+        for (c = 0, cl = classNames.length; c < cl; c++) {
+          element.classList.remove(classNames[c]);
+        }
+      } else if (element.className) {
+        className = (" " + element.className + " ").replace(/[\r\n\t]/g, " ");
+        for (c = 0, cl = classNames.length; c < cl; c++) {
+          className = className.replace(" " + classNames[c] + " ", " ");
+        }
+        element.className = className.replace(/^\s+|\s+$/g, "");
+      }
+    }
+    return element;
+  };
+  /**
+ * Attempt to interpret the element's CSS styling. If `prop` is `"cursor"`,
+ * then we assume that it should be a hand ("pointer") cursor if the element
+ * is an anchor element ("a" tag).
+ *
+ * @returns The computed style property.
+ * @private
+ */
+  var _getStyle = function(el, prop) {
+    var value = _getComputedStyle(el, null).getPropertyValue(prop);
+    if (prop === "cursor") {
+      if (!value || value === "auto") {
+        if (el.nodeName === "A") {
+          return "pointer";
+        }
+      }
+    }
+    return value;
+  };
+  /**
+ * Get the absolutely positioned coordinates of a DOM element.
+ *
+ * @returns Object containing the element's position, width, and height.
+ * @private
+ */
+  var _getElementPosition = function(el) {
+    var pos = {
+      left: 0,
+      top: 0,
+      width: 0,
+      height: 0
+    };
+    if (el.getBoundingClientRect) {
+      var elRect = el.getBoundingClientRect();
+      var pageXOffset = _window.pageXOffset;
+      var pageYOffset = _window.pageYOffset;
+      var leftBorderWidth = _document.documentElement.clientLeft || 0;
+      var topBorderWidth = _document.documentElement.clientTop || 0;
+      var leftBodyOffset = 0;
+      var topBodyOffset = 0;
+      if (_getStyle(_document.body, "position") === "relative") {
+        var bodyRect = _document.body.getBoundingClientRect();
+        var htmlRect = _document.documentElement.getBoundingClientRect();
+        leftBodyOffset = bodyRect.left - htmlRect.left || 0;
+        topBodyOffset = bodyRect.top - htmlRect.top || 0;
+      }
+      pos.left = elRect.left + pageXOffset - leftBorderWidth - leftBodyOffset;
+      pos.top = elRect.top + pageYOffset - topBorderWidth - topBodyOffset;
+      pos.width = "width" in elRect ? elRect.width : elRect.right - elRect.left;
+      pos.height = "height" in elRect ? elRect.height : elRect.bottom - elRect.top;
+    }
+    return pos;
+  };
+  /**
+ * Determine is an element is visible somewhere within the document (page).
+ *
+ * @returns Boolean
+ * @private
+ */
+  var _isElementVisible = function(el) {
+    if (!el) {
+      return false;
+    }
+    var styles = _getComputedStyle(el, null);
+    var hasCssHeight = _parseFloat(styles.height) > 0;
+    var hasCssWidth = _parseFloat(styles.width) > 0;
+    var hasCssTop = _parseFloat(styles.top) >= 0;
+    var hasCssLeft = _parseFloat(styles.left) >= 0;
+    var cssKnows = hasCssHeight && hasCssWidth && hasCssTop && hasCssLeft;
+    var rect = cssKnows ? null : _getElementPosition(el);
+    var isVisible = styles.display !== "none" && styles.visibility !== "collapse" && (cssKnows || !!rect && (hasCssHeight || rect.height > 0) && (hasCssWidth || rect.width > 0) && (hasCssTop || rect.top >= 0) && (hasCssLeft || rect.left >= 0));
+    return isVisible;
+  };
+  /**
+ * Clear all existing timeouts and interval polling delegates.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _clearTimeoutsAndPolling = function() {
+    _clearTimeout(_flashCheckTimeout);
+    _flashCheckTimeout = 0;
+    _clearInterval(_swfFallbackCheckInterval);
+    _swfFallbackCheckInterval = 0;
+  };
+  /**
+ * Reposition the Flash object to cover the currently activated element.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _reposition = function() {
+    var htmlBridge;
+    if (_currentElement && (htmlBridge = _getHtmlBridge(_flashState.bridge))) {
+      var pos = _getElementPosition(_currentElement);
+      _extend(htmlBridge.style, {
+        width: pos.width + "px",
+        height: pos.height + "px",
+        top: pos.top + "px",
+        left: pos.left + "px",
+        zIndex: "" + _getSafeZIndex(_globalConfig.zIndex)
+      });
+    }
+  };
+  /**
+ * Sends a signal to the Flash object to display the hand cursor if `true`.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _setHandCursor = function(enabled) {
+    if (_flashState.ready === true) {
+      if (_flashState.bridge && typeof _flashState.bridge.setHandCursor === "function") {
+        _flashState.bridge.setHandCursor(enabled);
+      } else {
+        _flashState.ready = false;
+      }
+    }
+  };
+  /**
+ * Get a safe value for `zIndex`
+ *
+ * @returns an integer, or "auto"
+ * @private
+ */
+  var _getSafeZIndex = function(val) {
+    if (/^(?:auto|inherit)$/.test(val)) {
+      return val;
+    }
+    var zIndex;
+    if (typeof val === "number" && !_isNaN(val)) {
+      zIndex = val;
+    } else if (typeof val === "string") {
+      zIndex = _getSafeZIndex(_parseInt(val, 10));
+    }
+    return typeof zIndex === "number" ? zIndex : "auto";
+  };
+  /**
+ * Attempt to detect if ZeroClipboard is executing inside of a sandboxed iframe.
+ * If it is, Flash Player cannot be used, so ZeroClipboard is dead in the water.
+ *
+ * @see {@link http://lists.w3.org/Archives/Public/public-whatwg-archive/2014Dec/0002.html}
+ * @see {@link https://github.com/zeroclipboard/zeroclipboard/issues/511}
+ * @see {@link http://zeroclipboard.org/test-iframes.html}
+ *
+ * @returns `true` (is sandboxed), `false` (is not sandboxed), or `null` (uncertain) 
+ * @private
+ */
+  var _detectSandbox = function(doNotReassessFlashSupport) {
+    var effectiveScriptOrigin, frame, frameError, previousState = _flashState.sandboxed, isSandboxed = null;
+    doNotReassessFlashSupport = doNotReassessFlashSupport === true;
+    if (_pageIsFramed === false) {
+      isSandboxed = false;
+    } else {
+      try {
+        frame = window.frameElement || null;
+      } catch (e) {
+        frameError = {
+          name: e.name,
+          message: e.message
+        };
+      }
+      if (frame && frame.nodeType === 1 && frame.nodeName === "IFRAME") {
+        try {
+          isSandboxed = frame.hasAttribute("sandbox");
+        } catch (e) {
+          isSandboxed = null;
+        }
+      } else {
+        try {
+          effectiveScriptOrigin = document.domain || null;
+        } catch (e) {
+          effectiveScriptOrigin = null;
+        }
+        if (effectiveScriptOrigin === null || frameError && frameError.name === "SecurityError" && /(^|[\s\(\[@])sandbox(es|ed|ing|[\s\.,!\)\]@]|$)/.test(frameError.message.toLowerCase())) {
+          isSandboxed = true;
+        }
+      }
+    }
+    _flashState.sandboxed = isSandboxed;
+    if (previousState !== isSandboxed && !doNotReassessFlashSupport) {
+      _detectFlashSupport(_ActiveXObject);
+    }
+    return isSandboxed;
+  };
+  /**
+ * Detect the Flash Player status, version, and plugin type.
+ *
+ * @see {@link https://code.google.com/p/doctype-mirror/wiki/ArticleDetectFlash#The_code}
+ * @see {@link http://stackoverflow.com/questions/12866060/detecting-pepper-ppapi-flash-with-javascript}
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _detectFlashSupport = function(ActiveXObject) {
+    var plugin, ax, mimeType, hasFlash = false, isActiveX = false, isPPAPI = false, flashVersion = "";
+    /**
+   * Derived from Apple's suggested sniffer.
+   * @param {String} desc e.g. "Shockwave Flash 7.0 r61"
+   * @returns {String} "7.0.61"
+   * @private
+   */
+    function parseFlashVersion(desc) {
+      var matches = desc.match(/[\d]+/g);
+      matches.length = 3;
+      return matches.join(".");
+    }
+    function isPepperFlash(flashPlayerFileName) {
+      return !!flashPlayerFileName && (flashPlayerFileName = flashPlayerFileName.toLowerCase()) && (/^(pepflashplayer\.dll|libpepflashplayer\.so|pepperflashplayer\.plugin)$/.test(flashPlayerFileName) || flashPlayerFileName.slice(-13) === "chrome.plugin");
+    }
+    function inspectPlugin(plugin) {
+      if (plugin) {
+        hasFlash = true;
+        if (plugin.version) {
+          flashVersion = parseFlashVersion(plugin.version);
+        }
+        if (!flashVersion && plugin.description) {
+          flashVersion = parseFlashVersion(plugin.description);
+        }
+        if (plugin.filename) {
+          isPPAPI = isPepperFlash(plugin.filename);
+        }
+      }
+    }
+    if (_navigator.plugins && _navigator.plugins.length) {
+      plugin = _navigator.plugins["Shockwave Flash"];
+      inspectPlugin(plugin);
+      if (_navigator.plugins["Shockwave Flash 2.0"]) {
+        hasFlash = true;
+        flashVersion = "2.0.0.11";
+      }
+    } else if (_navigator.mimeTypes && _navigator.mimeTypes.length) {
+      mimeType = _navigator.mimeTypes["application/x-shockwave-flash"];
+      plugin = mimeType && mimeType.enabledPlugin;
+      inspectPlugin(plugin);
+    } else if (typeof ActiveXObject !== "undefined") {
+      isActiveX = true;
+      try {
+        ax = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
+        hasFlash = true;
+        flashVersion = parseFlashVersion(ax.GetVariable("$version"));
+      } catch (e1) {
+        try {
+          ax = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
+          hasFlash = true;
+          flashVersion = "6.0.21";
+        } catch (e2) {
+          try {
+            ax = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
+            hasFlash = true;
+            flashVersion = parseFlashVersion(ax.GetVariable("$version"));
+          } catch (e3) {
+            isActiveX = false;
+          }
+        }
+      }
+    }
+    _flashState.disabled = hasFlash !== true;
+    _flashState.outdated = flashVersion && _parseFloat(flashVersion) < _parseFloat(_minimumFlashVersion);
+    _flashState.version = flashVersion || "0.0.0";
+    _flashState.pluginType = isPPAPI ? "pepper" : isActiveX ? "activex" : hasFlash ? "netscape" : "unknown";
+  };
+  /**
+ * Invoke the Flash detection algorithms immediately upon inclusion so we're not waiting later.
+ */
+  _detectFlashSupport(_ActiveXObject);
+  /**
+ * Always assess the `sandboxed` state of the page at important Flash-related moments.
+ */
+  _detectSandbox(true);
+  /**
+ * A shell constructor for `ZeroClipboard` client instances.
+ *
+ * @constructor
+ */
+  var ZeroClipboard = function() {
+    if (!(this instanceof ZeroClipboard)) {
+      return new ZeroClipboard();
+    }
+    if (typeof ZeroClipboard._createClient === "function") {
+      ZeroClipboard._createClient.apply(this, _args(arguments));
+    }
+  };
+  /**
+ * The ZeroClipboard library's version number.
+ *
+ * @static
+ * @readonly
+ * @property {string}
+ */
+  _defineProperty(ZeroClipboard, "version", {
+    value: "2.2.0",
+    writable: false,
+    configurable: true,
+    enumerable: true
+  });
+  /**
+ * Update or get a copy of the ZeroClipboard global configuration.
+ * Returns a copy of the current/updated configuration.
+ *
+ * @returns Object
+ * @static
+ */
+  ZeroClipboard.config = function() {
+    return _config.apply(this, _args(arguments));
+  };
+  /**
+ * Diagnostic method that describes the state of the browser, Flash Player, and ZeroClipboard.
+ *
+ * @returns Object
+ * @static
+ */
+  ZeroClipboard.state = function() {
+    return _state.apply(this, _args(arguments));
+  };
+  /**
+ * Check if Flash is unusable for any reason: disabled, outdated, deactivated, etc.
+ *
+ * @returns Boolean
+ * @static
+ */
+  ZeroClipboard.isFlashUnusable = function() {
+    return _isFlashUnusable.apply(this, _args(arguments));
+  };
+  /**
+ * Register an event listener.
+ *
+ * @returns `ZeroClipboard`
+ * @static
+ */
+  ZeroClipboard.on = function() {
+    return _on.apply(this, _args(arguments));
+  };
+  /**
+ * Unregister an event listener.
+ * If no `listener` function/object is provided, it will unregister all listeners for the provided `eventType`.
+ * If no `eventType` is provided, it will unregister all listeners for every event type.
+ *
+ * @returns `ZeroClipboard`
+ * @static
+ */
+  ZeroClipboard.off = function() {
+    return _off.apply(this, _args(arguments));
+  };
+  /**
+ * Retrieve event listeners for an `eventType`.
+ * If no `eventType` is provided, it will retrieve all listeners for every event type.
+ *
+ * @returns array of listeners for the `eventType`; if no `eventType`, then a map/hash object of listeners for all event types; or `null`
+ */
+  ZeroClipboard.handlers = function() {
+    return _listeners.apply(this, _args(arguments));
+  };
+  /**
+ * Event emission receiver from the Flash object, forwarding to any registered JavaScript event listeners.
+ *
+ * @returns For the "copy" event, returns the Flash-friendly "clipData" object; otherwise `undefined`.
+ * @static
+ */
+  ZeroClipboard.emit = function() {
+    return _emit.apply(this, _args(arguments));
+  };
+  /**
+ * Create and embed the Flash object.
+ *
+ * @returns The Flash object
+ * @static
+ */
+  ZeroClipboard.create = function() {
+    return _create.apply(this, _args(arguments));
+  };
+  /**
+ * Self-destruct and clean up everything, including the embedded Flash object.
+ *
+ * @returns `undefined`
+ * @static
+ */
+  ZeroClipboard.destroy = function() {
+    return _destroy.apply(this, _args(arguments));
+  };
+  /**
+ * Set the pending data for clipboard injection.
+ *
+ * @returns `undefined`
+ * @static
+ */
+  ZeroClipboard.setData = function() {
+    return _setData.apply(this, _args(arguments));
+  };
+  /**
+ * Clear the pending data for clipboard injection.
+ * If no `format` is provided, all pending data formats will be cleared.
+ *
+ * @returns `undefined`
+ * @static
+ */
+  ZeroClipboard.clearData = function() {
+    return _clearData.apply(this, _args(arguments));
+  };
+  /**
+ * Get a copy of the pending data for clipboard injection.
+ * If no `format` is provided, a copy of ALL pending data formats will be returned.
+ *
+ * @returns `String` or `Object`
+ * @static
+ */
+  ZeroClipboard.getData = function() {
+    return _getData.apply(this, _args(arguments));
+  };
+  /**
+ * Sets the current HTML object that the Flash object should overlay. This will put the global
+ * Flash object on top of the current element; depending on the setup, this may also set the
+ * pending clipboard text data as well as the Flash object's wrapping element's title attribute
+ * based on the underlying HTML element and ZeroClipboard configuration.
+ *
+ * @returns `undefined`
+ * @static
+ */
+  ZeroClipboard.focus = ZeroClipboard.activate = function() {
+    return _focus.apply(this, _args(arguments));
+  };
+  /**
+ * Un-overlays the Flash object. This will put the global Flash object off-screen; depending on
+ * the setup, this may also unset the Flash object's wrapping element's title attribute based on
+ * the underlying HTML element and ZeroClipboard configuration.
+ *
+ * @returns `undefined`
+ * @static
+ */
+  ZeroClipboard.blur = ZeroClipboard.deactivate = function() {
+    return _blur.apply(this, _args(arguments));
+  };
+  /**
+ * Returns the currently focused/"activated" HTML element that the Flash object is wrapping.
+ *
+ * @returns `HTMLElement` or `null`
+ * @static
+ */
+  ZeroClipboard.activeElement = function() {
+    return _activeElement.apply(this, _args(arguments));
+  };
+  /**
+ * Keep track of the ZeroClipboard client instance counter.
+ */
+  var _clientIdCounter = 0;
+  /**
+ * Keep track of the state of the client instances.
+ *
+ * Entry structure:
+ *   _clientMeta[client.id] = {
+ *     instance: client,
+ *     elements: [],
+ *     handlers: {}
+ *   };
+ */
+  var _clientMeta = {};
+  /**
+ * Keep track of the ZeroClipboard clipped elements counter.
+ */
+  var _elementIdCounter = 0;
+  /**
+ * Keep track of the state of the clipped element relationships to clients.
+ *
+ * Entry structure:
+ *   _elementMeta[element.zcClippingId] = [client1.id, client2.id];
+ */
+  var _elementMeta = {};
+  /**
+ * Keep track of the state of the mouse event handlers for clipped elements.
+ *
+ * Entry structure:
+ *   _mouseHandlers[element.zcClippingId] = {
+ *     mouseover:  function(event) {},
+ *     mouseout:   function(event) {},
+ *     mouseenter: function(event) {},
+ *     mouseleave: function(event) {},
+ *     mousemove:  function(event) {}
+ *   };
+ */
+  var _mouseHandlers = {};
+  /**
+ * Extending the ZeroClipboard configuration defaults for the Client module.
+ */
+  _extend(_globalConfig, {
+    autoActivate: true
+  });
+  /**
+ * The real constructor for `ZeroClipboard` client instances.
+ * @private
+ */
+  var _clientConstructor = function(elements) {
+    var client = this;
+    client.id = "" + _clientIdCounter++;
+    _clientMeta[client.id] = {
+      instance: client,
+      elements: [],
+      handlers: {}
+    };
+    if (elements) {
+      client.clip(elements);
+    }
+    ZeroClipboard.on("*", function(event) {
+      return client.emit(event);
+    });
+    ZeroClipboard.on("destroy", function() {
+      client.destroy();
+    });
+    ZeroClipboard.create();
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.on`.
+ * @private
+ */
+  var _clientOn = function(eventType, listener) {
+    var i, len, events, added = {}, meta = _clientMeta[this.id], handlers = meta && meta.handlers;
+    if (!meta) {
+      throw new Error("Attempted to add new listener(s) to a destroyed ZeroClipboard client instance");
+    }
+    if (typeof eventType === "string" && eventType) {
+      events = eventType.toLowerCase().split(/\s+/);
+    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
+      for (i in eventType) {
+        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
+          this.on(i, eventType[i]);
+        }
+      }
+    }
+    if (events && events.length) {
+      for (i = 0, len = events.length; i < len; i++) {
+        eventType = events[i].replace(/^on/, "");
+        added[eventType] = true;
+        if (!handlers[eventType]) {
+          handlers[eventType] = [];
+        }
+        handlers[eventType].push(listener);
+      }
+      if (added.ready && _flashState.ready) {
+        this.emit({
+          type: "ready",
+          client: this
+        });
+      }
+      if (added.error) {
+        for (i = 0, len = _flashStateErrorNames.length; i < len; i++) {
+          if (_flashState[_flashStateErrorNames[i].replace(/^flash-/, "")]) {
+            this.emit({
+              type: "error",
+              name: _flashStateErrorNames[i],
+              client: this
+            });
+            break;
+          }
+        }
+        if (_zcSwfVersion !== undefined && ZeroClipboard.version !== _zcSwfVersion) {
+          this.emit({
+            type: "error",
+            name: "version-mismatch",
+            jsVersion: ZeroClipboard.version,
+            swfVersion: _zcSwfVersion
+          });
+        }
+      }
+    }
+    return this;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.off`.
+ * @private
+ */
+  var _clientOff = function(eventType, listener) {
+    var i, len, foundIndex, events, perEventHandlers, meta = _clientMeta[this.id], handlers = meta && meta.handlers;
+    if (!handlers) {
+      return this;
+    }
+    if (arguments.length === 0) {
+      events = _keys(handlers);
+    } else if (typeof eventType === "string" && eventType) {
+      events = eventType.split(/\s+/);
+    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
+      for (i in eventType) {
+        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
+          this.off(i, eventType[i]);
+        }
+      }
+    }
+    if (events && events.length) {
+      for (i = 0, len = events.length; i < len; i++) {
+        eventType = events[i].toLowerCase().replace(/^on/, "");
+        perEventHandlers = handlers[eventType];
+        if (perEventHandlers && perEventHandlers.length) {
+          if (listener) {
+            foundIndex = perEventHandlers.indexOf(listener);
+            while (foundIndex !== -1) {
+              perEventHandlers.splice(foundIndex, 1);
+              foundIndex = perEventHandlers.indexOf(listener, foundIndex);
+            }
+          } else {
+            perEventHandlers.length = 0;
+          }
+        }
+      }
+    }
+    return this;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.handlers`.
+ * @private
+ */
+  var _clientListeners = function(eventType) {
+    var copy = null, handlers = _clientMeta[this.id] && _clientMeta[this.id].handlers;
+    if (handlers) {
+      if (typeof eventType === "string" && eventType) {
+        copy = handlers[eventType] ? handlers[eventType].slice(0) : [];
+      } else {
+        copy = _deepCopy(handlers);
+      }
+    }
+    return copy;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.emit`.
+ * @private
+ */
+  var _clientEmit = function(event) {
+    if (_clientShouldEmit.call(this, event)) {
+      if (typeof event === "object" && event && typeof event.type === "string" && event.type) {
+        event = _extend({}, event);
+      }
+      var eventCopy = _extend({}, _createEvent(event), {
+        client: this
+      });
+      _clientDispatchCallbacks.call(this, eventCopy);
+    }
+    return this;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.clip`.
+ * @private
+ */
+  var _clientClip = function(elements) {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to clip element(s) to a destroyed ZeroClipboard client instance");
+    }
+    elements = _prepClip(elements);
+    for (var i = 0; i < elements.length; i++) {
+      if (_hasOwn.call(elements, i) && elements[i] && elements[i].nodeType === 1) {
+        if (!elements[i].zcClippingId) {
+          elements[i].zcClippingId = "zcClippingId_" + _elementIdCounter++;
+          _elementMeta[elements[i].zcClippingId] = [ this.id ];
+          if (_globalConfig.autoActivate === true) {
+            _addMouseHandlers(elements[i]);
+          }
+        } else if (_elementMeta[elements[i].zcClippingId].indexOf(this.id) === -1) {
+          _elementMeta[elements[i].zcClippingId].push(this.id);
+        }
+        var clippedElements = _clientMeta[this.id] && _clientMeta[this.id].elements;
+        if (clippedElements.indexOf(elements[i]) === -1) {
+          clippedElements.push(elements[i]);
+        }
+      }
+    }
+    return this;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.unclip`.
+ * @private
+ */
+  var _clientUnclip = function(elements) {
+    var meta = _clientMeta[this.id];
+    if (!meta) {
+      return this;
+    }
+    var clippedElements = meta.elements;
+    var arrayIndex;
+    if (typeof elements === "undefined") {
+      elements = clippedElements.slice(0);
+    } else {
+      elements = _prepClip(elements);
+    }
+    for (var i = elements.length; i--; ) {
+      if (_hasOwn.call(elements, i) && elements[i] && elements[i].nodeType === 1) {
+        arrayIndex = 0;
+        while ((arrayIndex = clippedElements.indexOf(elements[i], arrayIndex)) !== -1) {
+          clippedElements.splice(arrayIndex, 1);
+        }
+        var clientIds = _elementMeta[elements[i].zcClippingId];
+        if (clientIds) {
+          arrayIndex = 0;
+          while ((arrayIndex = clientIds.indexOf(this.id, arrayIndex)) !== -1) {
+            clientIds.splice(arrayIndex, 1);
+          }
+          if (clientIds.length === 0) {
+            if (_globalConfig.autoActivate === true) {
+              _removeMouseHandlers(elements[i]);
+            }
+            delete elements[i].zcClippingId;
+          }
+        }
+      }
+    }
+    return this;
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.elements`.
+ * @private
+ */
+  var _clientElements = function() {
+    var meta = _clientMeta[this.id];
+    return meta && meta.elements ? meta.elements.slice(0) : [];
+  };
+  /**
+ * The underlying implementation of `ZeroClipboard.Client.prototype.destroy`.
+ * @private
+ */
+  var _clientDestroy = function() {
+    if (!_clientMeta[this.id]) {
+      return;
+    }
+    this.unclip();
+    this.off();
+    delete _clientMeta[this.id];
+  };
+  /**
+ * Inspect an Event to see if the Client (`this`) should honor it for emission.
+ * @private
+ */
+  var _clientShouldEmit = function(event) {
+    if (!(event && event.type)) {
+      return false;
+    }
+    if (event.client && event.client !== this) {
+      return false;
+    }
+    var meta = _clientMeta[this.id];
+    var clippedEls = meta && meta.elements;
+    var hasClippedEls = !!clippedEls && clippedEls.length > 0;
+    var goodTarget = !event.target || hasClippedEls && clippedEls.indexOf(event.target) !== -1;
+    var goodRelTarget = event.relatedTarget && hasClippedEls && clippedEls.indexOf(event.relatedTarget) !== -1;
+    var goodClient = event.client && event.client === this;
+    if (!meta || !(goodTarget || goodRelTarget || goodClient)) {
+      return false;
+    }
+    return true;
+  };
+  /**
+ * Handle the actual dispatching of events to a client instance.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _clientDispatchCallbacks = function(event) {
+    var meta = _clientMeta[this.id];
+    if (!(typeof event === "object" && event && event.type && meta)) {
+      return;
+    }
+    var async = _shouldPerformAsync(event);
+    var wildcardTypeHandlers = meta && meta.handlers["*"] || [];
+    var specificTypeHandlers = meta && meta.handlers[event.type] || [];
+    var handlers = wildcardTypeHandlers.concat(specificTypeHandlers);
+    if (handlers && handlers.length) {
+      var i, len, func, context, eventCopy, originalContext = this;
+      for (i = 0, len = handlers.length; i < len; i++) {
+        func = handlers[i];
+        context = originalContext;
+        if (typeof func === "string" && typeof _window[func] === "function") {
+          func = _window[func];
+        }
+        if (typeof func === "object" && func && typeof func.handleEvent === "function") {
+          context = func;
+          func = func.handleEvent;
+        }
+        if (typeof func === "function") {
+          eventCopy = _extend({}, event);
+          _dispatchCallback(func, context, [ eventCopy ], async);
+        }
+      }
+    }
+  };
+  /**
+ * Prepares the elements for clipping/unclipping.
+ *
+ * @returns An Array of elements.
+ * @private
+ */
+  var _prepClip = function(elements) {
+    if (typeof elements === "string") {
+      elements = [];
+    }
+    return typeof elements.length !== "number" ? [ elements ] : elements;
+  };
+  /**
+ * Add a `mouseover` handler function for a clipped element.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _addMouseHandlers = function(element) {
+    if (!(element && element.nodeType === 1)) {
+      return;
+    }
+    var _suppressMouseEvents = function(event) {
+      if (!(event || (event = _window.event))) {
+        return;
+      }
+      if (event._source !== "js") {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+      }
+      delete event._source;
+    };
+    var _elementMouseOver = function(event) {
+      if (!(event || (event = _window.event))) {
+        return;
+      }
+      _suppressMouseEvents(event);
+      ZeroClipboard.focus(element);
+    };
+    element.addEventListener("mouseover", _elementMouseOver, false);
+    element.addEventListener("mouseout", _suppressMouseEvents, false);
+    element.addEventListener("mouseenter", _suppressMouseEvents, false);
+    element.addEventListener("mouseleave", _suppressMouseEvents, false);
+    element.addEventListener("mousemove", _suppressMouseEvents, false);
+    _mouseHandlers[element.zcClippingId] = {
+      mouseover: _elementMouseOver,
+      mouseout: _suppressMouseEvents,
+      mouseenter: _suppressMouseEvents,
+      mouseleave: _suppressMouseEvents,
+      mousemove: _suppressMouseEvents
+    };
+  };
+  /**
+ * Remove a `mouseover` handler function for a clipped element.
+ *
+ * @returns `undefined`
+ * @private
+ */
+  var _removeMouseHandlers = function(element) {
+    if (!(element && element.nodeType === 1)) {
+      return;
+    }
+    var mouseHandlers = _mouseHandlers[element.zcClippingId];
+    if (!(typeof mouseHandlers === "object" && mouseHandlers)) {
+      return;
+    }
+    var key, val, mouseEvents = [ "move", "leave", "enter", "out", "over" ];
+    for (var i = 0, len = mouseEvents.length; i < len; i++) {
+      key = "mouse" + mouseEvents[i];
+      val = mouseHandlers[key];
+      if (typeof val === "function") {
+        element.removeEventListener(key, val, false);
+      }
+    }
+    delete _mouseHandlers[element.zcClippingId];
+  };
+  /**
+ * Creates a new ZeroClipboard client instance.
+ * Optionally, auto-`clip` an element or collection of elements.
+ *
+ * @constructor
+ */
+  ZeroClipboard._createClient = function() {
+    _clientConstructor.apply(this, _args(arguments));
+  };
+  /**
+ * Register an event listener to the client.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.on = function() {
+    return _clientOn.apply(this, _args(arguments));
+  };
+  /**
+ * Unregister an event handler from the client.
+ * If no `listener` function/object is provided, it will unregister all handlers for the provided `eventType`.
+ * If no `eventType` is provided, it will unregister all handlers for every event type.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.off = function() {
+    return _clientOff.apply(this, _args(arguments));
+  };
+  /**
+ * Retrieve event listeners for an `eventType` from the client.
+ * If no `eventType` is provided, it will retrieve all listeners for every event type.
+ *
+ * @returns array of listeners for the `eventType`; if no `eventType`, then a map/hash object of listeners for all event types; or `null`
+ */
+  ZeroClipboard.prototype.handlers = function() {
+    return _clientListeners.apply(this, _args(arguments));
+  };
+  /**
+ * Event emission receiver from the Flash object for this client's registered JavaScript event listeners.
+ *
+ * @returns For the "copy" event, returns the Flash-friendly "clipData" object; otherwise `undefined`.
+ */
+  ZeroClipboard.prototype.emit = function() {
+    return _clientEmit.apply(this, _args(arguments));
+  };
+  /**
+ * Register clipboard actions for new element(s) to the client.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.clip = function() {
+    return _clientClip.apply(this, _args(arguments));
+  };
+  /**
+ * Unregister the clipboard actions of previously registered element(s) on the page.
+ * If no elements are provided, ALL registered elements will be unregistered.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.unclip = function() {
+    return _clientUnclip.apply(this, _args(arguments));
+  };
+  /**
+ * Get all of the elements to which this client is clipped.
+ *
+ * @returns array of clipped elements
+ */
+  ZeroClipboard.prototype.elements = function() {
+    return _clientElements.apply(this, _args(arguments));
+  };
+  /**
+ * Self-destruct and clean up everything for a single client.
+ * This will NOT destroy the embedded Flash object.
+ *
+ * @returns `undefined`
+ */
+  ZeroClipboard.prototype.destroy = function() {
+    return _clientDestroy.apply(this, _args(arguments));
+  };
+  /**
+ * Stores the pending plain text to inject into the clipboard.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.setText = function(text) {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to set pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    ZeroClipboard.setData("text/plain", text);
+    return this;
+  };
+  /**
+ * Stores the pending HTML text to inject into the clipboard.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.setHtml = function(html) {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to set pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    ZeroClipboard.setData("text/html", html);
+    return this;
+  };
+  /**
+ * Stores the pending rich text (RTF) to inject into the clipboard.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.setRichText = function(richText) {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to set pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    ZeroClipboard.setData("application/rtf", richText);
+    return this;
+  };
+  /**
+ * Stores the pending data to inject into the clipboard.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.setData = function() {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to set pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    ZeroClipboard.setData.apply(this, _args(arguments));
+    return this;
+  };
+  /**
+ * Clears the pending data to inject into the clipboard.
+ * If no `format` is provided, all pending data formats will be cleared.
+ *
+ * @returns `this`
+ */
+  ZeroClipboard.prototype.clearData = function() {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to clear pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    ZeroClipboard.clearData.apply(this, _args(arguments));
+    return this;
+  };
+  /**
+ * Gets a copy of the pending data to inject into the clipboard.
+ * If no `format` is provided, a copy of ALL pending data formats will be returned.
+ *
+ * @returns `String` or `Object`
+ */
+  ZeroClipboard.prototype.getData = function() {
+    if (!_clientMeta[this.id]) {
+      throw new Error("Attempted to get pending clipboard data from a destroyed ZeroClipboard client instance");
+    }
+    return ZeroClipboard.getData.apply(this, _args(arguments));
+  };
+  if (typeof define === "function" && define.amd) {
+    define(function() {
+      return ZeroClipboard;
+    });
+  } else if (typeof module === "object" && module && typeof module.exports === "object" && module.exports) {
+    module.exports = ZeroClipboard;
+  } else {
+    window.ZeroClipboard = ZeroClipboard;
+  }
+})(function() {
+  return this || window;
+}());
+},{}]},{},[1]);
