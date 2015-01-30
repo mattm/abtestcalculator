@@ -92,6 +92,10 @@ module.exports = React.createClass( {displayName: "exports",
 		};
 	},
 
+	urlCopied: function() {
+		alert( 'The URL for these results was copied to your clipboard.' );
+	},
+
 	render: function() {
 		var variations = this.getVariations(), analysis, copyUrl, resultsUrl;
 
@@ -110,7 +114,7 @@ module.exports = React.createClass( {displayName: "exports",
 				resultsUrl = 'http://www.abtestcalculator.com?ap=' + this.state.participantsA + '&ac=' + this.state.conversionsA + '&bp=' + this.state.participantsB + '&bc=' + this.state.conversionsB;
 				copyUrl = (
 					React.createElement("div", {className: "copy-url"}, 
-						React.createElement(ReactZeroClipboard, {text: resultsUrl }, 
+						React.createElement(ReactZeroClipboard, {text: resultsUrl, afterCopy:  this.urlCopied}, 
 							React.createElement("button", null, "Copy URL to Clipboard")
 						)
 					)
