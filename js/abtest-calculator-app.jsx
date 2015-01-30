@@ -24,9 +24,9 @@ module.exports = React.createClass( {
 		var params = url.parse( document.URL, true ).query,
 			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
 			participantsA = 500,
-			conversionsA = 180,
+			conversionsA = 200,
 			participantsB = 500,
-			conversionsB = 200;
+			conversionsB = 220;
 
 		if ( ! _.isEmpty( params ) ) {
 			queryParticipantsA = params.ap;
@@ -75,17 +75,19 @@ module.exports = React.createClass( {
 	},
 
 	hasValidInputs: function() {
-		var hasIntegers, hasSmallerConversionsThanParticipants;
+		var hasIntegers, hasNonZeroConversions, hasSmallerConversionsThanParticipants;
 
 		hasIntegers = isInteger( this.state.participantsA ) &&
 			isInteger( this.state.conversionsA ) &&
 			isInteger( this.state.participantsB ) &&
 			isInteger( this.state.conversionsB );
 
-		hasSmallerConversionsThanParticipants = this.state.conversionsA <= this.state.participantsA &&
-			this.state.conversionsB <= this.state.participantsB;
+		// TODO: In theory this should be <= but the Ward distribution falls apart with 0 or 100% conversion rates
+		hasNonZeroConversions = this.state.conversionsA > 0 && this.state.conversionsB > 0;
+		hasSmallerConversionsThanParticipants = this.state.conversionsA < this.state.participantsA &&
+			this.state.conversionsB < this.state.participantsB;
 
-		return hasIntegers && hasSmallerConversionsThanParticipants;
+		return hasIntegers && hasNonZeroConversions && hasSmallerConversionsThanParticipants;
 	},
 
 	render: function() {
