@@ -65,7 +65,7 @@ module.exports = React.createClass( {
 					<span className="conversions">Conversions</span>
 				</div>
 				<div className="variation">
-					<span className="variation-a">Variation A</span>
+					<span className="label variation-a">Variation A</span>
 					<input
 						type="text"
 						ref="participantsA"
@@ -74,6 +74,7 @@ module.exports = React.createClass( {
 						onChange={ this.handleFormSubmit }
 						onFocus={ this.setFocus }
 						onKeyDown={ this.adjustInputValue } />
+					<span className="arrow">&#9654;</span>
 					<input
 						type="text"
 						ref="conversionsA"
@@ -83,13 +84,14 @@ module.exports = React.createClass( {
 						onKeyDown={ this.adjustInputValue } />
 				</div>
 				<div className="variation">
-					<span className="variation-b">Variation B</span>
+					<span className="label variation-b">Variation B</span>
 					<input type="text"
 						ref="participantsB"
 						placeholder="Participants B"
 						defaultValue={ this.props.variations.b.participants }
 						onChange={ this.handleFormSubmit }
 						onKeyDown={ this.adjustInputValue } />
+						<span className="arrow">&#9654;</span>
 					<input
 						type="text"
 						ref="conversionsB"
