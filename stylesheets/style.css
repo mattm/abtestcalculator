@@ -78,18 +78,14 @@ strong {
     -moz-border-radius: 3px;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #eee;
     cursor: pointer;
     display: block;
-    padding: 5px 15px; }
-    .form-container .copy-url span .zeroclipboard-is-hover {
+    font-size: 12px;
+    padding: 8px 16px;
+    min-width: 100px; }
+    .form-container .copy-url span:hover, .form-container .copy-url span.zeroclipboard-is-hover {
       background: rgba(255, 255, 255, 0.2); }
-      .form-container .copy-url span .zeroclipboard-is-hover button {
-        cursor: pointer; }
-    .form-container .copy-url span button {
-      background: none;
-      border: none;
-      color: #eee;
-      font-size: 12px; }
 
 .results {
   clear: both;

@@ -424,7 +424,7 @@ module.exports = React.createClass( {displayName: "exports",
 		return (
 			React.createElement("div", {className: "copy-url"}, 
 				React.createElement(ReactZeroClipboard, {text:  this.getResultsURL(), onAfterCopy:  this.urlCopied}, 
-					React.createElement("button", null, "Copy Results URL")
+					"Copy Results URL"
 				)
 			)
 		);
