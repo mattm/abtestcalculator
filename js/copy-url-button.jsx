@@ -25,7 +25,7 @@ module.exports = React.createClass( {
 		return (
 			<div className="copy-url">
 				<ReactZeroClipboard text={ this.getResultsURL() } onAfterCopy={ this.urlCopied }>
-					<button>Copy Results URL</button>
+					Copy Results URL
 				</ReactZeroClipboard>
 			</div>
 		);

@@ -114,23 +114,17 @@ strong {
 			@include border-radius(3px);
 			background: rgba(255, 255, 255, 0.15);
 			border: 1px solid rgba(255, 255, 255, 0.6);
+			color: #eee;
 			cursor: pointer;
 			display: block;
-			padding: 5px 15px;
+			font-size: 12px;
+			padding: 8px 16px;
 
-			.zeroclipboard-is-hover {
+			// Prevent width from mysteriously shrinking milliseconds after page load
+			min-width: 100px;
+
+			&:hover, &.zeroclipboard-is-hover {
 				background: rgba(255, 255, 255, 0.20);
-
-				button {
-					cursor: pointer;
-				}
-			}
-
-			button {
-				background: none;
-				border: none;
-				color: #eee;
-				font-size: 12px;
 			}
 		}
 	}
