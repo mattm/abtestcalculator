@@ -1,6 +1,6 @@
 # A/B Test Calculator
 
-This repository hosts the source code for [abtestcalculator.com](abtestcalculator.com), a visual A/B test signifiance calculator.
+This repository hosts the source code for [ABTestCalculator.com](http://www.abtestcalculator.com), a visual A/B test signifiance calculator.
 
 ## Installation
 
