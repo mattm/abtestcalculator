@@ -124,9 +124,15 @@ strong {
 	}
 }
 
-.analysis {
+.results {
 	clear: both;
 	margin-top: 10px;
+
+	.error {
+		color: #F1BEBE;
+		font-size: 21px;
+		margin-top: 15px;
+	}
 
 	.graphs {
 		margin-bottom: 15px;
@@ -165,12 +171,6 @@ strong {
 		line-height: 1.6em;
 		padding: 15px 0;
 		text-align: center;
-	}
-
-	.error {
-		color: #F1BEBE;
-		font-size: 21px;
-		margin-top: 15px;
 	}
 }
 

@@ -74,61 +74,90 @@ module.exports = React.createClass( {
 		alert( 'The URL for these results was copied to your clipboard.' );
 	},
 
-	hasValidInputs: function() {
-		var hasIntegers, hasNonZeroConversions, hasSmallerConversionsThanParticipants;
-
-		hasIntegers = isInteger( this.state.participantsA ) &&
+	hasIntegerInputs: function() {
+		return isInteger( this.state.participantsA ) &&
 			isInteger( this.state.conversionsA ) &&
 			isInteger( this.state.participantsB ) &&
 			isInteger( this.state.conversionsB );
+	},
 
-		// TODO: In theory this should be <= but the Ward distribution falls apart with 0 or 100% conversion rates
-		hasNonZeroConversions = this.state.conversionsA > 0 && this.state.conversionsB > 0;
-		hasSmallerConversionsThanParticipants = this.state.conversionsA < this.state.participantsA &&
-			this.state.conversionsB < this.state.participantsB;
+	hasMoreParticipantsThanConversions: function() {
+		return this.state.conversionsA <= this.state.participantsA &&
+			this.state.conversionsB <= this.state.participantsB;
+	},
 
-		return hasIntegers && hasNonZeroConversions && hasSmallerConversionsThanParticipants;
+	hasGaussianDistributions: function() {
+		var variations = this.getVariations();
+
+		return variations.a.isGaussian() && variations.b.isGaussian();
+	},
+
+	getGraphsElement: function() {
+		var variations;
+
+		if ( utils.isCanvasSupported() ) {
+			variations = this.getVariations();
+			return (
+				<div className="graphs">
+					<SampleProportionsGraph variations={ variations } />
+					<ImprovementGraph variations={ variations } />
+				</div>
+			);
+		}
+	},
+
+	getCopyURLElement: function() {
+		return (
+			<div className="copy-url">
+				<ReactZeroClipboard text={ this.getResultsURL() } onAfterCopy={ this.urlCopied }>
+					<button>Copy URL to Clipboard</button>
+				</ReactZeroClipboard>
+			</div>
+		);
+	},
+
+	getResultsURL: function() {
+		return 'http://www.abtestcalculator.com?' +
+			'ap=' + this.state.participantsA +
+			'&ac=' + this.state.conversionsA +
+			'&bp=' + this.state.participantsB +
+			'&bc=' + this.state.conversionsB;
+	},
+
+	getErrorElement: function( errorMessage ) {
+		return <p className="error">{ errorMessage }</p>;
+	},
+
+	getAnalysisElement: function() {
+		return (
+			<div>
+				{ this.getGraphsElement() }
+				<ABTestSummary variations={ this.getVariations() } />
+			</div>
+		);
 	},
 
 	render: function() {
-		var variations = this.getVariations(), analysis, copyUrl, resultsUrl;
+		var copyUrlElement, results;
 
-		if ( this.hasValidInputs() ) {
-			if ( utils.isCanvasSupported() ) {
-				analysis = (
-					<div className="analysis">
-						<div className="graphs">
-							<SampleProportionsGraph variations={ variations } />
-							<ImprovementGraph variations={ variations } />
-						</div>
-						<ABTestSummary variations={ variations } />
-					</div>
-				);
-
-				resultsUrl = 'http://www.abtestcalculator.com?ap=' + this.state.participantsA + '&ac=' + this.state.conversionsA + '&bp=' + this.state.participantsB + '&bc=' + this.state.conversionsB;
-				copyUrl = (
-					<div className="copy-url">
-						<ReactZeroClipboard text={ resultsUrl } onAfterCopy={ this.urlCopied }>
-							<button>Copy URL to Clipboard</button>
-						</ReactZeroClipboard>
-					</div>
-				);
+		if ( this.hasIntegerInputs() ) {
+			if ( ! this.hasMoreParticipantsThanConversions() ) {
+				results = this.getErrorElement( 'The number of conversions must be smaller than the number of participants.' );
+			} else if ( ! this.hasGaussianDistributions() ) {
+				results = this.getErrorElement( 'There is not enough data yet to make a conclusion about the results of this test.' );
 			} else {
-				analysis = (
-					<div className="analysis">
-						<ABTestSummary variations={ variations } />
-					</div>
-				);
+				results = this.getAnalysisElement();
+				copyUrlElement = this.getCopyURLElement();
 			}
 		}
 
 		return (
 			<div>
 				<div className="form-container">
-					<ConversionDataForm variations={ variations } onUpdate={ this.updateConversionData } />
-					{ copyUrl }
+					<ConversionDataForm variations={ this.getVariations() } onUpdate={ this.updateConversionData } />
+					{ copyUrlElement }
 				</div>
-				{ analysis }
+				<div className="results">{ results }</div>
 			</div>
 		);
 	}
