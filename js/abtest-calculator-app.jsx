@@ -13,8 +13,8 @@ var React = require( 'react' ),
  */
 var ConversionDataForm = require( './conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
-	SampleProportionsGraph = require( './sample-proportions-graph' ),
-	ImprovementGraph = require( './improvement-graph' ),
+	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
+	ImprovementGraph = require( './graphs/improvement-graph' ),
 	Variation = require( './stats/variation' ),
 	ABTestSummary = require( './abtest-summary' ),
 	utils = require( './utils' );

@@ -10,7 +10,7 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 var analytics = require( './analytics' ),
-	SampleProportionsGraph = require( './sample-proportions-graph' ),
+	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
 	ABTestCalculator = require( './abtest-calculator-app' );
 
 var urlParams = url.parse( document.URL, true ).query,

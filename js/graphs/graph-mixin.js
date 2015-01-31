@@ -3,8 +3,8 @@
 /**
  * Internal dependencies
  */
-var constants = require( './constants' ),
-	utils = require( './utils' );
+var constants = require( '../constants' ),
+	utils = require( '../utils' );
 
 module.exports = {
 	convertToHiDPICanvas: function() {
