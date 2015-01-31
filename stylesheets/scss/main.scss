@@ -1,10 +1,33 @@
-@mixin border-radius($radius) {
+$background-light-blue: #3CAAD7;
+$background-dark-blue: #2a6fce;
+$dark-blue: #3A5D80;
+$pink: #F1BEBE;
+$white: white;
+$medium-gray: #ccc;
+$light-gray: #eee;
+$light-blue-gray: #E7F3FF;
+$transparent-light-white: rgba( 255, 255, 255, 0.15 );
+$transparent-medium-white: rgba( 255, 255, 255, 0.2 );
+$transparent-dark-white: rgba( 255, 255, 255, 0.6 );
+$variation-a: #F1C40F;
+$variation-b: #B6E2FF;
+$result-radius: 10px;
+$data-label-width: 100px;
+$data-input-width: 160px;
+$data-input-border-width: 1px;
+$data-input-horizontal-padding: 4px;
+$data-input-total-width: $data-input-width + $data-input-border-width * 2 + $data-input-horizontal-padding * 2;
+$arrow-width: 25px;
+$result-separation: 10px;
+$graph-width: 475px;
+
+@mixin border-radius( $radius ) {
 	border-radius: $radius;
 	-webkit-border-radius: $radius;
 	-moz-border-radius: $radius;
 }
 
-@mixin background-horizontal-gradient($color1, $color2) {
+@mixin background-horizontal-gradient( $color1, $color2 ) {
 	background: $color1;
 	background: -webkit-gradient(linear,left top,right top,color-stop(0%,$color1),color-stop(100%,$color2));
 	background: -webkit-linear-gradient(left,$color1 0,$color2 100%);
@@ -13,11 +36,8 @@
 }
 
 html {
-
-	@include background-horizontal-gradient(#3CAAD7, #2a6fce);;
-	color: #E7F3FF;;
-	font: 14px/20px 'Lato', Helvetica, Arial;
-	padding: 20px;
+	@include background-horizontal-gradient( $background-light-blue, $background-dark-blue );
+	font: 14px/20px Lato, Helvetica, Arial;
 }
 
 .wrapper {
@@ -26,7 +46,7 @@ html {
 }
 
 h1 {
-	color: white;
+	color: $light-blue-gray;
 	font-size: 28px;
 	font-weight: bold;
 	letter-spacing: 1px;
@@ -36,11 +56,11 @@ h1 {
 
 .view-source {
 	font-size: 12px;
-	margin-bottom: 30px;
+	margin-bottom: 25px;
 	text-align: center;
 
 	a {
-		border-bottom: 1px dotted #ccc;
+		border-bottom: 1px dotted $medium-gray;
 		color: #ddd;
 		padding-bottom: 1px;
 		text-decoration: none;
@@ -48,11 +68,11 @@ h1 {
 }
 
 .variation-a {
-	color: #F1C40F;
+	color: $variation-a;
 }
 
 .variation-b {
-	color: #B6E2FF;
+	color: $variation-b;
 }
 
 strong {
@@ -60,48 +80,55 @@ strong {
 }
 
 .form-container {
+	overflow: auto;
 
 	form {
 		float: left;
-		margin-bottom: 15px;
 		width: 600px;
 
 		.header-row {
 			margin-bottom: 5px;
 
 			span {
-				color: #eee;
+				color: $light-gray;
 				display: inline-block;
 				text-align: center;
-				width: 160px;
+				width: $data-input-total-width;
 			}
 
 			.participants {
-				margin-left: 100px;
+				margin-left: $data-label-width;
 			}
 
 			.conversions {
-				margin-left: 50px;
+				margin-left: $arrow-width;
 			}
 		}
 
-		.label {
-			font-size: 16px;
-			margin-right: 20px;
-		}
+		.variation {
+			margin-bottom: 5px;
 
-		.arrow {
-			margin: 0 3px 0 5px;
-		}
+			.label {
+				display: inline-block;
+				font-size: 16px;
+				width: $data-label-width;
+			}
 
-		input[type="text"] {
-			border: 1px solid #eee;
-			color: #555;
-			font-size: 15px;
-			margin: 2px;
-			padding: 6px 4px;
-			text-align: center;
-			width: 160px;
+			input[type="text"] {
+				border: 1px solid $light-gray;
+				color: #555;
+				font-size: 15px;
+				padding: 6px $data-input-horizontal-padding;
+				text-align: center;
+				width: $data-input-width;
+			}
+
+			.arrow {
+				color: $light-blue-gray;
+				display: inline-block;
+				text-align: center;
+				width: $arrow-width;
+			}
 		}
 	}
 
@@ -112,9 +139,9 @@ strong {
 		// ZeroClipboard wraps the content in a span tag
 		span {
 			@include border-radius(3px);
-			background: rgba(255, 255, 255, 0.15);
-			border: 1px solid rgba(255, 255, 255, 0.6);
-			color: #eee;
+			background: $transparent-light-white;
+			border: 1px solid $transparent-dark-white;
+			color: $light-gray;
 			cursor: pointer;
 			display: block;
 			font-size: 12px;
@@ -124,7 +151,7 @@ strong {
 			min-width: 100px;
 
 			&:hover, &.zeroclipboard-is-hover {
-				background: rgba(255, 255, 255, 0.20);
+				background: $transparent-medium-white;
 			}
 		}
 	}
@@ -132,25 +159,26 @@ strong {
 
 .results {
 	clear: both;
-	margin-top: 10px;
+	margin-top: $result-separation;
 
 	.error {
-		color: #F1BEBE;
+		color: $pink;
 		font-size: 21px;
 		margin-top: 15px;
 	}
 
 	.graphs {
-		margin-bottom: 15px;
+		margin-bottom: $result-separation;
 
 		.graph {
-			@include border-radius(10px);
-			background-color: #3A5D80;
+			@include border-radius( $result-radius );
+			background-color: $dark-blue;
 			display: inline-block;
 			padding: 15px 0;
-			width: 470px;
+			width: $graph-width;
 
 			h3 {
+				color: $light-blue-gray;
 				font-size: 20px;
 				font-weight: bold;
 				text-align: center;
@@ -164,15 +192,15 @@ strong {
 			}
 
 			&:first-of-type {
-				margin-right: 20px;
+				margin-right: $result-separation;
 			}
 		}
 	}
 
-	.significance {
-		@include border-radius(10px);
-		background-color: #3A5D80;
-		border: 1px solid darken(#3A5D80, 5%);
+	.summary {
+		@include border-radius( $result-radius );
+		background-color: $dark-blue;
+		color: $white;
 		font-size: 18px;
 		line-height: 1.6em;
 		padding: 15px 0;

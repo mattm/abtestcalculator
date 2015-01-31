@@ -77,7 +77,7 @@ module.exports = React.createClass( {
 		}
 
 		return (
-			<div className='significance'>
+			<div className="summary">
 				{ changeInWords }
 				{ oddsOfImprovementInWords }
 				{ significanceInWords }
