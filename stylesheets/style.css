@@ -6,16 +6,14 @@ html {
   background: -webkit-linear-gradient(left, #3CAAD7 0, #2a6fce 100%);
   background: -webkit-gradient(linear, left top, right top, from(#3CAAD7), to(#2a6fce));
   background: linear-gradient(to right, #3CAAD7 0, #2a6fce 100%);
-  color: #E7F3FF;
-  font: 14px/20px 'Lato', Helvetica, Arial;
-  padding: 20px; }
+  font: 14px/20px Lato, Helvetica, Arial; }
 
 .wrapper {
   margin: 0 auto;
   width: 960px; }
 
 h1 {
-  color: white;
+  color: #E7F3FF;
   font-size: 28px;
   font-weight: bold;
   letter-spacing: 1px;
@@ -24,7 +22,7 @@ h1 {
 
 .view-source {
   font-size: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   text-align: center; }
   .view-source a {
     border-bottom: 1px dotted #ccc;
@@ -41,51 +39,57 @@ h1 {
 strong {
   font-weight: bold; }
 
-.form-container form {
-  float: left;
-  margin-bottom: 15px;
-  width: 600px; }
-  .form-container form .header-row {
-    margin-bottom: 5px; }
-    .form-container form .header-row span {
+.form-container {
+  overflow: auto; }
+  .form-container form {
+    float: left;
+    width: 600px; }
+    .form-container form .header-row {
+      margin-bottom: 5px; }
+      .form-container form .header-row span {
+        color: #eee;
+        display: inline-block;
+        text-align: center;
+        width: 170px; }
+      .form-container form .header-row .participants {
+        margin-left: 100px; }
+      .form-container form .header-row .conversions {
+        margin-left: 25px; }
+    .form-container form .variation {
+      margin-bottom: 5px; }
+      .form-container form .variation .label {
+        display: inline-block;
+        font-size: 16px;
+        width: 100px; }
+      .form-container form .variation input[type="text"] {
+        border: 1px solid #eee;
+        color: #555;
+        font-size: 15px;
+        padding: 6px 4px;
+        text-align: center;
+        width: 160px; }
+      .form-container form .variation .arrow {
+        color: #E7F3FF;
+        display: inline-block;
+        text-align: center;
+        width: 25px; }
+  .form-container .copy-url {
+    float: right;
+    margin-top: 60px; }
+    .form-container .copy-url span {
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       color: #eee;
-      display: inline-block;
-      text-align: center;
-      width: 160px; }
-    .form-container form .header-row .participants {
-      margin-left: 100px; }
-    .form-container form .header-row .conversions {
-      margin-left: 50px; }
-  .form-container form .label {
-    font-size: 16px;
-    margin-right: 20px; }
-  .form-container form .arrow {
-    margin: 0 3px 0 5px; }
-  .form-container form input[type="text"] {
-    border: 1px solid #eee;
-    color: #555;
-    font-size: 15px;
-    margin: 2px;
-    padding: 6px 4px;
-    text-align: center;
-    width: 160px; }
-.form-container .copy-url {
-  float: right;
-  margin-top: 60px; }
-  .form-container .copy-url span {
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    color: #eee;
-    cursor: pointer;
-    display: block;
-    font-size: 12px;
-    padding: 8px 16px;
-    min-width: 100px; }
-    .form-container .copy-url span:hover, .form-container .copy-url span.zeroclipboard-is-hover {
-      background: rgba(255, 255, 255, 0.2); }
+      cursor: pointer;
+      display: block;
+      font-size: 12px;
+      padding: 8px 16px;
+      min-width: 100px; }
+      .form-container .copy-url span:hover, .form-container .copy-url span.zeroclipboard-is-hover {
+        background: rgba(255, 255, 255, 0.2); }
 
 .results {
   clear: both;
@@ -95,7 +99,7 @@ strong {
     font-size: 21px;
     margin-top: 15px; }
   .results .graphs {
-    margin-bottom: 15px; }
+    margin-bottom: 10px; }
     .results .graphs .graph {
       border-radius: 10px;
       -webkit-border-radius: 10px;
@@ -103,8 +107,9 @@ strong {
       background-color: #3A5D80;
       display: inline-block;
       padding: 15px 0;
-      width: 470px; }
+      width: 475px; }
       .results .graphs .graph h3 {
+        color: #E7F3FF;
         font-size: 20px;
         font-weight: bold;
         text-align: center; }
@@ -114,13 +119,13 @@ strong {
         padding: 0 20px;
         text-align: center; }
       .results .graphs .graph:first-of-type {
-        margin-right: 20px; }
-  .results .significance {
+        margin-right: 10px; }
+  .results .summary {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     background-color: #3A5D80;
-    border: 1px solid #32506e;
+    color: white;
     font-size: 18px;
     line-height: 1.6em;
     padding: 15px 0;

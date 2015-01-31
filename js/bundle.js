@@ -249,7 +249,7 @@ module.exports = React.createClass( {displayName: "exports",
 		}
 
 		return (
-			React.createElement("div", {className: "significance"}, 
+			React.createElement("div", {className: "summary"}, 
 				changeInWords, 
 				oddsOfImprovementInWords, 
 				significanceInWords 
@@ -279,8 +279,8 @@ module.exports = {
 'use strict';
 
 module.exports = {
-	CANVAS_WIDTH: 470,
-	CANVAS_HEIGHT: 240,
+	CANVAS_WIDTH: 475,
+	CANVAS_HEIGHT: 220,
 	CANVAS_PADDING_TOP: 20,
 	CANVAS_PADDING_BOTTOM: 40,
 	CANVAS_HORIZONTAL_PADDING: 40
@@ -345,8 +345,6 @@ module.exports = React.createClass( {displayName: "exports",
 	componentDidMount: function() {
 		this.refs.participantsA.getDOMNode().focus()
 	},
-
-
 
 	render: function() {
 		return (
@@ -1295,6 +1293,7 @@ function Variation( name, color, participants, conversions ) {
 	this.proportion = new SampleProportion( participants, conversions );
 }
 
+// See: http://blog.42floors.com/math-split-testing-part-2-chance-better/
 Variation.prototype.isGaussian = function() {
 	var np = this.participants * this.proportion.mean,
 		nq = this.participants * ( 1 - this.proportion.mean );
