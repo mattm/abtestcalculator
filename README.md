@@ -6,9 +6,9 @@ This repository hosts the source code for [ABTestCalculator.com](http://www.abte
 
 First, clone this repository and ensure you have [npm](https://github.com/npm/npm) installed.
 
-Next, install all of the project's dependencies by running `npm install`.
+Next, install the project's dependencies by running `npm install`.
 
-Finally, simply run `gulp` from the command line and open `build/index.html` in your browser.
+Finally, simply run `gulp` from the command line and then open `build/index.html` in your browser.
 
 ## The Math
 
