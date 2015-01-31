@@ -72,18 +72,24 @@ strong {
 .form-container .copy-url {
   float: right;
   margin-top: 60px; }
-  .form-container .copy-url button {
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
+  .form-container .copy-url span {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    color: #eee;
-    font-size: 12px;
+    cursor: pointer;
+    display: block;
     padding: 5px 15px; }
-    .form-container .copy-url button:hover, .form-container .copy-url button .zeroclipboard-is-hover {
-      cursor: pointer;
+    .form-container .copy-url span:hover, .form-container .copy-url span .zeroclipboard-is-hover {
       background: rgba(255, 255, 255, 0.2); }
+      .form-container .copy-url span:hover button, .form-container .copy-url span .zeroclipboard-is-hover button {
+        cursor: pointer; }
+    .form-container .copy-url span button {
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      background: none;
+      border: none;
+      color: #eee;
+      font-size: 12px; }
 
 .results {
   clear: both;
