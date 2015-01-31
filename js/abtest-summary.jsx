@@ -11,76 +11,139 @@ var React = require( 'react' );
 var utils = require( './utils' );
 
 module.exports = React.createClass( {
-	render: function() {
-		var variationAConversionRate = Math.round( this.props.variations.a.proportion.mean * 10000 ) / 100,
-			variationBConversionRate = Math.round( this.props.variations.b.proportion.mean * 10000 ) / 100,
-			variationAImprovement = Math.round( ( this.props.variations.a.proportion.mean / this.props.variations.b.proportion.mean - 1 ) * 100 ),
-			variationBImprovement = Math.round( ( this.props.variations.b.proportion.mean / this.props.variations.a.proportion.mean - 1 ) * 100 ),
-			pAGreaterThanB = Math.round( utils.calculateProbabityBIsGratherThanA( this.props.variations.b.proportion, this.props.variations.a.proportion ) * 100 ),
-			pBGreaterThanA = 100 - pAGreaterThanB,
-			winningVariationPossessive,
-			winningVariation,
-			winningConversionRate,
-			losingVariationPossessive,
-			losingVariation,
-			losingConversionRate,
-			percentageImprovement,
-			conversionRatesInWords,
-			changeInWords,
-			isSignificant,
-			oddsOfImprovement,
-			onlyWording,
-			oddsOfImprovementInWords,
-			significanceInWords;
 
-		if ( variationBImprovement !== 0 ) {
-			if ( variationBImprovement > 0 ) {
-				winningVariationPossessive = <span className="variation-b">Variation B&#8217;s</span>;
-				winningVariation = <span className="variation-b">Variation B</span>;
-				losingVariationPossessive = <span className="variation-a">Variation A&#8217;s</span>;
-				losingVariation = <span className="variation-a">Variation A</span>;
-				winningConversionRate = variationBConversionRate;
-				losingConversionRate = variationAConversionRate;
-				percentageImprovement = variationBImprovement;
-				oddsOfImprovement = pBGreaterThanA;
-			} else {
-				winningVariationPossessive = <span className="variation-a">Variation A&#8217;s</span>;
-				winningVariation = <span className="variation-a">Variation A</span>;
-				losingVariationPossessive = <span className="variation-b">Variation B&#8217;s</span>;
-				losingVariation = <span className="variation-b">Variation B</span>;
-				winningConversionRate = variationAConversionRate;
-				losingConversionRate = variationBConversionRate;
-				percentageImprovement = variationAImprovement;
-				oddsOfImprovement = pAGreaterThanB;
-			}
+	// TODO: There's probably a more elegant way to do this...
 
-			changeInWords = (
+	getChangeInWords: function() {
+		if ( this.wasTestATie() ) {
+			return (
 				<p>
-					{ winningVariationPossessive } observed conversion rate ({ winningConversionRate }%) was { percentageImprovement }% higher than { losingVariationPossessive } conversion rate ({ losingConversionRate }%).
+					{ this.getVariationBPossessiveElement() } observed conversion rate was the same
+					as { this.getVariationAPossessiveElement() } conversion rate.
 				</p>
 			);
 		} else {
-			changeInWords = <p><span className="variation-b">Variation B</span> had the same conversion rate as <span className="variation-a">Variation A</span>.</p>;
-			winningVariation = <span className="variation-b">Variation B</span>;
-			losingVariation = <span className="variation-a">Variation A</span>;
-			oddsOfImprovement = pBGreaterThanA;
+			return (
+				<p>
+					{ this.getWinningVariationPossessiveElement() } observed conversion rate
+					({ this.getWinningConversionRate() }%) was { this.getPercentageImprovement() }%
+					higher than { this.getLosingVariationPossessiveElement() } conversion rate
+					({ this.getLosingConversionRate() }%).
+				</p>
+			);
 		}
+	},
 
-		isSignificant = pBGreaterThanA >= 80 || pAGreaterThanB >= 80;
-		onlyWording = isSignificant ? '' : 'only ';
-		oddsOfImprovementInWords = <p>There is {onlyWording}a { oddsOfImprovement }% chance that { winningVariation } really does has a higher conversion rate than { losingVariation }.</p>;
+	getVariationBElement: function() {
+		return <span className="variation-b">Variation B</span>;
+	},
 
-		if ( isSignificant ) {
-			significanceInWords = <p>This means your A/B test <i>is</i> statistically significant!</p>;
-		} else {
-			significanceInWords = <p>This means your A/B test <i>is NOT</i> statistically significant.</p>;
-		}
+	getVariationAElement: function() {
+		return <span className="variation-a">Variation A</span>;
+	},
+
+	getWinningVariationElement: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationBElement() : this.getVariationAElement();
+	},
+
+	getLosingVariationElement: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationAElement() : this.getVariationBElement();
+	},
+
+	getVariationBPossessiveElement: function() {
+		return <span className="variation-b">Variation B&#8217;s</span>;
+	},
+
+	getVariationAPossessiveElement: function() {
+		return <span className="variation-a">Variation A&#8217;s</span>;
+	},
+
+	getWinningVariationPossessiveElement: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationBPossessiveElement() : this.getVariationAPossessiveElement();
+	},
+
+	getLosingVariationPossessiveElement: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationAPossessiveElement() : this.getVariationBPossessiveElement();
+	},
+
+	getWinningConversionRate: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationBConversionRate() : this.getVariationAConversionRate();
+	},
+
+	getLosingConversionRate: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationAConversionRate() : this.getVariationBConversionRate();
+	},
+
+	getVariationAImprovement: function() {
+		return Math.round( ( this.props.variations.a.proportion.mean / this.props.variations.b.proportion.mean - 1 ) * 100 );
+	},
+
+	getVariationBImprovement: function() {
+		return Math.round( ( this.props.variations.b.proportion.mean / this.props.variations.a.proportion.mean - 1 ) * 100 );
+	},
+
+	getVariationBConversionRate: function() {
+		return Math.round( this.props.variations.b.proportion.mean * 10000 ) / 100;
+	},
+
+	getVariationAConversionRate: function() {
+		return Math.round( this.props.variations.a.proportion.mean * 10000 ) / 100;
+	},
+
+	getPercentageImprovement: function() {
+		return this.wasVariationBTheWinner() ? this.getVariationBImprovement() : this.getVariationAImprovement();
+	},
+
+	wasVariationBTheWinner: function() {
+		return this.getVariationBImprovement() > 0;
+	},
+
+	wasTestATie: function() {
+		return this.getVariationBImprovement() === 0;
+	},
+
+	oddsOfImprovementInWords: function() {
+		var onlyWording = this.isSignificant() ? '' : 'only ';
 
 		return (
+			<p>
+				There is {onlyWording}a { this.getOddsOfImprovement() }% chance
+				that { this.getWinningVariationElement() } has a higher conversion rate.
+			</p>
+		);
+	},
+
+	getOddsOfImprovement: function() {
+		var probability = this.wasVariationBTheWinner() ? this.getProbabilityBGreaterThanA() : this.getProbabilityAGreaterThanB();
+		return Math.round( probability * 100 );
+	},
+
+	getProbabilityBGreaterThanA: function() {
+		return 1 - this.getProbabilityAGreaterThanB();
+	},
+
+	getProbabilityAGreaterThanB: function() {
+		return utils.calculateProbabityBIsGratherThanA( this.props.variations.b.proportion, this.props.variations.a.proportion );
+	},
+
+	isSignificant: function() {
+		return this.getOddsOfImprovement() >= 80;
+	},
+
+	getSignificanceInWords: function() {
+		if ( this.isSignificant() ) {
+			return <p>This means your A/B test <i>is</i> statistically significant!</p>;
+		} else {
+			return <p>This means your A/B test <i>is NOT</i> statistically significant.</p>;
+		}
+	},
+
+	render: function() {
+		return (
 			<div className="summary">
-				{ changeInWords }
-				{ oddsOfImprovementInWords }
-				{ significanceInWords }
+				{ this.getChangeInWords() }
+				{ this.oddsOfImprovementInWords() }
+				{ this.getSignificanceInWords() }
 			</div>
 		);
 	}
