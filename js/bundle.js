@@ -413,7 +413,7 @@ module.exports = React.createClass( {displayName: "exports",
 	},
 
 	urlCopied: function() {
-		alert( 'The URL for these results was copied to your clipboard.' );
+		alert( 'The URL for these A/B test results was successfully copied to your clipboard.' );
 	},
 
 	render: function() {
