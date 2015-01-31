@@ -1,7 +1,11 @@
 /* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
 html {
-  background-color: #3498DB;
+  background: #3CAAD7;
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #3CAAD7), color-stop(100%, #2a6fce));
+  background: -webkit-linear-gradient(left, #3CAAD7 0, #2a6fce 100%);
+  background: -webkit-gradient(linear, left top, right top, from(#3CAAD7), to(#2a6fce));
+  background: linear-gradient(to right, #3CAAD7 0, #2a6fce 100%);
   color: #E7F3FF;
   font: 14px/20px 'Lato', Helvetica, Arial;
   padding: 20px; }
@@ -15,8 +19,18 @@ h1 {
   font-size: 28px;
   font-weight: bold;
   letter-spacing: 1px;
-  margin: 20px 0 30px 0;
+  margin: 20px 0 10px 0;
   text-align: center; }
+
+.view-source {
+  font-size: 12px;
+  margin-bottom: 30px;
+  text-align: center; }
+  .view-source a {
+    border-bottom: 1px dotted #ccc;
+    color: #ddd;
+    padding-bottom: 1px;
+    text-decoration: none; }
 
 .variation-a {
   color: #F1C40F; }
@@ -31,9 +45,22 @@ strong {
   float: left;
   margin-bottom: 15px;
   width: 600px; }
-  .form-container form span {
+  .form-container form .header-row {
+    margin-bottom: 5px; }
+    .form-container form .header-row span {
+      color: #eee;
+      display: inline-block;
+      text-align: center;
+      width: 160px; }
+    .form-container form .header-row .participants {
+      margin-left: 100px; }
+    .form-container form .header-row .conversions {
+      margin-left: 50px; }
+  .form-container form .label {
     font-size: 16px;
     margin-right: 20px; }
+  .form-container form .arrow {
+    margin: 0 3px 0 5px; }
   .form-container form input[type="text"] {
     border: 1px solid #eee;
     color: #555;
@@ -44,7 +71,7 @@ strong {
     width: 160px; }
 .form-container .copy-url {
   float: right;
-  margin-top: 40px; }
+  margin-top: 60px; }
   .form-container .copy-url button {
     border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -54,55 +81,45 @@ strong {
     color: #eee;
     font-size: 12px;
     padding: 5px 15px; }
-    .form-container .copy-url button:hover {
+    .form-container .copy-url button:hover, .form-container .copy-url button .zeroclipboard-is-hover {
+      cursor: pointer;
       background: rgba(255, 255, 255, 0.2); }
 
-.analysis {
+.results {
   clear: both;
   margin-top: 10px; }
-  .analysis .graphs {
+  .results .error {
+    color: #F1BEBE;
+    font-size: 21px;
+    margin-top: 15px; }
+  .results .graphs {
     margin-bottom: 15px; }
-    .analysis .graphs .graph {
+    .results .graphs .graph {
       border-radius: 10px;
       -webkit-border-radius: 10px;
       -moz-border-radius: 10px;
-      background-color: #2980B9;
+      background-color: #3A5D80;
       display: inline-block;
+      padding: 15px 0;
       width: 470px; }
-      .analysis .graphs .graph h3 {
-        font-size: 18px;
+      .results .graphs .graph h3 {
+        font-size: 20px;
         font-weight: bold;
-        margin: 10px 0;
         text-align: center; }
-      .analysis .graphs .graph h4 {
+      .results .graphs .graph p {
         color: #ddd;
+        line-height: 1.5em;
+        padding: 0 20px;
         text-align: center; }
-      .analysis .graphs .graph:first-of-type {
+      .results .graphs .graph:first-of-type {
         margin-right: 20px; }
-  .analysis .significance {
+  .results .significance {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     background-color: #3A5D80;
     border: 1px solid #32506e;
-    font-size: 21px;
+    font-size: 18px;
     line-height: 1.6em;
     padding: 15px 0;
     text-align: center; }
-  .analysis .error {
-    color: #F1BEBE;
-    font-size: 21px;
-    margin-top: 15px; }
-
-.footer {
-  color: #ddd;
-  font-size: 12px;
-  margin-top: 15px;
-  text-align: center; }
-  .footer a {
-    border-bottom: 1px solid #bbb;
-    color: #ddd;
-    padding-bottom: 2px;
-    text-decoration: none; }
-    .footer a:hover {
-      color: #eee; }
