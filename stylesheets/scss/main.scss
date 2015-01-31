@@ -111,13 +111,14 @@ strong {
 
 		// ZeroClipboard wraps the content in a span tag
 		span {
+			@include border-radius(3px);
 			background: rgba(255, 255, 255, 0.15);
 			border: 1px solid rgba(255, 255, 255, 0.6);
 			cursor: pointer;
 			display: block;
 			padding: 5px 15px;
 
-			&:hover, .zeroclipboard-is-hover {
+			.zeroclipboard-is-hover {
 				background: rgba(255, 255, 255, 0.20);
 
 				button {
@@ -126,7 +127,6 @@ strong {
 			}
 
 			button {
-				@include border-radius(3px);
 				background: none;
 				border: none;
 				color: #eee;
