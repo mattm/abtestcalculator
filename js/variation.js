@@ -13,6 +13,7 @@ function Variation( name, color, participants, conversions ) {
 	this.proportion = new SampleProportion( participants, conversions );
 }
 
+// See: http://blog.42floors.com/math-split-testing-part-2-chance-better/
 Variation.prototype.isGaussian = function() {
 	var np = this.participants * this.proportion.mean,
 		nq = this.participants * ( 1 - this.proportion.mean );
