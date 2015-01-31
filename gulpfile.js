@@ -67,11 +67,9 @@ gulp.task( 'js', function() {
 			gutil.log( error.message );
 		} )
 		.pipe( source( mainPath ) )
+		.pipe( streamify( uglify() ) )
 		.pipe( rename( 'bundle.js' ) )
 		.pipe( gulp.dest( config.buildPath + '/js' ) );
-
-		// Add after bundle.js line for production
-		// .pipe( streamify( uglify() ) )
 } );
 
 gulp.task( 'deploy', [ 'build' ], function () {
