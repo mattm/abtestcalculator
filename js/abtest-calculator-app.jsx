@@ -6,13 +6,13 @@
 var React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
 	_ = require( 'lodash' ),
-	ReactZeroClipboard = require( 'react-zeroclipboard' ),
 	url = require( 'url' );
 
 /**
  * Internal dependencies
  */
 var ConversionDataForm = require( './conversion-data-form' ),
+	CopyURLButton = require( './copy-url-button' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ImprovementGraph = require( './improvement-graph' ),
 	Variation = require( './variation' ),
@@ -70,10 +70,6 @@ module.exports = React.createClass( {
 		};
 	},
 
-	urlCopied: function() {
-		alert( 'The URL for these results was copied to your clipboard.' );
-	},
-
 	hasIntegerInputs: function() {
 		return isInteger( this.state.participantsA ) &&
 			isInteger( this.state.conversionsA ) &&
@@ -106,24 +102,6 @@ module.exports = React.createClass( {
 		}
 	},
 
-	getCopyURLElement: function() {
-		return (
-			<div className="copy-url">
-				<ReactZeroClipboard text={ this.getResultsURL() } onAfterCopy={ this.urlCopied }>
-					<button>Copy URL to Clipboard</button>
-				</ReactZeroClipboard>
-			</div>
-		);
-	},
-
-	getResultsURL: function() {
-		return 'http://www.abtestcalculator.com?' +
-			'ap=' + this.state.participantsA +
-			'&ac=' + this.state.conversionsA +
-			'&bp=' + this.state.participantsB +
-			'&bc=' + this.state.conversionsB;
-	},
-
 	getErrorElement: function( errorMessage ) {
 		return <p className="error">{ errorMessage }</p>;
 	},
@@ -138,7 +116,8 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var copyUrlElement, results;
+		var isValid = false,
+			results;
 
 		if ( this.hasIntegerInputs() ) {
 			if ( ! this.hasMoreParticipantsThanConversions() ) {
@@ -147,7 +126,7 @@ module.exports = React.createClass( {
 				results = this.getErrorElement( 'There is not enough data yet to make a conclusion about the results of this test.' );
 			} else {
 				results = this.getAnalysisElement();
-				copyUrlElement = this.getCopyURLElement();
+				isValid = true;
 			}
 		}
 
@@ -155,7 +134,7 @@ module.exports = React.createClass( {
 			<div>
 				<div className="form-container">
 					<ConversionDataForm variations={ this.getVariations() } onUpdate={ this.updateConversionData } />
-					{ copyUrlElement }
+					<CopyURLButton variations= {this.getVariations() } isValid={ isValid } />
 				</div>
 				<div className="results">{ results }</div>
 			</div>
