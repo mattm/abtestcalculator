@@ -135,17 +135,19 @@ strong {
 			@include border-radius(10px);
 			background-color: #3A5D80;
 			display: inline-block;
+			padding: 15px 0;
 			width: 470px;
 
 			h3 {
 				font-size: 20px;
 				font-weight: bold;
-				margin: 15px 0 10px 0;
 				text-align: center;
 			}
 
-			h4 {
+			p {
 				color: #ddd;
+				line-height: 1.5em;
+				padding: 0 20px;
 				text-align: center;
 			}
 

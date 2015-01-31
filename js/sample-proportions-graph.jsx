@@ -30,9 +30,9 @@ module.exports = React.createClass( {
 	render: function() {
 		return (
 			<div className="graph">
-				<h3>Sample Proportion Distributions</h3>
-				<h4><span className="variation-a">Variation A</span> vs <span className="variation-b">Variation B</span></h4>
+				<h3>Conversion Rate Distributions</h3>
 				<canvas ref='canvas' />
+				<p>the true conversion rates for <span className="variation-a">Variation A</span> and <span className="variation-b">Variation B</span><br/> fall somewhere within their respective distributions above</p>
 			</div>
 		);
 	}
