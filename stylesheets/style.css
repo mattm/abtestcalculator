@@ -13,12 +13,13 @@ html {
   width: 960px; }
 
 h1 {
-  color: #E7F3FF;
+  color: white;
   font-size: 28px;
   font-weight: bold;
   letter-spacing: 1px;
   margin: 20px 0 10px 0;
-  text-align: center; }
+  text-align: center;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5); }
 
 .view-source {
   font-size: 12px;
