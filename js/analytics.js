@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = {
-	recordEvent: function( eventName ) {
+	recordEvent: function( eventName, eventProps ) {
 		if ( this.isProduction() ) {
-			mixpanel.track( eventName );
+			mixpanel.track( eventName, eventProps );
 		} else {
-			console.log( 'Record Event: ' + eventName );
+			console.log( 'Record Event: ' + eventName + ' with props ' + JSON.stringify( eventProps ) );
 		}
 	},
 
