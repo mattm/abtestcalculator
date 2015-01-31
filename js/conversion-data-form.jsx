@@ -57,8 +57,6 @@ module.exports = React.createClass( {
 		this.refs.participantsA.getDOMNode().focus()
 	},
 
-
-
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
