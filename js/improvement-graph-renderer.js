@@ -10,8 +10,8 @@ var numeral = require( 'numeral' ),
  * Internal dependencies
  */
 var GraphRenderer = require( './graph-renderer' ),
-	NormalDifferenceDistribution = require( './normal-difference-distribution' ),
-	Range = require( './range' ),
+	NormalDifferenceDistribution = require( './stats/normal-difference-distribution' ),
+	Range = require( './stats/range' ),
 	Utils = require( './utils' );
 
 function ImprovementGraphRenderer( canvasId ) {

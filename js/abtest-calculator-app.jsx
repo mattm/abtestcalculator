@@ -15,7 +15,7 @@ var ConversionDataForm = require( './conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
 	SampleProportionsGraph = require( './sample-proportions-graph' ),
 	ImprovementGraph = require( './improvement-graph' ),
-	Variation = require( './variation' ),
+	Variation = require( './stats/variation' ),
 	ABTestSummary = require( './abtest-summary' ),
 	utils = require( './utils' );
 

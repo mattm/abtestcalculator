@@ -9,7 +9,7 @@ var numeral = require( 'numeral' )
  * Internal dependencies
  */
 var GraphRenderer = require( './graph-renderer' ),
-	Range = require( './range' ),
+	Range = require( './stats/range' ),
 	Utils = require( './utils' );
 
 function SampleProportionsGraphRenderer( context ) {

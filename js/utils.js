@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-var NormalDifferenceDistribution = require( './normal-difference-distribution' );
+var NormalDifferenceDistribution = require( './stats/normal-difference-distribution' );
 
 module.exports = {
 	getPixelRatio: function() {
