@@ -103,12 +103,13 @@ module.exports = React.createClass( {
 	},
 
 	oddsOfImprovementInWords: function() {
-		var onlyWording = this.isSignificant() ? '' : 'only ';
+		var onlyWording = this.isSignificant() ? '' : 'only ',
+			winningElement = this.wasTestATie() ? this.getVariationBElement() : this.getWinningVariationElement();
 
 		return (
 			<p>
 				There is {onlyWording}a { this.getOddsOfImprovement() }% chance
-				that { this.getWinningVariationElement() } has a higher conversion rate.
+				that { winningElement } has a higher conversion rate.
 			</p>
 		);
 	},
