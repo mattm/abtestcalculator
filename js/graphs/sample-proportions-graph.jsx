@@ -32,7 +32,12 @@ module.exports = React.createClass( {
 			<div className="graph">
 				<h3>Conversion Rate Distributions</h3>
 				<canvas ref='canvas' />
-				<p>the true conversion rates for <span className="variation-a">Variation A</span> and <span className="variation-b">Variation B</span><br/> fall somewhere within their respective distributions above</p>
+				<p>
+					the true conversion rates (the numbers you would get if you ran<br/> the test forever)
+					for <span className="variation-a">Variation A</span>
+					&nbsp;and <span className="variation-b">Variation B</span>&nbsp; fall somewhere<br/>
+					within their respective bell curves above
+				</p>
 			</div>
 		);
 	}

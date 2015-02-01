@@ -47,11 +47,8 @@ module.exports = React.createClass( {
 	},
 
 	getSignificanceInWords: function() {
-		if ( this.isSignificant() ) {
-			return <p>This means your A/B test <i>is</i> statistically significant!</p>;
-		} else {
-			return <p>This means your A/B test <i>is NOT</i> statistically significant.</p>;
-		}
+		var verb = this.isSignificant() ? 'can' : 'cannot';
+		return <p>You {verb} be confident that this result is a consequence of the changes you made and not a result of random chance.</p>;
 	},
 
 	getVariationBElement: function() {
@@ -136,12 +133,13 @@ module.exports = React.createClass( {
 	},
 
 	isSignificant: function() {
-		return this.getOddsOfImprovement() >= 80;
+		return this.getOddsOfImprovement() >= 90;
 	},
 
 	render: function() {
 		return (
 			<div className="summary">
+				<h3>Executive Summary</h3>
 				{ this.getChangeInWords() }
 				{ this.oddsOfImprovementInWords() }
 				{ this.getSignificanceInWords() }

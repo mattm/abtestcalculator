@@ -3,6 +3,7 @@ $background-dark-blue: #2a6fce;
 $dark-blue: #3A5D80;
 $pink: #F1BEBE;
 $white: white;
+$dark-gray: #888;
 $medium-gray: #ccc;
 $light-gray: #eee;
 $light-blue-gray: #E7F3FF;
@@ -68,6 +69,13 @@ h1 {
 	}
 }
 
+h3 {
+	color: $light-blue-gray;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+}
+
 .fork-me {
 	border: 0;
 	position: absolute;
@@ -93,6 +101,7 @@ strong {
 
 .form-container {
 	overflow: auto;
+	margin-bottom: $result-separation;
 
 	form {
 		float: left;
@@ -196,22 +205,13 @@ strong {
 	}
 
 	.graphs {
-		margin-bottom: $result-separation;
-
 		.graph {
 			@include border-radius( $result-radius );
 			background-color: $dark-blue;
 			display: inline-block;
-			margin-top: $result-separation;
+			margin-bottom: $result-separation;
 			padding: 15px 0;
 			width: $graph-width;
-
-			h3 {
-				color: $light-blue-gray;
-				font-size: 20px;
-				font-weight: bold;
-				text-align: center;
-			}
 
 			p {
 				color: #ddd;
@@ -230,7 +230,7 @@ strong {
 		@include border-radius( $result-radius );
 		background-color: $dark-blue;
 		color: $white;
-		font-size: 18px;
+		font-size: 17px;
 		line-height: 1.6em;
 		margin-bottom: $result-separation;
 		padding: $summary-horizontal-padding;
@@ -238,6 +238,10 @@ strong {
 
 		@media ( max-width: $two-column-breakpoint ) {
 			width: $graph-width - $summary-horizontal-padding * 2;
+		}
+
+		h3 {
+			margin-bottom: 5px;
 		}
 	}
 }

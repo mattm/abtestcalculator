@@ -32,7 +32,11 @@ module.exports = React.createClass( {
 			<div className="graph">
 				<h3>Improvement Distribution</h3>
 				<canvas ref='canvas' />
-				<p>you&#8217;ll see an improvement somewhere within this<br/> distribution by switching from <span className="variation-a">Variation A</span> to <span className="variation-b">Variation B</span></p>
+				<p>
+					if you change from <span className="variation-a">Variation A</span>&nbsp;
+					to <span className="variation-b">Variation B</span> the <br/> improvement
+					you will see in the long run falls<br/> somewhere within the bell curve above
+				</p>
 			</div>
 		);
 	}

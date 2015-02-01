@@ -110,8 +110,8 @@ module.exports = React.createClass( {
 	getAnalysisElement: function() {
 		return (
 			<div>
-				{ this.getGraphsElement() }
 				<ABTestSummary variations={ this.getVariations() } />
+				{ this.getGraphsElement() }
 			</div>
 		);
 	},
