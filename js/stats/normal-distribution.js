@@ -29,8 +29,9 @@ NormalDistribution.prototype = {
 
 	// See: See: http://en.wikipedia.org/wiki/Normal_distribution
 	getDensity: function( x ) {
-		var a = 1 / ( this.sd * Math.sqrt( 2 * Math.PI ) );
-		var b = Math.exp( -( Math.pow( x - this.mean, 2) ) / ( 2 * Math.pow( this.sd, 2 ) ) );
+		var a = 1 / ( this.sd * Math.sqrt( 2 * Math.PI ) ),
+			b = Math.exp( -( Math.pow( x - this.mean, 2) ) / ( 2 * Math.pow( this.sd, 2 ) ) );
+
 		return a * b;
 	},
 
@@ -39,36 +40,29 @@ NormalDistribution.prototype = {
 	},
 
 	getCurveXValues: function() {
-		xRange = this.xRange;
-		var range = new Range( xRange.min, xRange.max, this.POINTS_PER_CURVE );
+		var xRange = this.xRange,
+			range = new Range( xRange.min, xRange.max, this.POINTS_PER_CURVE );
+
 		return range.getValues();
 	},
 
 	getCurveYValues: function() {
-		var yValues = [];
-		for ( var i = 0, l = this.xValues.length; i < l; i++ ) {
-			yValues.push( this.getDensity( this.xValues[ i ] ) );
-		}
-		return yValues;
+		return this.xValues.map( function( xValue ) {
+			return this.getDensity( xValue );
+		}, this );
 	},
 
 	getXBetween: function( minExclusive, maxInclusive ) {
-		var values = [];
-		for ( var i = 0, l = this.xValues.length; i < l; i++ ) {
-			if ( this.xValues[ i ] > minExclusive && this.xValues[ i ] <= maxInclusive ) {
-				values.push( this.xValues[ i ] );
-			}
-		}
-		return values;
+		return this.xValues.filter( function( xValue ) {
+			return xValue > minExclusive && xValue <= maxInclusive;
+		} );
 	},
 
 	getYForXBetween: function( minExclusive, maxInclusive ) {
 		var xValues = this.getXBetween( minExclusive, maxInclusive );
-		var yValues = [];
-		for ( var i = 0, l = xValues.length; i < l; i++ ) {
-			yValues.push( this.getDensity( xValues[ i ] ) );
-		}
-		return yValues;
+		return xValues.map( function( xValue ) {
+			return this.getDensity( xValue );
+		}, this );
 	},
 
 	getConfidenceInterval: function() {
