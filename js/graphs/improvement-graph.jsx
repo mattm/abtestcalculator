@@ -35,7 +35,7 @@ module.exports = React.createClass( {
 				<p>
 					if you change from <span className="variation-a">Variation A</span>&nbsp;
 					to <span className="variation-b">Variation B</span> the <br/> improvement
-					you will see in the long run falls<br/> somewhere within the bell curve above
+					you will see in the long run falls<br/> somewhere within this bell curve
 				</p>
 			</div>
 		);
