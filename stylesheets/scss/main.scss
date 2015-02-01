@@ -46,25 +46,12 @@ html {
 }
 
 h1 {
-	color: $white;
-	font-size: 28px;
+	color: $light-blue-gray;
+	font-size: 23px;
 	font-weight: bold;
 	letter-spacing: 1px;
-	margin: 20px 0 10px 0;
+	margin: 30px 0;
 	text-align: center;
-	text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
-}
-
-.view-source {
-	margin-bottom: 25px;
-	text-align: center;
-
-	a {
-		border-bottom: 1px dotted $light-gray;
-		color: $light-gray;
-		padding-bottom: 1px;
-		text-decoration: none;
-	}
 }
 
 .variation-a {
@@ -92,6 +79,7 @@ strong {
 			span {
 				color: $light-gray;
 				display: inline-block;
+				font-size: 15px;
 				text-align: center;
 				width: $data-input-total-width;
 			}
@@ -110,7 +98,7 @@ strong {
 
 			.label {
 				display: inline-block;
-				font-size: 16px;
+				font-size: 15px;
 				width: $data-label-width;
 			}
 
