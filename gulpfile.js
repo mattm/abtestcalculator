@@ -1,10 +1,10 @@
-// var jshint = require('gulp-jshint');
-var concat = require( 'gulp-concat' ),
+var browserify = require( 'browserify' ),
+	concat = require( 'gulp-concat' ),
 	deploy = require( 'gulp-gh-pages' ),
 	es = require( 'event-stream' ),
 	gulp = require( 'gulp' ),
 	gutil = require( 'gulp-util' ),
-	browserify = require( 'browserify' ),
+	jshint = require('gulp-jshint'),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
 	sass = require( 'gulp-sass' ),
@@ -48,6 +48,12 @@ gulp.task( 'css', function () {
 		.pipe( concat( 'style.css' ) )
 		.pipe( gulp.dest( './build/stylesheets' ) );
 });
+
+gulp.task( 'jshint', function () {
+	gulp.src( [ './js/**/*.js' ] )
+		.pipe( jshint() )
+		.pipe( jshint.reporter( 'default' ) )
+} );
 
 gulp.task( 'js', function() {
 	var mainPath = config.jsPath + '/main.js';
