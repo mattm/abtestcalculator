@@ -2,6 +2,10 @@
 
 module.exports = {
 	recordEvent: function( eventName, eventProps ) {
+		if ( eventProps === undefined ) {
+			eventProps = {};
+		}
+
 		if ( this.isProduction() ) {
 			mixpanel.track( eventName, eventProps );
 		} else {
