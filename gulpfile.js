@@ -9,7 +9,7 @@ var browserify = require( 'browserify' ),
 	rename = require( 'gulp-rename' ),
 	sass = require( 'gulp-sass' ),
 	source = require( 'vinyl-source-stream' ),
-	streamify = require( 'gulp-streamify' )
+	streamify = require( 'gulp-streamify' ),
 	uglify = require( 'gulp-uglify' );
 
 var config = {
@@ -50,9 +50,9 @@ gulp.task( 'css', function () {
 });
 
 gulp.task( 'jshint', function () {
-	gulp.src( [ './js/**/*.js' ] )
+	gulp.src( [ './js/**/*.js', './gulpfile.js' ] )
 		.pipe( jshint() )
-		.pipe( jshint.reporter( 'default' ) )
+		.pipe( jshint.reporter( 'default' ) );
 } );
 
 gulp.task( 'js', function() {
