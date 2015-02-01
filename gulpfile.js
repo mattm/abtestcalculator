@@ -1,6 +1,5 @@
 // var jshint = require('gulp-jshint');
-var
-	concat = require( 'gulp-concat' ),
+var concat = require( 'gulp-concat' ),
 	deploy = require( 'gulp-gh-pages' ),
 	es = require( 'event-stream' ),
 	gulp = require( 'gulp' ),
@@ -42,16 +41,12 @@ gulp.task( 'cname', function() {
 } );
 
 gulp.task( 'css', function () {
-	var cssFiles = gulp.src( config.cssPath + '/*.css' );
-	var sassFiles = gulp.src( config.sassPath + '/*.scss' ).pipe( sass( { style: 'compressed' } ) );
+	var cssFiles = gulp.src( config.cssPath + '/*.css' ),
+		sassFiles = gulp.src( config.sassPath + '/*.scss' ).pipe( sass( { style: 'compressed' } ) );
 
 	return es.concat( cssFiles, sassFiles )
 		.pipe( concat( 'style.css' ) )
 		.pipe( gulp.dest( './build/stylesheets' ) );
-
-	// gulp.src( [ config.cssPath + '/*.css', config.sassPath + '/*.scss'] )
-	// 	.pipe( sass( { outputStyle: 'compressed' } ) )
-	// 	.pipe( gulp.dest( './build/stylesheets' ) );
 });
 
 gulp.task( 'js', function() {
