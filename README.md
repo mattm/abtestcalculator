@@ -1,6 +1,6 @@
 # A/B Test Calculator
 
-This repository hosts the source code for [ABTestCalculator.com](http://www.abtestcalculator.com), a visual A/B test signifiance calculator.
+This repository hosts the source code for [ABTestCalculator.com](http://www.abtestcalculator.com), a visual A/B test significance calculator.
 
 ## Installation
 
@@ -17,6 +17,8 @@ For an explanation of the math behind A/B testing significance calculations, che
 * [The Math of Split Testing Part 1: Statistical Sampling Uncertainty](http://blog.42floors.com/math-split-testing-part-1-statistical-sampling-uncertainty/)
 * [The Math of Split Testing Part 2: Chance of Being Better](http://blog.42floors.com/math-split-testing-part-2-chance-better/)
 * [The Math of Split Testing Part 3: The Chance of being Similar](http://blog.42floors.com/math-split-testing-part-3-chance-similar/)
+
+This tool uses the Wald method to estimate the distribution of the sample proportions and tests are considered significant at the p = 0.10 confidence level.
 
 # Contact
 
