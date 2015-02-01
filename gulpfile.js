@@ -50,6 +50,7 @@ gulp.task( 'css', function () {
 });
 
 gulp.task( 'jshint', function () {
+	// TODO: Figure out how to use jshint to check JSX files as well
 	gulp.src( [ './js/**/*.js', './gulpfile.js' ] )
 		.pipe( jshint() )
 		.pipe( jshint.reporter( 'default' ) );
