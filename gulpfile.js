@@ -1,3 +1,5 @@
+'use strict';
+
 var browserify = require( 'browserify' ),
 	concat = require( 'gulp-concat' ),
 	deploy = require( 'gulp-gh-pages' ),
