@@ -16,6 +16,6 @@ module.exports = {
 
 	hexToTransparentRGB: function( hex, opacity ) {
 		var rgb = this.hexToRGB( hex );
-		return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + opacity + ")";
+		return 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', ' + opacity + ')';
 	}
 };
