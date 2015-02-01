@@ -20,6 +20,10 @@ For an explanation of the math behind A/B testing significance calculations, che
 
 This tool uses the Wald method to estimate the distribution of the sample proportions and tests are considered significant at the p = 0.10 confidence level.
 
+# License
+
+MIT © [Matt Mazur](http://mattmazur.com)
+
 # Contact
 
-If you have any suggestions, find a bug, or just want to say hey drop me a note at  [@mhmazur](https://twitter.com/mhmazur) on Twitter or by email at matthew.h.mazur@gmail.com.
+If you have any suggestions, find a bug, or just want to say hey drop me a note at [@mhmazur](https://twitter.com/mhmazur) on Twitter or by email at matthew.h.mazur@gmail.com.
