@@ -20,6 +20,9 @@ $data-input-total-width: $data-input-width + $data-input-border-width * 2 + $dat
 $arrow-width: 25px;
 $result-separation: 10px;
 $graph-width: 475px;
+$summary-horizontal-padding: 15px;
+$mobile-breakpoint: 720px;
+$two-column-breakpoint: 960px;
 
 @mixin border-radius( $radius ) {
 	border-radius: $radius;
@@ -38,11 +41,14 @@ $graph-width: 475px;
 html {
 	@include background-horizontal-gradient( $background-light-blue, $background-dark-blue );
 	font: 14px/20px Lato, Helvetica, Arial;
+	padding: 0 2%;
 }
 
 .wrapper {
 	margin: 0 auto;
-	width: 960px;
+	max-width: $two-column-breakpoint;
+	// padding: 0 2%;
+	width: 100%;
 }
 
 h1 {
@@ -52,6 +58,17 @@ h1 {
 	letter-spacing: 1px;
 	margin: 30px 0;
 	text-align: center;
+}
+
+.fork-me {
+	border: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+
+	@media ( max-width: $mobile-breakpoint) {
+		display: none;
+	}
 }
 
 .variation-a {
@@ -129,6 +146,17 @@ strong {
 		float: right;
 		margin-top: 60px;
 
+		@media ( min-width: $mobile-breakpoint ) and ( max-width: $two-column-breakpoint ) {
+			clear: both;
+			float: left;
+			margin-top: 10px;
+		}
+
+		// Hide the copy results URL link on mobile
+		@media ( max-width: $mobile-breakpoint ) {
+			display: none;
+		}
+
 		// ZeroClipboard wraps the content in a span tag
 		span {
 			@include border-radius(3px);
@@ -152,7 +180,6 @@ strong {
 
 .results {
 	clear: both;
-	margin-top: $result-separation;
 
 	.error {
 		color: $pink;
@@ -167,6 +194,7 @@ strong {
 			@include border-radius( $result-radius );
 			background-color: $dark-blue;
 			display: inline-block;
+			margin-top: $result-separation;
 			padding: 15px 0;
 			width: $graph-width;
 
@@ -197,7 +225,11 @@ strong {
 		font-size: 18px;
 		line-height: 1.6em;
 		margin-bottom: $result-separation;
-		padding: 15px 0;
+		padding: $summary-horizontal-padding;
 		text-align: center;
+
+		@media ( max-width: $two-column-breakpoint ) {
+			width: $graph-width - $summary-horizontal-padding * 2;
+		}
 	}
 }
