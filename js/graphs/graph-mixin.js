@@ -4,11 +4,11 @@
  * Internal dependencies
  */
 var constants = require( '../constants' ),
-	utils = require( '../utils' );
+	canvasUtils = require( '../utils/canvas-utils' );
 
 module.exports = {
 	convertToHiDPICanvas: function() {
-		var pixelRatio = utils.getPixelRatio(),
+		var pixelRatio = canvasUtils.getPixelRatio(),
 			canvas = this.refs.canvas.getDOMNode();
 
 		canvas.width = constants.CANVAS_WIDTH * pixelRatio;

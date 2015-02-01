@@ -6,17 +6,6 @@
 var NormalDifferenceDistribution = require( '../stats/normal-difference-distribution' );
 
 module.exports = {
-	getPixelRatio: function() {
-		var context = document.createElement( 'canvas' ).getContext( '2d' ),
-			dpr = window.devicePixelRatio || 1,
-			bsr = context.webkitBackingStorePixelRatio ||
-				context.mozBackingStorePixelRatio ||
-				context.msBackingStorePixelRatio ||
-				context.oBackingStorePixelRatio ||
-				context.backingStorePixelRatio || 1;
-		return dpr / bsr;
-	},
-
 	hexToRgb: function( hex ) {
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
 		if ( result ) {
@@ -33,11 +22,6 @@ module.exports = {
 	hexToTransparentRGB: function( hex, opacity ) {
 		var rgb = this.hexToRgb( hex );
 		return "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + opacity + ")";
-	},
-
-	isCanvasSupported: function() {
-		var element = document.createElement( 'canvas' );
-		return !!( element.getContext && element.getContext( '2d' ) );
 	},
 
 	isInteger: function( string ) {

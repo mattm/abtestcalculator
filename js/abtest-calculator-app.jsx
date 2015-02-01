@@ -11,7 +11,8 @@ var React = require( 'react' ),
 /**
  * Internal dependencies
  */
-var ConversionDataForm = require( './conversion-data-form' ),
+var canvasUtils = require( './utils/canvas-utils' ),
+	ConversionDataForm = require( './conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
 	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
 	ImprovementGraph = require( './graphs/improvement-graph' ),
@@ -91,7 +92,7 @@ module.exports = React.createClass( {
 	getGraphsElement: function() {
 		var variations;
 
-		if ( utils.isCanvasSupported() ) {
+		if ( canvasUtils.isCanvasSupported() ) {
 			variations = this.getVariations();
 			return (
 				<div className="graphs">
