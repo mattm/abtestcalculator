@@ -8,9 +8,9 @@ var numeral = require( 'numeral' )
 /**
  * Internal dependencies
  */
-var GraphRenderer = require( './graph-renderer' ),
-	Range = require( '../stats/range' ),
-	Utils = require( '../utils' );
+var colorUtils = require( '../utils/color-utils' ),
+	GraphRenderer = require( './graph-renderer' ),
+	Range = require( '../stats/range' );
 
 function SampleProportionsGraphRenderer( context ) {
 	GraphRenderer.call( this, context );
@@ -97,7 +97,7 @@ SampleProportionsGraphRenderer.prototype = Object.create( GraphRenderer.prototyp
 	renderSampleDistributionOutline: {
 		value: function( variation ) {
 			this.ctx.lineWidth = this.OUTLINE_LINE_WIDTH;
-			this.ctx.strokeStyle = Utils.hexToTransparentRGB( variation.color, this.OUTLINE_OPACITY );
+			this.ctx.strokeStyle = colorUtils.hexToTransparentRGB( variation.color, this.OUTLINE_OPACITY );
 			this.ctx.beginPath();
 			this.ctx.moveTo( this.distributionXToCanvasX(variation.proportion.xRange.min), this.rect.bottom );
 			for ( var i = 0, l = variation.proportion.xValues.length; i < l; i++ ) {
@@ -115,7 +115,7 @@ SampleProportionsGraphRenderer.prototype = Object.create( GraphRenderer.prototyp
 				this.ctx.lineTo( this.distributionXToCanvasX( variation.proportion.xValues[ i ] ), this.distributionYToCanvasY( variation.proportion.yValues[ i ] ) );
 			}
 			this.ctx.closePath();
-			this.ctx.fillStyle = Utils.hexToTransparentRGB( variation.color, this.FILL_OPACITY );
+			this.ctx.fillStyle = colorUtils.hexToTransparentRGB( variation.color, this.FILL_OPACITY );
 			this.ctx.fill();
 		}
 	},
@@ -127,7 +127,7 @@ SampleProportionsGraphRenderer.prototype = Object.create( GraphRenderer.prototyp
 			this.ctx.lineTo( this.distributionXToCanvasX( variation.proportion.mean ), this.distributionYToCanvasY( variation.proportion.getPeakDensity() ) );
 			this.ctx.closePath();
 			this.ctx.lineWidth = 1;
-			this.ctx.strokeStyle = Utils.hexToTransparentRGB( variation.color, 0.5 );
+			this.ctx.strokeStyle = colorUtils.hexToTransparentRGB( variation.color, 0.5 );
 			this.ctx.stroke();
 		}
 	},

@@ -9,10 +9,11 @@ var numeral = require( 'numeral' ),
 /**
  * Internal dependencies
  */
-var GraphRenderer = require( './graph-renderer' ),
+var colorUtils = require( '../utils/color-utils' ),
+	GraphRenderer = require( './graph-renderer' ),
 	NormalDifferenceDistribution = require( '../stats/normal-difference-distribution' ),
 	Range = require( '../stats/range' ),
-	Utils = require( '../utils' );
+	utils = require( '../utils' );
 
 function ImprovementGraphRenderer( canvasId ) {
 	GraphRenderer.call( this, canvasId );
@@ -58,7 +59,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 	getCenterLineColor: {
 		value: function() {
 			var color = this.distribution.mean > 0 ? this.POSITIVE_COLOR : this.NEGATIVE_COLOR;
-			return Utils.hexToTransparentRGB( color, 0.5 );
+			return colorUtils.hexToTransparentRGB( color, 0.5 );
 		}
 	},
 
@@ -109,7 +110,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 			}
 			this.ctx.lineTo( this.distributionXToCanvasX( _.max( xValues ) ), this.rect.bottom );
 			this.ctx.closePath();
-			this.ctx.fillStyle = Utils.hexToTransparentRGB( color, this.FILL_OPACITY );
+			this.ctx.fillStyle = colorUtils.hexToTransparentRGB( color, this.FILL_OPACITY );
 			this.ctx.fill();
 		}
 	},
@@ -121,7 +122,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 				this.ctx.lineTo( this.distributionXToCanvasX( xValues[ i ] ), this.distributionYToCanvasY( yValues[ i ] ) );
 			}
 			this.ctx.lineWidth = this.OUTLINE_LINE_WIDTH;
-			this.ctx.strokeStyle = Utils.hexToTransparentRGB( color, this.OUTLINE_OPACITY );
+			this.ctx.strokeStyle = colorUtils.hexToTransparentRGB( color, this.OUTLINE_OPACITY );
 			this.ctx.stroke();
 		}
 	},
@@ -133,7 +134,7 @@ ImprovementGraphRenderer.prototype = Object.create( GraphRenderer.prototype, {
 			canvasY = this.rect.bottom + this.X_AXIS_TICK_FONT_SIZE + this.X_AXIS_TICK_MARGIN_TOP;
 			for ( var i = 0, l = numTicks; i < l; i++ ) {
 				points = this.xAxisRange.min + i * this.calculateXAxisInterval();
-				value = Utils.formatPercentageImprovement( this.convertPointsToPercentage( points ) );
+				value = utils.formatPercentageImprovement( this.convertPointsToPercentage( points ) );
 				canvasX = this.rect.x + ( i / ( numTicks - 1 ) ) * this.rect.width;
 				this.renderAxisTextWithTick( value, canvasX, canvasY );
 			}
