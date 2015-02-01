@@ -11,7 +11,7 @@ var React = require( 'react' );
 var constants = require( '../constants' ),
 	GraphMixin = require( './graph-mixin' ),
 	SampleProportionsGraphRenderer = require( './sample-proportions-graph-renderer' ),
-	Rectangle = require( '../rectangle' );
+	Rectangle = require( './rectangle' );
 
 module.exports = React.createClass( {
 	mixins: [ GraphMixin ],
