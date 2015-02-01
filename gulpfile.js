@@ -22,7 +22,7 @@ var config = {
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'build', [ 'css', 'js', 'index', 'cname' ] );
+gulp.task( 'build', [ 'js', 'css', 'index', 'cname' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
