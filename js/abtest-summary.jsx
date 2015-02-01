@@ -34,6 +34,26 @@ module.exports = React.createClass( {
 		}
 	},
 
+	oddsOfImprovementInWords: function() {
+		var onlyWording = this.isSignificant() ? '' : 'only ',
+			winningElement = this.wasTestATie() ? this.getVariationBElement() : this.getWinningVariationElement();
+
+		return (
+			<p>
+				There is {onlyWording}a { this.getOddsOfImprovement() }% chance
+				that { winningElement } has a higher conversion rate.
+			</p>
+		);
+	},
+
+	getSignificanceInWords: function() {
+		if ( this.isSignificant() ) {
+			return <p>This means your A/B test <i>is</i> statistically significant!</p>;
+		} else {
+			return <p>This means your A/B test <i>is NOT</i> statistically significant.</p>;
+		}
+	},
+
 	getVariationBElement: function() {
 		return <span className="variation-b">Variation B</span>;
 	},
@@ -102,18 +122,6 @@ module.exports = React.createClass( {
 		return this.getVariationBImprovement() === 0;
 	},
 
-	oddsOfImprovementInWords: function() {
-		var onlyWording = this.isSignificant() ? '' : 'only ',
-			winningElement = this.wasTestATie() ? this.getVariationBElement() : this.getWinningVariationElement();
-
-		return (
-			<p>
-				There is {onlyWording}a { this.getOddsOfImprovement() }% chance
-				that { winningElement } has a higher conversion rate.
-			</p>
-		);
-	},
-
 	getOddsOfImprovement: function() {
 		var probability = this.wasVariationBTheWinner() ? this.getProbabilityBGreaterThanA() : this.getProbabilityAGreaterThanB();
 		return Math.round( probability * 100 );
@@ -129,14 +137,6 @@ module.exports = React.createClass( {
 
 	isSignificant: function() {
 		return this.getOddsOfImprovement() >= 80;
-	},
-
-	getSignificanceInWords: function() {
-		if ( this.isSignificant() ) {
-			return <p>This means your A/B test <i>is</i> statistically significant!</p>;
-		} else {
-			return <p>This means your A/B test <i>is NOT</i> statistically significant.</p>;
-		}
 	},
 
 	render: function() {
