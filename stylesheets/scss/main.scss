@@ -56,13 +56,12 @@ h1 {
 }
 
 .view-source {
-	font-size: 12px;
 	margin-bottom: 25px;
 	text-align: center;
 
 	a {
-		border-bottom: 1px dotted $medium-gray;
-		color: #ddd;
+		border-bottom: 1px dotted $light-gray;
+		color: $light-gray;
 		padding-bottom: 1px;
 		text-decoration: none;
 	}
@@ -129,6 +128,11 @@ strong {
 				display: inline-block;
 				text-align: center;
 				width: $arrow-width;
+			}
+
+			a {
+				color: $light-gray;
+				margin-left: 10px;
 			}
 		}
 	}

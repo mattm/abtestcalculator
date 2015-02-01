@@ -57,6 +57,16 @@ module.exports = React.createClass( {
 		this.refs.participantsA.getDOMNode().focus()
 	},
 
+	resetForm: function( event ) {
+		event.preventDefault();
+
+		this.refs.participantsA.getDOMNode().value = '';
+		this.refs.conversionsA.getDOMNode().value = '';
+		this.refs.participantsB.getDOMNode().value = '';
+		this.refs.conversionsB.getDOMNode().value = '';
+		this.updateGraphs();
+	},
+
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
@@ -99,6 +109,7 @@ module.exports = React.createClass( {
 						defaultValue={ this.props.variations.b.conversions }
 						onChange={ this.handleFormSubmit }
 						onKeyDown={ this.adjustInputValue } />
+					<a href="#" onClick={ this.resetForm }>reset form</a>
 				</div>
 			</form>
 		);
