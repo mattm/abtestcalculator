@@ -4,7 +4,7 @@
  * External dependencies
  */
 var React = require( 'react' ),
-	url = require( 'url' );;
+	url = require( 'url' );
 
 /**
  * Internal dependencies

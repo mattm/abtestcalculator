@@ -3,8 +3,7 @@
 /**
  * External dependencies
  */
-var numeral = require( 'numeral' ),
-	_ = require( 'lodash' );
+var _ = require( 'lodash' );
 
 /**
  * Internal dependencies

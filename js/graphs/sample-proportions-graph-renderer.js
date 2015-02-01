@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-var numeral = require( 'numeral' )
+var numeral = require( 'numeral' );
 
 /**
  * Internal dependencies
@@ -97,8 +97,6 @@ SampleProportionsGraphRenderer.prototype.renderSampleDistributionOutline = funct
 };
 
 SampleProportionsGraphRenderer.prototype.renderSampleDistributionFill = function( variation ) {
-	var i, l;
-
 	this.ctx.beginPath();
 	this.ctx.moveTo( this.distributionXToCanvasX( variation.proportion.xRange.min), this.rect.bottom );
 	variation.proportion.xValues.forEach( function( xValue, i ) {

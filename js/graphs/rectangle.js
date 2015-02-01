@@ -5,7 +5,7 @@ function Rectangle( x, y, width, height ) {
 	this.y = y;
 	this.width = width;
 	this.height = height;
-};
+}
 
 Object.defineProperties( Rectangle.prototype, {
 	'bottom': {
