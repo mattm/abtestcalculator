@@ -26,6 +26,12 @@ h1 {
     h1 a:hover {
       color: white; }
 
+h3 {
+  color: #E7F3FF;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center; }
+
 .fork-me {
   border: 0;
   position: absolute;
@@ -45,7 +51,8 @@ strong {
   font-weight: bold; }
 
 .form-container {
-  overflow: auto; }
+  overflow: auto;
+  margin-bottom: 10px; }
   .form-container form {
     float: left;
     width: 600px; }
@@ -114,36 +121,29 @@ strong {
     color: #F1BEBE;
     font-size: 21px;
     margin-top: 15px; }
-  .results .graphs {
-    margin-bottom: 10px; }
-    .results .graphs .graph {
-      border-radius: 10px;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      background-color: #3A5D80;
-      display: inline-block;
-      margin-top: 10px;
-      padding: 15px 0;
-      width: 475px; }
-      .results .graphs .graph h3 {
-        color: #E7F3FF;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center; }
-      .results .graphs .graph p {
-        color: #ddd;
-        line-height: 1.5em;
-        padding: 0 20px;
-        text-align: center; }
-      .results .graphs .graph:first-of-type {
-        margin-right: 10px; }
+  .results .graphs .graph {
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    background-color: #3A5D80;
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 15px 0;
+    width: 475px; }
+    .results .graphs .graph p {
+      color: #ddd;
+      line-height: 1.5em;
+      padding: 0 20px;
+      text-align: center; }
+    .results .graphs .graph:first-of-type {
+      margin-right: 10px; }
   .results .summary {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     background-color: #3A5D80;
     color: white;
-    font-size: 18px;
+    font-size: 17px;
     line-height: 1.6em;
     margin-bottom: 10px;
     padding: 15px;
@@ -151,3 +151,5 @@ strong {
     @media (max-width: 960px) {
       .results .summary {
         width: 445px; } }
+    .results .summary h3 {
+      margin-bottom: 5px; }
