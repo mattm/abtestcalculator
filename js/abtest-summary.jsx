@@ -8,7 +8,7 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var utils = require( './utils' );
+var statUtils = require( './stats/stat-utils' );
 
 module.exports = React.createClass( {
 
@@ -124,7 +124,7 @@ module.exports = React.createClass( {
 	},
 
 	getProbabilityAGreaterThanB: function() {
-		return utils.calculateProbabityBIsGratherThanA( this.props.variations.b.proportion, this.props.variations.a.proportion );
+		return statUtils.calculateProbabityBIsGratherThanA( this.props.variations.b.proportion, this.props.variations.a.proportion );
 	},
 
 	isSignificant: function() {
