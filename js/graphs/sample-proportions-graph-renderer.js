@@ -29,16 +29,15 @@ SampleProportionsGraphRenderer.prototype.calculateXAxisRange = function() {
 	var exactRange = this.calculateXAxisRangeExact();
 
 	this.xAxisRange = new Range(
-		Math.floor(exactRange.min / this.getXAxisInterval()) * this.getXAxisInterval(),
-		Math.ceil(exactRange.max / this.getXAxisInterval()) * this.getXAxisInterval()
+		Math.floor( exactRange.min / this.getXAxisInterval() ) * this.getXAxisInterval(),
+		Math.ceil( exactRange.max / this.getXAxisInterval() ) * this.getXAxisInterval()
 	);
 };
 
 SampleProportionsGraphRenderer.prototype.calculateXAxisRangeExact = function() {
-	var variation, xAxisRange, min, max, i, l;
+	var xAxisRange, min, max;
 
-	for ( i = 0, l = this.variations.length; i < l; i++ ) {
-		variation = this.variations[ i ];
+	this.variations.forEach( function( variation ) {
 		xAxisRange = variation.proportion.xRange;
 		if ( min === undefined || xAxisRange.min < min ) {
 			min = xAxisRange.min;
@@ -46,7 +45,7 @@ SampleProportionsGraphRenderer.prototype.calculateXAxisRangeExact = function() {
 		if ( max === undefined || xAxisRange.max > max ) {
 			max = xAxisRange.max;
 		}
-	}
+	} );
 	return new Range( min, max );
 };
 
@@ -63,23 +62,21 @@ SampleProportionsGraphRenderer.prototype.getXAxisInterval = function() {
 };
 
 SampleProportionsGraphRenderer.prototype.calculateYAxisRange = function() {
-	var variation, yAxisRange, max, i, l;
+	var yAxisRange, max;
 
-	for ( i = 0, l = this.variations.length; i < l; i++ ) {
-		yAxisRange = this.variations[ i ].proportion.getYAxisRange();
+	this.variations.forEach( function( variation ) {
+		yAxisRange = variation.proportion.getYAxisRange();
 		if ( max === undefined || yAxisRange.max > max ) {
 			max = yAxisRange.max;
 		}
-	}
+	} );
 	this.yAxisRange = new Range( 0, max );
 };
 
 SampleProportionsGraphRenderer.prototype.renderSampleProportions = function() {
-	var i, l;
-
-	for ( i = 0, l = this.variations.length; i < l; i++ ) {
-		this.renderSamplingDistribution( this.variations[ i ] );
-	}
+	this.variations.forEach( function ( variation ) {
+		this.renderSamplingDistribution( variation );
+	}, this );
 };
 
 SampleProportionsGraphRenderer.prototype.renderSamplingDistribution = function( variation ) {
@@ -89,15 +86,13 @@ SampleProportionsGraphRenderer.prototype.renderSamplingDistribution = function( 
 };
 
 SampleProportionsGraphRenderer.prototype.renderSampleDistributionOutline = function( variation ) {
-	var i, l;
-
 	this.ctx.lineWidth = this.OUTLINE_LINE_WIDTH;
 	this.ctx.strokeStyle = colorUtils.hexToTransparentRGB( variation.color, this.OUTLINE_OPACITY );
 	this.ctx.beginPath();
-	this.ctx.moveTo( this.distributionXToCanvasX(variation.proportion.xRange.min), this.rect.bottom );
-	for ( i = 0, l = variation.proportion.xValues.length; i < l; i++ ) {
-		this.ctx.lineTo( this.distributionXToCanvasX( variation.proportion.xValues[ i ] ), this.distributionYToCanvasY( variation.proportion.yValues[ i ] ) );
-	}
+	this.ctx.moveTo( this.distributionXToCanvasX( variation.proportion.xRange.min), this.rect.bottom );
+	variation.proportion.xValues.forEach( function( xValue, i ) {
+		this.ctx.lineTo( this.distributionXToCanvasX( xValue ), this.distributionYToCanvasY( variation.proportion.yValues[ i ] ) );
+	}, this );
 	this.ctx.stroke();
 };
 
@@ -105,10 +100,10 @@ SampleProportionsGraphRenderer.prototype.renderSampleDistributionFill = function
 	var i, l;
 
 	this.ctx.beginPath();
-	this.ctx.moveTo( this.distributionXToCanvasX(variation.proportion.xRange.min), this.rect.bottom );
-	for ( i = 0, l = variation.proportion.xValues.length; i < l; i++ ) {
-		this.ctx.lineTo( this.distributionXToCanvasX( variation.proportion.xValues[ i ] ), this.distributionYToCanvasY( variation.proportion.yValues[ i ] ) );
-	}
+	this.ctx.moveTo( this.distributionXToCanvasX( variation.proportion.xRange.min), this.rect.bottom );
+	variation.proportion.xValues.forEach( function( xValue, i ) {
+		this.ctx.lineTo( this.distributionXToCanvasX( xValue ), this.distributionYToCanvasY( variation.proportion.yValues[ i ] ) );
+	}, this );
 	this.ctx.closePath();
 	this.ctx.fillStyle = colorUtils.hexToTransparentRGB( variation.color, this.FILL_OPACITY );
 	this.ctx.fill();

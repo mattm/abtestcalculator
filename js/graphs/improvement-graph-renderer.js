@@ -49,6 +49,7 @@ ImprovementGraphRenderer.prototype.renderCenter = function() {
 
 ImprovementGraphRenderer.prototype.getCenterLineColor = function() {
 	var color = this.distribution.mean > 0 ? this.POSITIVE_COLOR : this.NEGATIVE_COLOR;
+
 	return colorUtils.hexToTransparentRGB( color, 0.5 );
 };
 
@@ -59,15 +60,16 @@ ImprovementGraphRenderer.prototype.prepareForRender = function() {
 
 ImprovementGraphRenderer.prototype.renderNegativeCurvePart = function() {
 	var range = new Range( -Infinity, 0 );
+
 	this.xNegativeValues = this.distribution.getXBetween( range.min, range.max );
 	this.yNegativeValues = this.distribution.getYForXBetween( range.min, range.max );
 	this.renderCurvePart( this.xNegativeValues, this.yNegativeValues, this.NEGATIVE_COLOR );
 };
 
 ImprovementGraphRenderer.prototype.renderPositiveCurvePart = function() {
-	var range = new Range( 0, Infinity );
-	var xValues = this.distribution.getXBetween( range.min, range.max );
-	var yValues = this.distribution.getYForXBetween( range.min, range.max );
+	var range = new Range( 0, Infinity ),
+		xValues = this.distribution.getXBetween( range.min, range.max ),
+		yValues = this.distribution.getYForXBetween( range.min, range.max );
 
 	// We add the last negative values to the beginning of the arrays to ensure there isn't
 	// a thin white line separating the negative and positive sections of the curve
@@ -78,16 +80,16 @@ ImprovementGraphRenderer.prototype.renderPositiveCurvePart = function() {
 };
 
 ImprovementGraphRenderer.prototype.renderCurvePart = function( xValues, yValues, color ) {
-		this.renderCurveFilled( xValues, yValues, color );
-		this.renderCurveOutline( xValues, yValues, color );
+	this.renderCurveFilled( xValues, yValues, color );
+	this.renderCurveOutline( xValues, yValues, color );
 };
 
 ImprovementGraphRenderer.prototype.renderCurveFilled = function( xValues, yValues, color ) {
 	this.ctx.beginPath();
 	this.ctx.moveTo( this.distributionXToCanvasX( _.min( xValues ) ), this.rect.bottom );
-	for ( var i = 0, l = xValues.length; i < l; i++ ) {
-		this.ctx.lineTo( this.distributionXToCanvasX( xValues[ i ] ), this.distributionYToCanvasY( yValues[ i ] ) );
-	}
+	xValues.forEach( function( xValue, i ) {
+		this.ctx.lineTo( this.distributionXToCanvasX( xValue ), this.distributionYToCanvasY( yValues[ i ] ) );
+	}, this );
 	this.ctx.lineTo( this.distributionXToCanvasX( _.max( xValues ) ), this.rect.bottom );
 	this.ctx.closePath();
 	this.ctx.fillStyle = colorUtils.hexToTransparentRGB( color, this.FILL_OPACITY );
@@ -96,9 +98,9 @@ ImprovementGraphRenderer.prototype.renderCurveFilled = function( xValues, yValue
 
 ImprovementGraphRenderer.prototype.renderCurveOutline = function( xValues, yValues, color ) {
 	this.ctx.beginPath();
-	for ( var i = 0, l = xValues.length; i < l; i++ ) {
-		this.ctx.lineTo( this.distributionXToCanvasX( xValues[ i ] ), this.distributionYToCanvasY( yValues[ i ] ) );
-	}
+	xValues.forEach( function( xValue, i ) {
+		this.ctx.lineTo( this.distributionXToCanvasX( xValue ), this.distributionYToCanvasY( yValues[ i ] ) );
+	}, this );
 	this.ctx.lineWidth = this.OUTLINE_LINE_WIDTH;
 	this.ctx.strokeStyle = colorUtils.hexToTransparentRGB( color, this.OUTLINE_OPACITY );
 	this.ctx.stroke();
@@ -106,6 +108,7 @@ ImprovementGraphRenderer.prototype.renderCurveOutline = function( xValues, yValu
 
 ImprovementGraphRenderer.prototype.renderAxisValues = function() {
 	var numTicks, canvasY, points, value, canvasX;
+
 	numTicks = this.xAxisRange.getWidth() / this.calculateXAxisInterval() + 1;
 	canvasY = this.rect.bottom + this.X_AXIS_TICK_FONT_SIZE + this.X_AXIS_TICK_MARGIN_TOP;
 	for ( var i = 0, l = numTicks; i < l; i++ ) {
@@ -117,8 +120,9 @@ ImprovementGraphRenderer.prototype.renderAxisValues = function() {
 };
 
 ImprovementGraphRenderer.prototype.convertPointsToPercentage = function( points ) {
-	var mean = this.getControl().proportion.mean;
-	var ratio = (points + mean) / mean - 1;
+	var mean = this.getControl().proportion.mean,
+		ratio = (points + mean) / mean - 1;
+
 	return Math.round( ratio * 100 );
 };
 
