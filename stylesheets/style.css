@@ -52,7 +52,8 @@ strong {
 
 .form-container {
   margin-bottom: 10px;
-  overflow: visible; }
+  overflow-x: hidden;
+  overflow-y: auto; }
   .form-container form {
     float: left;
     width: 600px; }
@@ -96,7 +97,7 @@ strong {
       .form-container .copy-url {
         clear: both;
         float: left;
-        margin: 10px 0 10px 0; } }
+        margin-top: 10px; } }
     @media (max-width: 720px) {
       .form-container .copy-url {
         display: none; } }
