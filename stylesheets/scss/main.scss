@@ -100,8 +100,8 @@ strong {
 }
 
 .form-container {
-	overflow: auto;
 	margin-bottom: $result-separation;
+	overflow: visible;
 
 	form {
 		float: left;
@@ -166,7 +166,7 @@ strong {
 		@media ( min-width: $mobile-breakpoint ) and ( max-width: $two-column-breakpoint ) {
 			clear: both;
 			float: left;
-			margin-top: 10px;
+			margin: 10px 0 $result-separation 0;
 		}
 
 		// Hide the copy results URL link on mobile
