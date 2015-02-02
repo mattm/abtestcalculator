@@ -101,11 +101,10 @@ strong {
 
 .form-container {
 	margin-bottom: $result-separation;
-	overflow-x: hidden;
-	overflow-y: auto;
 
 	form {
 		float: left;
+		overflow: auto;
 		width: 600px;
 
 		.header-row {
@@ -198,6 +197,8 @@ strong {
 
 .results {
 	clear: both;
+	float: left;
+	margin-top: $result-separation;
 
 	.error {
 		color: $pink;
