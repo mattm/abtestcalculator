@@ -51,11 +51,10 @@ strong {
   font-weight: bold; }
 
 .form-container {
-  margin-bottom: 10px;
-  overflow-x: hidden;
-  overflow-y: auto; }
+  margin-bottom: 10px; }
   .form-container form {
     float: left;
+    overflow: auto;
     width: 600px; }
     .form-container form .header-row {
       margin-bottom: 5px; }
@@ -117,7 +116,9 @@ strong {
         background: rgba(255, 255, 255, 0.2); }
 
 .results {
-  clear: both; }
+  clear: both;
+  float: left;
+  margin-top: 10px; }
   .results .error {
     color: #F1BEBE;
     font-size: 21px;
