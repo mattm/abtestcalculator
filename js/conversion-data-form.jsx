@@ -12,7 +12,9 @@ module.exports = React.createClass( {
 	},
 
 	updateGraphs: function() {
-		var participantsA = this.refs.participantsA.getDOMNode().value,
+		var nameA = this.refs.nameA.getDOMNode().innerHTML,
+			nameB = this.refs.nameB.getDOMNode().innerHTML,
+			participantsA = this.refs.participantsA.getDOMNode().value,
 			conversionsA = this.refs.conversionsA.getDOMNode().value,
 			participantsB = this.refs.participantsB.getDOMNode().value,
 			conversionsB = this.refs.conversionsB.getDOMNode().value,
@@ -23,8 +25,20 @@ module.exports = React.createClass( {
 		participantsB = pattern.test( participantsB ) ? +participantsB : participantsB;
 		conversionsB = pattern.test( conversionsB ) ? +conversionsB : conversionsB;
 
-		this.props.onUpdate( participantsA, conversionsA, participantsB, conversionsB );
+		this.props.onUpdate( nameA, nameB, participantsA, conversionsA, participantsB, conversionsB );
 	},
+
+	setVariationName: function( event ) {
+		var newName = prompt( "What would you like to call this variation?", event.target.innerHTML );
+
+		event.preventDefault();
+
+		if ( newName ) {
+			event.target.innerHTML = newName;
+			this.updateGraphs();
+		}
+	},
+
 
 	// Hack to place cursor at end of input field on page load
 	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
@@ -75,7 +89,9 @@ module.exports = React.createClass( {
 					<span className="conversions">Conversions</span>
 				</div>
 				<div className="variation">
-					<span className="label variation-a">Variation A</span>
+					<span className="label">
+						<a href="#" className="variation-a" ref="nameA" onClick={ this.setVariationName }>{ this.props.variations.a.name }</a>
+					</span>
 					<input
 						type="text"
 						ref="participantsA"
@@ -94,7 +110,9 @@ module.exports = React.createClass( {
 						onKeyDown={ this.adjustInputValue } />
 				</div>
 				<div className="variation">
-					<span className="label variation-b">Variation B</span>
+					<span className="label">
+						<a href="#" className="variation-b" ref="nameB" onClick={ this.setVariationName }>{ this.props.variations.b.name }</a>
+					</span>
 					<input type="text"
 						ref="participantsB"
 						placeholder="Participants B"
@@ -109,7 +127,7 @@ module.exports = React.createClass( {
 						defaultValue={ this.props.variations.b.conversions }
 						onChange={ this.handleFormSubmit }
 						onKeyDown={ this.adjustInputValue } />
-					<a href="#" onClick={ this.resetForm }>reset form</a>
+					<a href="#" className="reset" onClick={ this.resetForm }>reset form</a>
 				</div>
 			</form>
 		);

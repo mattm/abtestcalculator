@@ -52,11 +52,11 @@ module.exports = React.createClass( {
 	},
 
 	getVariationBElement: function() {
-		return <span className="variation-b">Variation B</span>;
+		return <span className="variation-b">{ this.props.variations.b.name }</span>;
 	},
 
 	getVariationAElement: function() {
-		return <span className="variation-a">Variation A</span>;
+		return <span className="variation-a">{ this.props.variations.a.name }</span>;
 	},
 
 	getWinningVariationElement: function() {
@@ -68,11 +68,11 @@ module.exports = React.createClass( {
 	},
 
 	getVariationBPossessiveElement: function() {
-		return <span className="variation-b">Variation B&#8217;s</span>;
+		return <span className="variation-b">{ this.props.variations.b.name }&#8217;s</span>;
 	},
 
 	getVariationAPossessiveElement: function() {
-		return <span className="variation-a">Variation A&#8217;s</span>;
+		return <span className="variation-a">{ this.props.variations.a.name }&#8217;s</span>;
 	},
 
 	getWinningVariationPossessiveElement: function() {

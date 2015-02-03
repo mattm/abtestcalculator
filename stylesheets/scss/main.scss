@@ -132,8 +132,20 @@ strong {
 
 			.label {
 				display: inline-block;
-				font-size: 15px;
 				width: $data-label-width;
+
+				a {
+					font-size: 15px;
+					text-decoration: none;
+
+					&.variation-a {
+						border-bottom: 1px dotted $variation-a;
+					}
+
+					&.variation-b {
+						border-bottom: 1px dotted $variation-b;
+					}
+				}
 			}
 
 			input[type="text"] {
@@ -152,7 +164,7 @@ strong {
 				width: $arrow-width;
 			}
 
-			a {
+			.reset {
 				color: $light-gray;
 				margin-left: 10px;
 			}

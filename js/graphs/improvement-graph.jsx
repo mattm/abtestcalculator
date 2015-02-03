@@ -33,8 +33,8 @@ module.exports = React.createClass( {
 				<h3>Improvement Distribution</h3>
 				<canvas ref='canvas' />
 				<p>
-					if you change from <span className="variation-a">Variation A</span>&nbsp;
-					to <span className="variation-b">Variation B</span> the <br/> improvement
+					if you change from <span className="variation-a">{ this.props.variations.a.name }</span>&nbsp;
+					to <span className="variation-b">{ this.props.variations.b.name }</span> the <br/> improvement
 					you will see in the long run falls<br/> somewhere within this bell curve
 				</p>
 			</div>

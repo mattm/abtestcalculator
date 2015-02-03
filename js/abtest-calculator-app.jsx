@@ -24,6 +24,8 @@ module.exports = React.createClass( {
 	getInitialState: function() {
 		var params = url.parse( document.URL, true ).query,
 			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
+			nameA = 'Variation A',
+			nameB = 'Variation B',
 			participantsA = 500,
 			conversionsA = 200,
 			participantsB = 500,
@@ -48,6 +50,8 @@ module.exports = React.createClass( {
 		}
 
 		return {
+			nameA: nameA,
+			nameB: nameB,
 			participantsA: participantsA,
 			conversionsA: conversionsA,
 			participantsB: participantsB,
@@ -55,8 +59,10 @@ module.exports = React.createClass( {
 		};
 	},
 
-	updateConversionData: function( participantsA, conversionsA, participantsB, conversionsB ) {
+	updateConversionData: function( nameA, nameB, participantsA, conversionsA, participantsB, conversionsB ) {
 		this.setState( {
+			nameA: nameA,
+			nameB: nameB,
 			participantsA: participantsA,
 			conversionsA: conversionsA,
 			participantsB: participantsB,
@@ -66,8 +72,8 @@ module.exports = React.createClass( {
 
 	getVariations: function() {
 		return {
-			a: new Variation( 'Variation A', '#F1C40F', this.state.participantsA, this.state.conversionsA ),
-			b: new Variation( 'Variation B', '#B6E2FF', this.state.participantsB, this.state.conversionsB )
+			a: new Variation( this.state.nameA, '#F1C40F', this.state.participantsA, this.state.conversionsA ),
+			b: new Variation( this.state.nameB, '#B6E2FF', this.state.participantsB, this.state.conversionsB )
 		};
 	},
 
