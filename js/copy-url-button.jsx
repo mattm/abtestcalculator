@@ -12,8 +12,10 @@ var analytics = require( './analytics' );
 module.exports = React.createClass( {
 	getResultsURL: function() {
 		return 'http://www.abtestcalculator.com' +
-			'?ap=' + this.props.variations.a.participants +
+			'?an=' + encodeURIComponent( this.props.variations.a.name ) +
+			'&ap=' + this.props.variations.a.participants +
 			'&ac=' + this.props.variations.a.conversions +
+			'&bn=' + encodeURIComponent( this.props.variations.b.name ) +
 			'&bp=' + this.props.variations.b.participants +
 			'&bc=' + this.props.variations.b.conversions;
 	},

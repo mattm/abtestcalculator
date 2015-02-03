@@ -23,7 +23,7 @@ var canvasUtils = require( './utils/canvas-utils' ),
 module.exports = React.createClass( {
 	getInitialState: function() {
 		var params = url.parse( document.URL, true ).query,
-			queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
+			queryNameA, queryNameB, queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
 			nameA = 'Variation A',
 			nameB = 'Variation B',
 			participantsA = 500,
@@ -32,6 +32,14 @@ module.exports = React.createClass( {
 			conversionsB = 220;
 
 		if ( ! _.isEmpty( params ) ) {
+			queryNameA = params.an;
+			queryNameB = params.bn;
+
+			if ( queryNameA && queryNameB ) {
+				nameA = queryNameA;
+				nameB = queryNameB;
+			}
+
 			queryParticipantsA = params.ap;
 			queryConversionsA = params.ac;
 			queryParticipantsB = params.bp;
