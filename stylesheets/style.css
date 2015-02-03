@@ -72,8 +72,14 @@ strong {
       margin-bottom: 5px; }
       .form-container form .variation .label {
         display: inline-block;
-        font-size: 15px;
         width: 100px; }
+        .form-container form .variation .label a {
+          font-size: 15px;
+          text-decoration: none; }
+          .form-container form .variation .label a.variation-a {
+            border-bottom: 1px dotted #F1C40F; }
+          .form-container form .variation .label a.variation-b {
+            border-bottom: 1px dotted #B6E2FF; }
       .form-container form .variation input[type="text"] {
         border: 1px solid #eee;
         color: #555;
@@ -86,7 +92,7 @@ strong {
         display: inline-block;
         text-align: center;
         width: 25px; }
-      .form-container form .variation a {
+      .form-container form .variation .reset {
         color: #eee;
         margin-left: 10px; }
   .form-container .copy-url {
