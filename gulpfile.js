@@ -23,7 +23,7 @@ var config = {
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'build', [ 'js', 'css', 'index', 'cname' ] );
+gulp.task( 'build', [ 'js', 'css', 'index', 'cname', 'favicon' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -39,6 +39,11 @@ gulp.task( 'index', function() {
 
 gulp.task( 'cname', function() {
 	gulp.src( './CNAME' )
+		.pipe( gulp.dest('./build/' ) );
+} );
+
+gulp.task( 'favicon', function() {
+	gulp.src( './favicon.ico' )
 		.pipe( gulp.dest('./build/' ) );
 } );
 
