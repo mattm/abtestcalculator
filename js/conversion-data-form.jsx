@@ -74,6 +74,8 @@ module.exports = React.createClass( {
 	resetForm: function( event ) {
 		event.preventDefault();
 
+		this.refs.nameA.getDOMNode().innerHTML = 'Variation A';
+		this.refs.nameB.getDOMNode().innerHTML = 'Variation B';
 		this.refs.participantsA.getDOMNode().value = '';
 		this.refs.conversionsA.getDOMNode().value = '';
 		this.refs.participantsB.getDOMNode().value = '';
