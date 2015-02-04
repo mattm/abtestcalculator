@@ -5,6 +5,11 @@
  */
 var React = require( 'react' );
 
+/**
+ * Internal dependencies
+ */
+var constants = require( './constants' );
+
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
 		event.preventDefault();
@@ -74,8 +79,8 @@ module.exports = React.createClass( {
 	resetForm: function( event ) {
 		event.preventDefault();
 
-		this.refs.nameA.getDOMNode().innerHTML = 'Variation A';
-		this.refs.nameB.getDOMNode().innerHTML = 'Variation B';
+		this.refs.nameA.getDOMNode().innerHTML = constants.variations.a.defaultName;
+		this.refs.nameB.getDOMNode().innerHTML = constants.variations.b.defaultName;
 		this.refs.participantsA.getDOMNode().value = '';
 		this.refs.conversionsA.getDOMNode().value = '';
 		this.refs.participantsB.getDOMNode().value = '';
