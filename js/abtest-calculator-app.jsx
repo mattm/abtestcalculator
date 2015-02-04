@@ -15,10 +15,10 @@ var canvasUtils = require( './utils/canvas-utils' ),
 	config = require( './config' ),
 	ConversionDataForm = require( './conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
+	ExecutiveSummary = require( './executive-summary' ),
 	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
 	ImprovementGraph = require( './graphs/improvement-graph' ),
 	Variation = require( './stats/variation' ),
-	ABTestSummary = require( './abtest-summary' ),
 	utils = require( './utils' );
 
 module.exports = React.createClass( {
@@ -125,7 +125,7 @@ module.exports = React.createClass( {
 	getAnalysisElement: function() {
 		return (
 			<div>
-				<ABTestSummary variations={ this.getVariations() } />
+				<ExecutiveSummary variations={ this.getVariations() } />
 				{ this.getGraphsElement() }
 			</div>
 		);
