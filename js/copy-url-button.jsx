@@ -8,7 +8,7 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 var analytics = require( './analytics' ),
-	constants = require( './constants' );
+	config = require( './config' );
 
 module.exports = React.createClass( {
 	getResultsURL: function() {
@@ -20,7 +20,7 @@ module.exports = React.createClass( {
 			'&bp=' + this.props.variations.b.participants +
 			'&bc=' + this.props.variations.b.conversions;
 
-		hasCustomVariationNames = this.props.variations.a.name !== constants.variations.a.defaultName || this.props.variations.b.name !== constants.variations.b.defaultName;
+		hasCustomVariationNames = this.props.variations.a.name !== config.variations.a.defaultName || this.props.variations.b.name !== config.variations.b.defaultName;
 
 		if ( hasCustomVariationNames ) {
 			url += '&an=' + encodeURIComponent( this.props.variations.a.name ) +

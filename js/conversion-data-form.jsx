@@ -8,7 +8,7 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var constants = require( './constants' );
+var config = require( './config' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
@@ -79,8 +79,8 @@ module.exports = React.createClass( {
 	resetForm: function( event ) {
 		event.preventDefault();
 
-		this.refs.nameA.getDOMNode().innerHTML = constants.variations.a.defaultName;
-		this.refs.nameB.getDOMNode().innerHTML = constants.variations.b.defaultName;
+		this.refs.nameA.getDOMNode().innerHTML = config.variations.a.defaultName;
+		this.refs.nameB.getDOMNode().innerHTML = config.variations.b.defaultName;
 		this.refs.participantsA.getDOMNode().value = '';
 		this.refs.conversionsA.getDOMNode().value = '';
 		this.refs.participantsB.getDOMNode().value = '';

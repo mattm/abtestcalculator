@@ -12,7 +12,7 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 var canvasUtils = require( './utils/canvas-utils' ),
-	constants = require( './constants' ),
+	config = require( './config' ),
 	ConversionDataForm = require( './conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
 	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
@@ -25,8 +25,8 @@ module.exports = React.createClass( {
 	getInitialState: function() {
 		var params = url.parse( document.URL, true ).query,
 			queryNameA, queryNameB, queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
-			nameA = constants.variations.a.defaultName,
-			nameB = constants.variations.b.defaultName,
+			nameA = config.variations.a.defaultName,
+			nameB = config.variations.b.defaultName,
 			participantsA = 500,
 			conversionsA = 200,
 			participantsB = 500,
