@@ -32,8 +32,6 @@ module.exports = React.createClass( {
 			participantsB = config.variations.b.defaultParticipants,
 			conversionsB = config.variations.b.defaultConversions;
 
-		console.log( config.variations.a.defaultParticipants );
-
 		if ( ! _.isEmpty( params ) ) {
 			queryNameA = params.an;
 			queryNameB = params.bn;

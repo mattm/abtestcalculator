@@ -11,10 +11,10 @@ module.exports = {
 		var pixelRatio = canvasUtils.getPixelRatio(),
 			canvas = this.refs.canvas.getDOMNode();
 
-		canvas.width = config.CANVAS_WIDTH * pixelRatio;
-		canvas.height = config.CANVAS_HEIGHT * pixelRatio;
-		canvas.style.width = config.CANVAS_WIDTH + 'px';
-		canvas.style.height = config.CANVAS_HEIGHT + 'px';
+		canvas.width = config.canvas.width * pixelRatio;
+		canvas.height = config.canvas.height * pixelRatio;
+		canvas.style.width = config.canvas.width + 'px';
+		canvas.style.height = config.canvas.height + 'px';
 		canvas.getContext( '2d' ).setTransform( pixelRatio, 0, 0, pixelRatio, 0, 0 );
 	},
 

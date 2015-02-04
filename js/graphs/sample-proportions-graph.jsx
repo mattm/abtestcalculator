@@ -19,8 +19,8 @@ module.exports = React.createClass( {
 	renderGraph: function() {
 		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
 			sampleProportionsGraph = new SampleProportionsGraphRenderer( context ),
-			rectangle = new Rectangle( config.CANVAS_HORIZONTAL_PADDING, config.CANVAS_PADDING_TOP, config.CANVAS_WIDTH - 2 * config.CANVAS_HORIZONTAL_PADDING, config.CANVAS_HEIGHT - config.CANVAS_PADDING_TOP - config.CANVAS_PADDING_BOTTOM );
-		context.clearRect( 0, 0, config.CANVAS_WIDTH, config.CANVAS_HEIGHT );
+			rectangle = new Rectangle( config.canvas.horizontalPadding, config.canvas.paddingTop, config.canvas.width - 2 * config.canvas.horizontalPadding, config.canvas.height - config.canvas.paddingTop - config.canvas.paddingBottom );
+		context.clearRect( 0, 0, config.canvas.width, config.canvas.height );
 		sampleProportionsGraph.setRect( rectangle );
 		sampleProportionsGraph.renderBackground();
 		sampleProportionsGraph.setVariations( this.props.variations );
