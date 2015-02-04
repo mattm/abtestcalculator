@@ -1,13 +1,16 @@
 'use strict';
 
 module.exports = {
-
 	variations: {
 		a: {
-			defaultName: 'Variation A'
+			defaultName: 'Variation A',
+			defaultParticipants: 500,
+			defaultConversions: 200
 		},
 		b: {
-			defaultName: 'Variation B'
+			defaultName: 'Variation B',
+			defaultParticipants: 500,
+			defaultConversions: 220
 		}
 	},
 
