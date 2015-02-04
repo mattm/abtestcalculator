@@ -8,7 +8,8 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var config = require( './config' );
+var config = require( './config' ),
+	utils = require( './utils' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {
@@ -17,18 +18,14 @@ module.exports = React.createClass( {
 	},
 
 	updateGraphs: function() {
+
+		// TODO: Is there an elegant way to pass these integer strings and have them treated as integers?
 		var nameA = this.refs.nameA.getDOMNode().innerHTML,
 			nameB = this.refs.nameB.getDOMNode().innerHTML,
-			participantsA = this.refs.participantsA.getDOMNode().value,
-			conversionsA = this.refs.conversionsA.getDOMNode().value,
-			participantsB = this.refs.participantsB.getDOMNode().value,
-			conversionsB = this.refs.conversionsB.getDOMNode().value,
-			pattern = /^\d+$/;
-
-		participantsA = pattern.test( participantsA ) ? +participantsA : participantsA;
-		conversionsA = pattern.test( conversionsA ) ? +conversionsA : conversionsA;
-		participantsB = pattern.test( participantsB ) ? +participantsB : participantsB;
-		conversionsB = pattern.test( conversionsB ) ? +conversionsB : conversionsB;
+			participantsA = utils.integerStringToInteger( this.refs.participantsA.getDOMNode().value ),
+			conversionsA = utils.integerStringToInteger( this.refs.conversionsA.getDOMNode().value ),
+			participantsB = utils.integerStringToInteger( this.refs.participantsB.getDOMNode().value ),
+			conversionsB = utils.integerStringToInteger( this.refs.conversionsB.getDOMNode().value );
 
 		this.props.onUpdate( nameA, nameB, participantsA, conversionsA, participantsB, conversionsB );
 	},

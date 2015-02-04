@@ -1,8 +1,12 @@
 'use strict';
 
 module.exports = {
-	isInteger: function( string ) {
+	isIntegerString: function( string ) {
 		return /^\d+$/.test( string );
+	},
+
+	integerStringToInteger: function( string ) {
+		return this.isIntegerString( string ) ? parseInt( string ) : string;
 	},
 
 	ratioToPercentage: function( ratio ) {

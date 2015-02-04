@@ -46,7 +46,7 @@ module.exports = React.createClass( {
 			queryParticipantsB = params.bp;
 			queryConversionsB = params.bc;
 
-			if ( utils.isInteger( queryParticipantsA ) && utils.isInteger( queryConversionsA ) && utils.isInteger( queryParticipantsB ) && utils.isInteger( queryConversionsB ) ) {
+			if ( utils.isIntegerString( queryParticipantsA ) && utils.isIntegerString( queryConversionsA ) && utils.isIntegerString( queryParticipantsB ) && utils.isIntegerString( queryConversionsB ) ) {
 				participantsA = +queryParticipantsA;
 				conversionsA = +queryConversionsA;
 				participantsB = +queryParticipantsB;
