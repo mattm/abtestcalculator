@@ -11,13 +11,22 @@ var analytics = require( './analytics' );
 
 module.exports = React.createClass( {
 	getResultsURL: function() {
-		return 'http://www.abtestcalculator.com' +
-			'?an=' + encodeURIComponent( this.props.variations.a.name ) +
-			'&ap=' + this.props.variations.a.participants +
+		var url, hasCustomVariationNames;
+
+		url = 'http://www.abtestcalculator.com' +
+			'?ap=' + this.props.variations.a.participants +
 			'&ac=' + this.props.variations.a.conversions +
-			'&bn=' + encodeURIComponent( this.props.variations.b.name ) +
 			'&bp=' + this.props.variations.b.participants +
 			'&bc=' + this.props.variations.b.conversions;
+
+		hasCustomVariationNames = this.props.variations.a.name !== 'Variation A' || this.props.variations.b.name !== 'Variation B';
+
+		if ( hasCustomVariationNames ) {
+			url += '&an=' + encodeURIComponent( this.props.variations.a.name ) +
+				'&bn=' + encodeURIComponent( this.props.variations.b.name );
+		}
+
+		return url;
 	},
 
 	urlCopied: function() {
