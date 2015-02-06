@@ -1,6 +1,7 @@
 'use strict';
 
-var browserify = require( 'browserify' ),
+var beep = require( 'beepbeep' ),
+	browserify = require( 'browserify' ),
 	concat = require( 'gulp-concat' ),
 	deploy = require( 'gulp-gh-pages' ),
 	es = require( 'event-stream' ),
@@ -73,6 +74,7 @@ gulp.task( 'js', function() {
 		.transform( reactify )
 		.bundle()
 		.on('error', function( error ) {
+			beep();
 			gutil.log( error.message );
 		} )
 		.pipe( source( mainPath ) )

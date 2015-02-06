@@ -11,6 +11,7 @@
     "react-zeroclipboard": "^0.3.1"
   },
   "devDependencies": {
+    "beepbeep": "^1.2.0",
     "browserify": "^8.0.3",
     "event-stream": "^3.2.1",
     "gulp": "^3.8.10",
