@@ -24,7 +24,7 @@ var config = {
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'build', [ 'js', 'css', 'index', 'cname', 'favicon' ] );
+gulp.task( 'build', [ 'js', 'css', 'public' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -33,19 +33,10 @@ gulp.task( 'watch', function() {
 	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
 } );
 
-gulp.task( 'index', function() {
-	gulp.src( './index.html' )
-		.pipe( gulp.dest('./build/' ) );
-} );
-
-gulp.task( 'cname', function() {
-	gulp.src( './CNAME' )
-		.pipe( gulp.dest('./build/' ) );
-} );
-
-gulp.task( 'favicon', function() {
-	gulp.src( './favicon.ico' )
-		.pipe( gulp.dest('./build/' ) );
+// Copy assets from /public into the root of the build directory
+gulp.task( 'public', function() {
+	gulp.src( './public/*' )
+		.pipe( gulp.dest('./build' ) );
 } );
 
 gulp.task( 'css', function () {
