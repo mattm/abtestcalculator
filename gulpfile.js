@@ -69,12 +69,17 @@ gulp.task( 'js', function() {
 			gutil.log( error.message );
 		} )
 		.pipe( source( mainPath ) )
-		.pipe( streamify( uglify() ) )
+		.pipe( gutil.env.production ? streamify( uglify() ) : gutil.noop() )
 		.pipe( rename( 'bundle.js' ) )
 		.pipe( gulp.dest( config.buildPath + '/js' ) );
 } );
 
+// Run `gulp deploy --production` to deploy to Github Pages
 gulp.task( 'deploy', [ 'build' ], function () {
+	if ( ! gutil.env.production ) {
+		throw new Error( 'gulp deploy must be run with the --production flag to ensure the JavaScript bundle is minified' );
+	}
+
 	return gulp.src( './build/**/*' )
 		.pipe( deploy() );
 });
