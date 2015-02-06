@@ -3,6 +3,7 @@
 var beep = require( 'beepbeep' ),
 	browserify = require( 'browserify' ),
 	concat = require( 'gulp-concat' ),
+	del = require( 'del' ),
 	deploy = require( 'gulp-gh-pages' ),
 	es = require( 'event-stream' ),
 	gulp = require( 'gulp' ),
@@ -13,6 +14,7 @@ var beep = require( 'beepbeep' ),
 	sass = require( 'gulp-sass' ),
 	source = require( 'vinyl-source-stream' ),
 	streamify = require( 'gulp-streamify' ),
+	template = require( 'gulp-template' ),
 	uglify = require( 'gulp-uglify' );
 
 var config = {
@@ -22,9 +24,16 @@ var config = {
 	buildPath: './build'
 };
 
+var jsExtension = gutil.env.production ? 'min.js' : 'js',
+	bundleFileName = 'bundle.' + jsExtension;
+
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'build', [ 'js', 'css', 'public' ] );
+gulp.task( 'clean-build', function() {
+	del( './build/**' );
+} );
+
+gulp.task( 'build', [ 'clean-build', 'js', 'css', 'assets', 'index' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -33,10 +42,18 @@ gulp.task( 'watch', function() {
 	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
 } );
 
-// Copy assets from /public into the root of the build directory
-gulp.task( 'public', function() {
-	gulp.src( './public/*' )
-		.pipe( gulp.dest('./build' ) );
+// Copy assets from /assets into the root of the build directory
+gulp.task( 'assets', function() {
+	gulp.src( './assets/*' ).
+		pipe( gulp.dest('./build' ) );
+} );
+
+gulp.task( 'index', function() {
+	gulp.src('./index.html' )
+		.pipe( template( {
+			bundleFileName: bundleFileName
+		} ) )
+		.pipe( gulp.dest( './build' ) )
 } );
 
 gulp.task( 'css', function () {
@@ -70,7 +87,7 @@ gulp.task( 'js', function() {
 		} )
 		.pipe( source( mainPath ) )
 		.pipe( gutil.env.production ? streamify( uglify() ) : gutil.noop() )
-		.pipe( rename( 'bundle.js' ) )
+		.pipe( rename( bundleFileName ) )
 		.pipe( gulp.dest( config.buildPath + '/js' ) );
 } );
 
