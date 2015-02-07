@@ -11,6 +11,7 @@ var beep = require( 'beepbeep' ),
 	jshint = require('gulp-jshint'),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
+	runSequence = require( 'run-sequence' ),
 	sass = require( 'gulp-sass' ),
 	source = require( 'vinyl-source-stream' ),
 	streamify = require( 'gulp-streamify' ),
@@ -29,12 +30,14 @@ var jsExtension = gutil.env.production ? 'min.js' : 'js',
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'clean', function( cb ) {
-	del( [ './build/'] );
-	cb();
+gulp.task( 'clean', function() {
+	return del( './build/' );
 } );
 
-gulp.task( 'build', [ 'clean', 'js', 'css', 'assets', 'index' ] );
+gulp.task( 'build', function( callback ) {
+	runSequence( 'clean', 'js', 'css', 'assets', 'index',
+		callback );
+} );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -45,12 +48,12 @@ gulp.task( 'watch', function() {
 
 // Copy assets from /assets into the root of the build directory
 gulp.task( 'assets', function() {
-	gulp.src( './assets/*' ).
+	return gulp.src( './assets/*' ).
 		pipe( gulp.dest('./build' ) );
 } );
 
 gulp.task( 'index', function() {
-	gulp.src('./index.html' )
+	return gulp.src('./index.html' )
 		.pipe( template( {
 			bundleFileName: bundleFileName
 		} ) )
@@ -76,7 +79,7 @@ gulp.task( 'jshint', function () {
 gulp.task( 'js', function() {
 	var mainPath = config.jsPath + '/main.js';
 
-	browserify({
+	return browserify({
 		entries: mainPath,
 		extensions: [ '.jsx' ]
 	} )

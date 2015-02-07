@@ -27,6 +27,7 @@
     "gulp-uglify": "^1.1.0",
     "gulp-util": "^3.0.2",
     "reactify": "^0.17.1",
+    "run-sequence": "^1.0.2",
     "vinyl-source-stream": "^1.0.0"
   },
   "homepage": "https://github.com/mattm/abtestcalculator",
