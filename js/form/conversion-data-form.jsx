@@ -29,16 +29,16 @@ module.exports = React.createClass( {
 	},
 
 	handleKeyDown: function( event ) {
+		var currentValue = parseInt( event.target.value );
+
 		if ( event.keyCode === 38 ) {
-			event.target.value = parseInt( event.target.value ) + 1;
+			event.target.value = currentValue + 1;
 			this.updateGraphs()
 			event.preventDefault();
-		} else if ( event.keyCode === 40 ) {
-			if ( parseInt( event.target.value ) > 0 ) {
-				event.target.value = parseInt( event.target.value ) - 1;
-				this.updateGraphs();
-				event.preventDefault();
-			}
+		} else if ( event.keyCode === 40 && currentValue > 0 ) {
+			event.target.value = currentValue - 1;
+			this.updateGraphs();
+			event.preventDefault();
 		}
 	},
 
