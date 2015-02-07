@@ -10,7 +10,6 @@ module.exports = React.createClass( {
 		return (
 			<input
 				type="text"
-				ref="participantsA"
 				placeholder={ this.props.placeholderText}
 				defaultValue={ this.props.defaultValue }
 				onChange={ this.props.onChange }
