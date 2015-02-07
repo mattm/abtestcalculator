@@ -29,11 +29,12 @@ var jsExtension = gutil.env.production ? 'min.js' : 'js',
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'clean-build', function() {
-	del( './build/**' );
+gulp.task( 'clean', function( cb ) {
+	del( [ './build/'] );
+	cb();
 } );
 
-gulp.task( 'build', [ 'clean-build', 'js', 'css', 'assets', 'index' ] );
+gulp.task( 'build', [ 'clean', 'js', 'css', 'assets', 'index' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
@@ -98,5 +99,8 @@ gulp.task( 'deploy', [ 'build' ], function () {
 	}
 
 	return gulp.src( './build/**/*' )
-		.pipe( deploy() );
+		.pipe( deploy() )
+		.on( 'error', function( error ){
+			gutil.log( error.message );
+		} );
 });
