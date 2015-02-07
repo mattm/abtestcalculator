@@ -85,6 +85,10 @@ module.exports = React.createClass( {
 		this.updateGraphs();
 	},
 
+	conversionArrow: function() {
+		return <span className="arrow">&#9654;</span>;
+	},
+
 	render: function() {
 		return (
 			<form onSubmit={ this.handleFormSubmit }>
@@ -103,7 +107,7 @@ module.exports = React.createClass( {
 						onChange={ this.handleFormSubmit }
 						onFocus={ this.handleFocus }
 						onKeyDown={ this.handleKeyDown } />
-					<span className="arrow">&#9654;</span>
+					{ this.conversionArrow() }
 					<ConversionDataInput
 						placeholderText="Conversions A"
 						defaultValue={ this.props.variations.a.conversions }
@@ -121,7 +125,7 @@ module.exports = React.createClass( {
 						ref="participantsB"
 						onChange={ this.handleFormSubmit }
 						onKeyDown={ this.handleKeyDown } />
-						<span className="arrow">&#9654;</span>
+					{ this.conversionArrow() }
 					<ConversionDataInput
 						placeholderText="Conversions B"
 						defaultValue={ this.props.variations.b.conversions }
