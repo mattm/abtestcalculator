@@ -18,17 +18,16 @@ module.exports = React.createClass( {
 		this.updateGraphs();
 	},
 
+	// TODO: Is there an elegant way to pass these integer strings and have them treated as integers?
 	updateGraphs: function() {
-
-		// TODO: Is there an elegant way to pass these integer strings and have them treated as integers?
-		var nameA = this.refs.nameA.getDOMNode().innerHTML,
-			nameB = this.refs.nameB.getDOMNode().innerHTML,
-			participantsA = utils.integerStringToInteger( this.refs.participantsA.getDOMNode().value ),
-			conversionsA = utils.integerStringToInteger( this.refs.conversionsA.getDOMNode().value ),
-			participantsB = utils.integerStringToInteger( this.refs.participantsB.getDOMNode().value ),
-			conversionsB = utils.integerStringToInteger( this.refs.conversionsB.getDOMNode().value );
-
-		this.props.onUpdate( nameA, nameB, participantsA, conversionsA, participantsB, conversionsB );
+		this.props.onUpdate( {
+			nameA: this.refs.nameA.getDOMNode().innerHTML,
+			nameB: this.refs.nameB.getDOMNode().innerHTML,
+			participantsA: utils.integerStringToInteger( this.refs.participantsA.getDOMNode().value ),
+			conversionsA: utils.integerStringToInteger( this.refs.conversionsA.getDOMNode().value ),
+			participantsB: utils.integerStringToInteger( this.refs.participantsB.getDOMNode().value ),
+			conversionsB: utils.integerStringToInteger( this.refs.conversionsB.getDOMNode().value ),
+		} );
 	},
 
 	setVariationName: function( event ) {

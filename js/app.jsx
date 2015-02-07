@@ -68,15 +68,8 @@ module.exports = React.createClass( {
 		};
 	},
 
-	updateConversionData: function( nameA, nameB, participantsA, conversionsA, participantsB, conversionsB ) {
-		this.setState( {
-			nameA: nameA,
-			nameB: nameB,
-			participantsA: participantsA,
-			conversionsA: conversionsA,
-			participantsB: participantsB,
-			conversionsB: conversionsB
-		} );
+	updateConversionData: function( updatedData ) {
+		this.setState( updatedData );
 	},
 
 	getVariations: function() {
