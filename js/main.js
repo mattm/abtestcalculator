@@ -11,7 +11,7 @@ var React = require( 'react' ),
  */
 var analytics = require( './analytics' ),
 	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
-	ABTestCalculator = require( './abtest-calculator-app' );
+	App = require( './app' );
 
 var urlParams = url.parse( document.URL, true ).query,
 	hasUrlParams = urlParams.hasOwnProperty('ap') && urlParams.hasOwnProperty('ac') && urlParams.hasOwnProperty('bp') && urlParams.hasOwnProperty('bc');
@@ -19,6 +19,6 @@ var urlParams = url.parse( document.URL, true ).query,
 analytics.recordEvent( 'load abtest calculator', { 'has params' : hasUrlParams } );
 
 React.render(
-	<ABTestCalculator />,
+	<App />,
 	document.getElementById( 'content' )
 );
