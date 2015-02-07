@@ -55,9 +55,9 @@ module.exports = React.createClass( {
 	},
 
 	setVariationName: function( event ) {
-		var newName = prompt( "What would you like to call this variation?", event.target.innerHTML );
-
 		event.preventDefault();
+
+		var newName = prompt( "What would you like to call this variation?", event.target.innerHTML );
 
 		if ( newName ) {
 			event.target.innerHTML = newName;
