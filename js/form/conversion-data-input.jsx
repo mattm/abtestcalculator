@@ -11,7 +11,7 @@ module.exports = React.createClass( {
 			<input
 				type="text"
 				placeholder={ this.props.placeholderText}
-				defaultValue={ this.props.defaultValue }
+				value={ this.props.value }
 				onChange={ this.props.onChange }
 				onFocus={ this.props.onFocus }
 				onKeyDown={ this.props.onKeyDown } />

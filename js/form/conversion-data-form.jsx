@@ -75,13 +75,14 @@ module.exports = React.createClass( {
 	resetForm: function( event ) {
 		event.preventDefault();
 
-		this.refs.nameA.getDOMNode().innerHTML = config.variations.a.defaultName;
-		this.refs.nameB.getDOMNode().innerHTML = config.variations.b.defaultName;
-		this.refs.participantsA.getDOMNode().value = '';
-		this.refs.conversionsA.getDOMNode().value = '';
-		this.refs.participantsB.getDOMNode().value = '';
-		this.refs.conversionsB.getDOMNode().value = '';
-		this.updateGraphs();
+		this.props.onUpdate( {
+			nameA: config.variations.a.defaultName,
+			nameB: config.variations.b.defaultName,
+			participantsA: '',
+			conversionsA: '',
+			participantsB: '',
+			conversionsB: ''
+		} );
 	},
 
 	conversionArrow: function() {
@@ -101,7 +102,7 @@ module.exports = React.createClass( {
 					</span>
 					<ConversionDataInput
 						placeholderText="Participants A"
-						defaultValue={ this.props.variations.a.participants }
+						value={ this.props.variations.a.participants }
 						ref="participantsA"
 						onChange={ this.updateGraphs }
 						onFocus={ this.handleFocus }
@@ -109,7 +110,7 @@ module.exports = React.createClass( {
 					{ this.conversionArrow() }
 					<ConversionDataInput
 						placeholderText="Conversions A"
-						defaultValue={ this.props.variations.a.conversions }
+						value={ this.props.variations.a.conversions }
 						ref="conversionsA"
 						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
@@ -120,14 +121,14 @@ module.exports = React.createClass( {
 					</span>
 					<ConversionDataInput
 						placeholderText="Participants B"
-						defaultValue={ this.props.variations.b.participants }
+						value={ this.props.variations.b.participants }
 						ref="participantsB"
 						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
 					{ this.conversionArrow() }
 					<ConversionDataInput
 						placeholderText="Conversions B"
-						defaultValue={ this.props.variations.b.conversions }
+						value={ this.props.variations.b.conversions }
 						ref="conversionsB"
 						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
