@@ -9,6 +9,7 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var config = require( '../config' ),
+	ConversionDataInput = require( './conversion-data-input' ),
 	utils = require( '../utils' );
 
 module.exports = React.createClass( {
@@ -40,7 +41,6 @@ module.exports = React.createClass( {
 			this.updateGraphs();
 		}
 	},
-
 
 	// Hack to place cursor at end of input field on page load
 	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
@@ -96,40 +96,40 @@ module.exports = React.createClass( {
 					<span className="label">
 						<a href="#" className="variation-a" ref="nameA" onClick={ this.setVariationName }>{ this.props.variations.a.name }</a>
 					</span>
-					<input
-						type="text"
-						ref="participantsA"
-						placeholder="Participants A"
+					<ConversionDataInput
+						placeholderText="Participants A"
 						defaultValue={ this.props.variations.a.participants }
+						ref="participantsA"
 						onChange={ this.handleFormSubmit }
 						onFocus={ this.setFocus }
 						onKeyDown={ this.adjustInputValue } />
 					<span className="arrow">&#9654;</span>
-					<input
-						type="text"
-						ref="conversionsA"
-						placeholder="Conversions A"
+					<ConversionDataInput
+						placeholderText="Conversions A"
 						defaultValue={ this.props.variations.a.conversions }
+						ref="conversionsA"
 						onChange={ this.handleFormSubmit }
+						onFocus={ this.setFocus }
 						onKeyDown={ this.adjustInputValue } />
 				</div>
 				<div className="variation">
 					<span className="label">
 						<a href="#" className="variation-b" ref="nameB" onClick={ this.setVariationName }>{ this.props.variations.b.name }</a>
 					</span>
-					<input type="text"
-						ref="participantsB"
-						placeholder="Participants B"
+					<ConversionDataInput
+						placeholderText="Participants B"
 						defaultValue={ this.props.variations.b.participants }
+						ref="participantsB"
 						onChange={ this.handleFormSubmit }
+						onFocus={ this.setFocus }
 						onKeyDown={ this.adjustInputValue } />
 						<span className="arrow">&#9654;</span>
-					<input
-						type="text"
-						ref="conversionsB"
-						placeholder="Conversions B"
+					<ConversionDataInput
+						placeholderText="Conversions B"
 						defaultValue={ this.props.variations.b.conversions }
+						ref="conversionsB"
 						onChange={ this.handleFormSubmit }
+						onFocus={ this.setFocus }
 						onKeyDown={ this.adjustInputValue } />
 					<a href="#" className="reset" onClick={ this.resetForm }>reset form</a>
 				</div>
