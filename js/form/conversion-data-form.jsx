@@ -13,9 +13,33 @@ var config = require( '../config' ),
 	utils = require( '../utils' );
 
 module.exports = React.createClass( {
+	componentDidMount: function() {
+		this.refs.participantsA.getDOMNode().focus()
+	},
+
 	handleFormSubmit: function( event ) {
 		event.preventDefault();
 		this.updateGraphs();
+	},
+
+	// Hack to place cursor at end of input field on page load
+	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+	handleFocus: function( event ) {
+		event.target.value = event.target.value;
+	},
+
+	handleKeyDown: function( event ) {
+		if ( event.keyCode === 38 ) {
+			event.target.value = parseInt( event.target.value ) + 1;
+			this.updateGraphs()
+			event.preventDefault();
+		} else if ( event.keyCode === 40 ) {
+			if ( parseInt( event.target.value ) > 0 ) {
+				event.target.value = parseInt( event.target.value ) - 1;
+				this.updateGraphs();
+				event.preventDefault();
+			}
+		}
 	},
 
 	// TODO: Is there an elegant way to pass these integer strings and have them treated as integers?
@@ -41,35 +65,11 @@ module.exports = React.createClass( {
 		}
 	},
 
-	// Hack to place cursor at end of input field on page load
-	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-	handleFocus: function( event ) {
-		event.target.value = event.target.value;
-	},
-
-	handleKeyDown: function( event ) {
-		if ( event.keyCode === 38 ) {
-			event.target.value = parseInt( event.target.value ) + 1;
-			this.updateGraphs()
-			event.preventDefault();
-		} else if ( event.keyCode === 40 ) {
-			if ( parseInt( event.target.value ) > 0 ) {
-				event.target.value = parseInt( event.target.value ) - 1;
-				this.updateGraphs();
-				event.preventDefault();
-			}
-		}
-	},
-
 	// Prevent the cursor position from jumping to the beginning of the input field
 	preventUpDownDefaults: function( event ) {
 		if ( event.keyCode === 38 || event.keyCode === 40 ) {
 			event.preventDefault();
 		}
-	},
-
-	componentDidMount: function() {
-		this.refs.participantsA.getDOMNode().focus()
 	},
 
 	resetForm: function( event ) {
