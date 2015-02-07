@@ -103,7 +103,7 @@ module.exports = React.createClass( {
 						placeholderText="Participants A"
 						defaultValue={ this.props.variations.a.participants }
 						ref="participantsA"
-						onChange={ this.handleFormSubmit }
+						onChange={ this.updateGraphs }
 						onFocus={ this.handleFocus }
 						onKeyDown={ this.handleKeyDown } />
 					{ this.conversionArrow() }
@@ -111,7 +111,7 @@ module.exports = React.createClass( {
 						placeholderText="Conversions A"
 						defaultValue={ this.props.variations.a.conversions }
 						ref="conversionsA"
-						onChange={ this.handleFormSubmit }
+						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
 				</div>
 				<div className="variation">
@@ -122,14 +122,14 @@ module.exports = React.createClass( {
 						placeholderText="Participants B"
 						defaultValue={ this.props.variations.b.participants }
 						ref="participantsB"
-						onChange={ this.handleFormSubmit }
+						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
 					{ this.conversionArrow() }
 					<ConversionDataInput
 						placeholderText="Conversions B"
 						defaultValue={ this.props.variations.b.conversions }
 						ref="conversionsB"
-						onChange={ this.handleFormSubmit }
+						onChange={ this.updateGraphs }
 						onKeyDown={ this.handleKeyDown } />
 					<a href="#" className="reset" onClick={ this.resetForm }>reset form</a>
 				</div>
