@@ -75,7 +75,7 @@ gulp.task( 'jshint', function () {
 		.pipe( jshint.reporter( 'default' ) );
 } );
 
-gulp.task( 'js', function() {
+gulp.task( 'js', function( cb ) {
 	var mainPath = config.jsPath + '/main.js';
 
 	return browserify({
@@ -84,9 +84,10 @@ gulp.task( 'js', function() {
 	} )
 		.transform( reactify )
 		.bundle()
-		.on('error', function( error ) {
+		.on( 'error', function( error ) {
 			beep();
 			gutil.log( error.message );
+			cb( error );
 		} )
 		.pipe( source( mainPath ) )
 		.pipe( gutil.env.production ? streamify( uglify() ) : gutil.noop() )
