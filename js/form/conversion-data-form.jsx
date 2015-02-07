@@ -8,8 +8,8 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var config = require( './config' ),
-	utils = require( './utils' );
+var config = require( '../config' ),
+	utils = require( '../utils' );
 
 module.exports = React.createClass( {
 	handleFormSubmit: function( event ) {

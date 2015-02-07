@@ -13,7 +13,7 @@ var React = require( 'react' ),
  */
 var canvasUtils = require( './utils/canvas-utils' ),
 	config = require( './config' ),
-	ConversionDataForm = require( './conversion-data-form' ),
+	ConversionDataForm = require( './form/conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
 	ExecutiveSummary = require( './executive-summary' ),
 	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
