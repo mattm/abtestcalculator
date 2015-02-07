@@ -35,8 +35,7 @@ gulp.task( 'clean', function() {
 } );
 
 gulp.task( 'build', function( callback ) {
-	runSequence( 'clean', 'js', 'css', 'assets', 'index',
-		callback );
+	runSequence( 'clean', [ 'js', 'css', 'assets', 'index' ], callback );
 } );
 
 gulp.task( 'watch', function() {
