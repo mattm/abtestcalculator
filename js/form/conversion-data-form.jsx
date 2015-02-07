@@ -44,11 +44,11 @@ module.exports = React.createClass( {
 
 	// Hack to place cursor at end of input field on page load
 	// See: http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-	setFocus: function( event ) {
+	handleFocus: function( event ) {
 		event.target.value = event.target.value;
 	},
 
-	adjustInputValue: function( event ) {
+	handleKeyDown: function( event ) {
 		if ( event.keyCode === 38 ) {
 			event.target.value = parseInt( event.target.value ) + 1;
 			this.updateGraphs()
@@ -101,15 +101,15 @@ module.exports = React.createClass( {
 						defaultValue={ this.props.variations.a.participants }
 						ref="participantsA"
 						onChange={ this.handleFormSubmit }
-						onFocus={ this.setFocus }
-						onKeyDown={ this.adjustInputValue } />
+						onFocus={ this.handleFocus }
+						onKeyDown={ this.handleKeyDown } />
 					<span className="arrow">&#9654;</span>
 					<ConversionDataInput
 						placeholderText="Conversions A"
 						defaultValue={ this.props.variations.a.conversions }
 						ref="conversionsA"
 						onChange={ this.handleFormSubmit }
-						onKeyDown={ this.adjustInputValue } />
+						onKeyDown={ this.handleKeyDown } />
 				</div>
 				<div className="variation">
 					<span className="label">
@@ -120,14 +120,14 @@ module.exports = React.createClass( {
 						defaultValue={ this.props.variations.b.participants }
 						ref="participantsB"
 						onChange={ this.handleFormSubmit }
-						onKeyDown={ this.adjustInputValue } />
+						onKeyDown={ this.handleKeyDown } />
 						<span className="arrow">&#9654;</span>
 					<ConversionDataInput
 						placeholderText="Conversions B"
 						defaultValue={ this.props.variations.b.conversions }
 						ref="conversionsB"
 						onChange={ this.handleFormSubmit }
-						onKeyDown={ this.adjustInputValue } />
+						onKeyDown={ this.handleKeyDown } />
 					<a href="#" className="reset" onClick={ this.resetForm }>reset form</a>
 				</div>
 			</form>
