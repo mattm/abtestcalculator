@@ -57,7 +57,7 @@ gulp.task( 'index', function() {
 		.pipe( template( {
 			bundleFileName: bundleFileName
 		} ) )
-		.pipe( gulp.dest( './build' ) )
+		.pipe( gulp.dest( './build' ) );
 } );
 
 gulp.task( 'css', function () {
