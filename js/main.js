@@ -10,7 +10,6 @@ var React = require( 'react' ),
  * Internal dependencies
  */
 var analytics = require( './analytics' ),
-	SampleProportionsGraph = require( './graphs/sample-proportions-graph' ),
 	App = require( './app' );
 
 var urlParams = url.parse( document.URL, true ).query,
