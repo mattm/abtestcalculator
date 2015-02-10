@@ -14,7 +14,7 @@ var config = require( '../config' ),
 
 module.exports = React.createClass( {
 	componentDidMount: function() {
-		this.refs.participantsA.getDOMNode().focus()
+		this.refs.participantsA.getDOMNode().focus();
 	},
 
 	handleFormSubmit: function( event ) {
@@ -33,7 +33,7 @@ module.exports = React.createClass( {
 
 		if ( event.keyCode === 38 ) {
 			event.target.value = currentValue + 1;
-			this.updateGraphs()
+			this.updateGraphs();
 			event.preventDefault();
 		} else if ( event.keyCode === 40 && currentValue > 0 ) {
 			event.target.value = currentValue - 1;
