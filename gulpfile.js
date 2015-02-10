@@ -36,7 +36,7 @@ gulp.task( 'clean', function() {
 } );
 
 gulp.task( 'build', function( callback ) {
-	runSequence( 'clean', [ 'js', 'css', 'assets', 'index' ], callback );
+	runSequence( 'clean', [ 'jshint', 'js', 'css', 'assets', 'index' ], callback );
 } );
 
 gulp.task( 'watch', function() {
@@ -70,7 +70,7 @@ gulp.task( 'css', function () {
 });
 
 gulp.task( 'jshint', function () {
-	gulp.src( [ './js/**/*', './gulpfile.js' ] )
+	return gulp.src( [ './js/**/*', './gulpfile.js' ] )
 		.pipe( react() )
 		.pipe( jshint() )
 		.pipe( jshint.reporter( 'default' ) );
