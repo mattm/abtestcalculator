@@ -8,7 +8,8 @@ var beep = require( 'beepbeep' ),
 	es = require( 'event-stream' ),
 	gulp = require( 'gulp' ),
 	gutil = require( 'gulp-util' ),
-	jshint = require('gulp-jshint'),
+	jshint = require( 'gulp-jshint' ),
+	react = require( 'gulp-react' ),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
 	runSequence = require( 'run-sequence' ),
@@ -69,8 +70,8 @@ gulp.task( 'css', function () {
 });
 
 gulp.task( 'jshint', function () {
-	// TODO: Figure out how to use jshint to check JSX files as well
-	gulp.src( [ './js/**/*.js', './gulpfile.js' ] )
+	gulp.src( [ './js/**/*', './gulpfile.js' ] )
+		.pipe( react() )
 		.pipe( jshint() )
 		.pipe( jshint.reporter( 'default' ) );
 } );
