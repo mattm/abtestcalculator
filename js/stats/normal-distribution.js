@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-var Range = require( './range' );
+var NumberRange = require( './number-range' );
 
 function NormalDistribution( mean, sd ) {
 	this.mean = mean;
@@ -20,11 +20,11 @@ NormalDistribution.prototype = {
 	},
 
 	getRange: function( z ) {
-		return new Range( this.getX( -z ), this.getX( z ) );
+		return new NumberRange( this.getX( -z ), this.getX( z ) );
 	},
 
 	getYAxisRange: function() {
-		return new Range( 0, this.getDensity( this.mean ) );
+		return new NumberRange( 0, this.getDensity( this.mean ) );
 	},
 
 	// See: See: http://en.wikipedia.org/wiki/Normal_distribution
@@ -41,7 +41,7 @@ NormalDistribution.prototype = {
 
 	getCurveXValues: function() {
 		var xRange = this.xRange,
-			range = new Range( xRange.min, xRange.max, this.POINTS_PER_CURVE );
+			range = new NumberRange( xRange.min, xRange.max, this.POINTS_PER_CURVE );
 
 		return range.getValues();
 	},
@@ -87,7 +87,7 @@ Object.defineProperties( NormalDistribution.prototype, {
 	'xValues': {
 		get: function() {
 			if ( this._xValues === undefined ) {
-				var range = new Range( this.xRange.min, this.xRange.max, this.POINTS_PER_CURVE );
+				var range = new NumberRange( this.xRange.min, this.xRange.max, this.POINTS_PER_CURVE );
 				this._xValues = range.getValues();
 			}
 			return this._xValues;

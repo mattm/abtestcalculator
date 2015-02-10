@@ -1,6 +1,6 @@
 'use strict';
 
-function Range( min, max, n ) {
+function NumberRange( min, max, n ) {
 	if ( n === void 0 ) {
 		n = 2;
 	}
@@ -19,7 +19,7 @@ function Range( min, max, n ) {
 	this.n = n;
 }
 
-Range.prototype = {
+NumberRange.prototype = {
 	getValues: function() {
 		var separation = ( this.max - this.min ) / ( this.n - 1 );
 		for( var values = [], i = 0, l = this.n - 1; i < l; i++ ) {
@@ -33,4 +33,4 @@ Range.prototype = {
 	}
 };
 
-module.exports = Range;
+module.exports = NumberRange;

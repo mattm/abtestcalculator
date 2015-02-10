@@ -11,7 +11,7 @@ var _ = require( 'lodash' );
 var colorUtils = require( '../utils/color-utils' ),
 	GraphRenderer = require( './graph-renderer' ),
 	NormalDifferenceDistribution = require( '../stats/normal-difference-distribution' ),
-	Range = require( '../stats/range' ),
+	NumberRange = require( '../stats/number-range' ),
 	utils = require( '../utils' );
 
 function ImprovementGraphRenderer( canvasId ) {
@@ -58,7 +58,7 @@ ImprovementGraphRenderer.prototype.prepareForRender = function() {
 };
 
 ImprovementGraphRenderer.prototype.renderNegativeCurvePart = function() {
-	var range = new Range( -Infinity, 0 );
+	var range = new NumberRange( -Infinity, 0 );
 
 	this.xNegativeValues = this.distribution.getXBetween( range.min, range.max );
 	this.yNegativeValues = this.distribution.getYForXBetween( range.min, range.max );
@@ -66,7 +66,7 @@ ImprovementGraphRenderer.prototype.renderNegativeCurvePart = function() {
 };
 
 ImprovementGraphRenderer.prototype.renderPositiveCurvePart = function() {
-	var range = new Range( 0, Infinity ),
+	var range = new NumberRange( 0, Infinity ),
 		xValues = this.distribution.getXBetween( range.min, range.max ),
 		yValues = this.distribution.getYForXBetween( range.min, range.max );
 
@@ -138,7 +138,7 @@ ImprovementGraphRenderer.prototype.calculateXAxisInterval = function() {
 
 ImprovementGraphRenderer.prototype.calculateXAxisRange = function() {
 	var interval = this.calculateXAxisInterval();
-	this.xAxisRange = new Range( Math.floor(this.distribution.xRange.min / interval) * interval, Math.ceil(this.distribution.xRange.max / interval) * interval );
+	this.xAxisRange = new NumberRange( Math.floor(this.distribution.xRange.min / interval) * interval, Math.ceil(this.distribution.xRange.max / interval) * interval );
 };
 
 ImprovementGraphRenderer.prototype.calculateYAxisRange = function() {

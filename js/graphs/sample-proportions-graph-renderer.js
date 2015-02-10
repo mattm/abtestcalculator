@@ -10,7 +10,7 @@ var numeral = require( 'numeral' );
  */
 var colorUtils = require( '../utils/color-utils' ),
 	GraphRenderer = require( './graph-renderer' ),
-	Range = require( '../stats/range' );
+	NumberRange = require( '../stats/number-range' );
 
 function SampleProportionsGraphRenderer( context ) {
 	GraphRenderer.call( this, context );
@@ -28,7 +28,7 @@ SampleProportionsGraphRenderer.prototype.render = function() {
 SampleProportionsGraphRenderer.prototype.calculateXAxisRange = function() {
 	var exactRange = this.calculateXAxisRangeExact();
 
-	this.xAxisRange = new Range(
+	this.xAxisRange = new NumberRange(
 		Math.floor( exactRange.min / this.getXAxisInterval() ) * this.getXAxisInterval(),
 		Math.ceil( exactRange.max / this.getXAxisInterval() ) * this.getXAxisInterval()
 	);
@@ -46,7 +46,7 @@ SampleProportionsGraphRenderer.prototype.calculateXAxisRangeExact = function() {
 			max = xAxisRange.max;
 		}
 	} );
-	return new Range( min, max );
+	return new NumberRange( min, max );
 };
 
 SampleProportionsGraphRenderer.prototype.getXAxisInterval = function() {
@@ -70,7 +70,7 @@ SampleProportionsGraphRenderer.prototype.calculateYAxisRange = function() {
 			max = yAxisRange.max;
 		}
 	} );
-	this.yAxisRange = new Range( 0, max );
+	this.yAxisRange = new NumberRange( 0, max );
 };
 
 SampleProportionsGraphRenderer.prototype.renderSampleProportions = function() {
