@@ -31,14 +31,6 @@ var jsExtension = gutil.env.production ? 'min.js' : 'js',
 
 gulp.task( 'default', [ 'watch', 'build' ] );
 
-gulp.task( 'clean', function() {
-	return del( './build/' );
-} );
-
-gulp.task( 'build', function( callback ) {
-	runSequence( 'clean', [ 'jshint', 'js', 'css', 'assets', 'index' ], callback );
-} );
-
 gulp.task( 'watch', function() {
 	gulp.watch( './index.html', [ 'index' ] );
 	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
@@ -46,28 +38,26 @@ gulp.task( 'watch', function() {
 	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
 } );
 
-// Copy assets from /assets into the root of the build directory
-gulp.task( 'assets', function() {
-	return gulp.src( './assets/*' ).
-		pipe( gulp.dest('./build' ) );
+gulp.task( 'build', function( callback ) {
+	runSequence( 'clean', [ 'jshint', 'js', 'css', 'assets', 'index' ], callback );
 } );
 
-gulp.task( 'index', function() {
-	return gulp.src('./index.html' )
-		.pipe( template( {
-			bundleFileName: bundleFileName
-		} ) )
-		.pipe( gulp.dest( './build' ) );
+// Run `gulp deploy --production` to deploy to Github Pages
+gulp.task( 'deploy', [ 'build' ], function () {
+	if ( ! gutil.env.production ) {
+		throw new Error( 'gulp deploy must be run with the --production flag to ensure the JavaScript bundle is minified' );
+	}
+
+	return gulp.src( './build/**/*' )
+		.pipe( deploy() )
+		.on( 'error', function( error ){
+			gutil.log( error.message );
+		} );
 } );
 
-gulp.task( 'css', function () {
-	var cssFiles = gulp.src( config.cssPath + '/*.css' ),
-		sassFiles = gulp.src( config.sassPath + '/*.scss' ).pipe( sass( { style: 'compressed' } ) );
-
-	return es.concat( cssFiles, sassFiles )
-		.pipe( concat( 'style.css' ) )
-		.pipe( gulp.dest( './build/stylesheets' ) );
-});
+gulp.task( 'clean', function() {
+	return del( './build/' );
+} );
 
 gulp.task( 'jshint', function () {
 	return gulp.src( [ './js/**/*', './gulpfile.js' ] )
@@ -96,15 +86,25 @@ gulp.task( 'js', function( cb ) {
 		.pipe( gulp.dest( config.buildPath + '/js' ) );
 } );
 
-// Run `gulp deploy --production` to deploy to Github Pages
-gulp.task( 'deploy', [ 'build' ], function () {
-	if ( ! gutil.env.production ) {
-		throw new Error( 'gulp deploy must be run with the --production flag to ensure the JavaScript bundle is minified' );
-	}
+gulp.task( 'css', function () {
+	var cssFiles = gulp.src( config.cssPath + '/*.css' ),
+		sassFiles = gulp.src( config.sassPath + '/*.scss' ).pipe( sass( { style: 'compressed' } ) );
 
-	return gulp.src( './build/**/*' )
-		.pipe( deploy() )
-		.on( 'error', function( error ){
-			gutil.log( error.message );
-		} );
-});
+	return es.concat( cssFiles, sassFiles )
+		.pipe( concat( 'style.css' ) )
+		.pipe( gulp.dest( './build/stylesheets' ) );
+} );
+
+// Copy assets from /assets into the root of the build directory
+gulp.task( 'assets', function() {
+	return gulp.src( './assets/*' ).
+		pipe( gulp.dest('./build' ) );
+} );
+
+gulp.task( 'index', function() {
+	return gulp.src('./index.html' )
+		.pipe( template( {
+			bundleFileName: bundleFileName
+		} ) )
+		.pipe( gulp.dest( './build' ) );
+} );
