@@ -23,49 +23,49 @@ var canvasUtils = require( './utils/canvas-utils' ),
 
 module.exports = React.createClass( {
 	getInitialState: function() {
-		var params = url.parse( document.URL, true ).query,
-			queryNameA, queryNameB, queryParticipantsA, queryConversionsA, queryParticipantsB, queryConversionsB,
-			nameA = config.variations.a.defaultName,
-			nameB = config.variations.b.defaultName,
-			participantsA = config.variations.a.defaultParticipants,
-			conversionsA = config.variations.a.defaultConversions,
-			participantsB = config.variations.b.defaultParticipants,
-			conversionsB = config.variations.b.defaultConversions;
+		var params = this.getURLParams(), initialState;
+
+		initialState = {
+			nameA: config.variations.a.defaultName,
+			nameB: config.variations.b.defaultName,
+			participantsA: config.variations.a.defaultParticipants,
+			conversionsA: config.variations.a.defaultConversions,
+			participantsB: config.variations.b.defaultParticipants,
+			conversionsB: config.variations.b.defaultConversions
+		};
 
 		if ( ! _.isEmpty( params ) ) {
-			queryNameA = params.an;
-			queryNameB = params.bn;
-
-			if ( queryNameA && queryNameB ) {
-				nameA = queryNameA;
-				nameB = queryNameB;
+			if ( params.an && params.bn ) {
+				initialState.nameA = params.an;
+				initialState.nameB = params.bn;
 			}
 
-			queryParticipantsA = params.ap;
-			queryConversionsA = params.ac;
-			queryParticipantsB = params.bp;
-			queryConversionsB = params.bc;
-
-			if ( utils.isIntegerString( queryParticipantsA ) && utils.isIntegerString( queryConversionsA ) && utils.isIntegerString( queryParticipantsB ) && utils.isIntegerString( queryConversionsB ) ) {
-				participantsA = +queryParticipantsA;
-				conversionsA = +queryConversionsA;
-				participantsB = +queryParticipantsB;
-				conversionsB = +queryConversionsB;
+			if ( this.hasValidDataParams() ) {
+				initialState.participantsA = parseInt( params.ap, 10 );
+				initialState.conversionsA = parseInt( params.ac, 10 );
+				initialState.participantsB = parseInt( params.bp, 10 );
+				initialState.conversionsB = parseInt( params.bc, 10 );
 			} else {
-				// Rather than show an error message about not being able to parse the params
-				// we'll simply not include any defaults in the fields
-				participantsA = conversionsA = participantsB = conversionsB = '';
+				// Rather than show an error message about not being able to parse
+				// the params we'll simply not include any defaults in the fields
+				initialState.participantsA = initialState.conversionsA = initialState.participantsB = initialState.conversionsB = '';
 			}
 		}
 
-		return {
-			nameA: nameA,
-			nameB: nameB,
-			participantsA: participantsA,
-			conversionsA: conversionsA,
-			participantsB: participantsB,
-			conversionsB: conversionsB
-		};
+		return initialState;
+	},
+
+	getURLParams: function() {
+		return url.parse( document.URL, true ).query;
+	},
+
+	hasValidDataParams: function() {
+		var params = this.getURLParams();
+
+		return utils.isIntegerString( params.ap ) &&
+			utils.isIntegerString( params.ac ) &&
+			utils.isIntegerString( params.bp ) &&
+			utils.isIntegerString( params.bc );
 	},
 
 	updateConversionData: function( updatedData ) {
