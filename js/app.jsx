@@ -74,8 +74,8 @@ module.exports = React.createClass( {
 
 	getVariations: function() {
 		return {
-			a: new Variation( this.state.nameA, '#F1C40F', this.state.participantsA, this.state.conversionsA ),
-			b: new Variation( this.state.nameB, '#B6E2FF', this.state.participantsB, this.state.conversionsB )
+			a: new Variation( this.state.nameA, config.variations.a.color, this.state.participantsA, this.state.conversionsA ),
+			b: new Variation( this.state.nameB, config.variations.b.color, this.state.participantsB, this.state.conversionsB )
 		};
 	},
 
