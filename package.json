@@ -5,7 +5,6 @@
   "main": "js/main.js",
   "dependencies": {
     "is-integer": "^1.0.3",
-    "lodash": "^2.4.1",
     "lodash.isempty": "^3.0.0",
     "numeral": "^1.5.3",
     "react": "^0.12.2",

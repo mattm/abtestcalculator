@@ -1,11 +1,6 @@
 'use strict';
 
 /**
- * External dependencies
- */
-var _ = require( 'lodash' );
-
-/**
  * Internal dependencies
  */
 var colorUtils = require( '../utils/color-utils' ),
@@ -84,12 +79,15 @@ ImprovementGraphRenderer.prototype.renderCurvePart = function( xValues, yValues,
 };
 
 ImprovementGraphRenderer.prototype.renderCurveFilled = function( xValues, yValues, color ) {
+	var maxX = Math.max.apply( Math, xValues ),
+		minX = Math.min.apply( Math, xValues );
+
 	this.ctx.beginPath();
-	this.ctx.moveTo( this.distributionXToCanvasX( _.min( xValues ) ), this.rect.bottom );
+	this.ctx.moveTo( this.distributionXToCanvasX( minX ), this.rect.bottom );
 	xValues.forEach( function( xValue, i ) {
 		this.ctx.lineTo( this.distributionXToCanvasX( xValue ), this.distributionYToCanvasY( yValues[ i ] ) );
 	}, this );
-	this.ctx.lineTo( this.distributionXToCanvasX( _.max( xValues ) ), this.rect.bottom );
+	this.ctx.lineTo( this.distributionXToCanvasX( maxX ), this.rect.bottom );
 	this.ctx.closePath();
 	this.ctx.fillStyle = colorUtils.hexToTransparentRGB( color, this.FILL_OPACITY );
 	this.ctx.fill();
