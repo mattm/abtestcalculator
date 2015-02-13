@@ -5,7 +5,7 @@
  */
 var React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
-	_ = require( 'lodash' ),
+	isEmpty = require( 'lodash.isEmpty' ),
 	url = require( 'url' );
 
 /**
@@ -34,7 +34,7 @@ module.exports = React.createClass( {
 			conversionsB: config.variations.b.defaultConversions
 		};
 
-		if ( ! _.isEmpty( params ) ) {
+		if ( ! isEmpty( params ) ) {
 			if ( params.an && params.bn ) {
 				initialState.nameA = params.an;
 				initialState.nameB = params.bn;
