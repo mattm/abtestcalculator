@@ -1,6 +1,6 @@
-$background-light-blue: #3CAAD7;
-$background-dark-blue: #2a6fce;
-$dark-blue: #3A5D80;
+$page-background-gradient-left: #3caad7;
+$page-background-gradient-right: #2a6fce;
+$results-background: #3a5d80;
 $pink: #F1BEBE;
 $white: white;
 $dark-gray: #888;
@@ -40,7 +40,7 @@ $two-column-breakpoint: 960px;
 }
 
 html {
-	@include background-horizontal-gradient( $background-light-blue, $background-dark-blue );
+	@include background-horizontal-gradient( $page-background-gradient-left, $page-background-gradient-right );
 	font: 14px/20px Lato, Helvetica, Arial;
 	padding: 0 2%;
 }
@@ -221,7 +221,7 @@ strong {
 	.graphs {
 		.graph {
 			@include border-radius( $result-radius );
-			background-color: $dark-blue;
+			background-color: $results-background;
 			display: inline-block;
 			margin-bottom: $result-separation;
 			padding: 15px 0;
@@ -242,7 +242,7 @@ strong {
 
 	.summary {
 		@include border-radius( $result-radius );
-		background-color: $dark-blue;
+		background-color: $results-background;
 		color: $white;
 		font-size: 17px;
 		line-height: 1.6em;
