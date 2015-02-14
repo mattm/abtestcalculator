@@ -38,9 +38,8 @@ gulp.task( 'default', [ 'watch', 'build' ] );
 
 gulp.task( 'watch', function() {
 	gulp.watch( config.indexPath, [ 'index' ] );
-	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
-	gulp.watch( config.jsPath + '/**/*.js', [ 'js' ] );
-	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
+	gulp.watch( config.sassPath + '/*', [ 'css' ] );
+	gulp.watch( config.jsPath + '/**/*', [ 'js' ] );
 } );
 
 gulp.task( 'build', function( callback ) {
