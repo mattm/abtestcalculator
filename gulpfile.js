@@ -101,7 +101,6 @@ gulp.task( 'css', function () {
 		.pipe( gulp.dest( config.buildPath + '/stylesheets' ) );
 } );
 
-// Copy assets from /assets into the root of the build directory
 gulp.task( 'assets', function() {
 	return gulp.src( config.assets ).
 		pipe( gulp.dest( config.buildPath ) );
