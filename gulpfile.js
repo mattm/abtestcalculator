@@ -20,10 +20,11 @@ var beep = require( 'beepbeep' ),
 	uglify = require( 'gulp-uglify' );
 
 var config = {
+	buildPath: './build',
 	cssPath: './stylesheets/css',
-	sassPath: './stylesheets/scss',
+	indexPath: './index.html',
 	jsPath: './js',
-	buildPath: './build'
+	sassPath: './stylesheets/scss',
 };
 
 var jsExtension = gutil.env.production ? 'min.js' : 'js',
@@ -32,7 +33,7 @@ var jsExtension = gutil.env.production ? 'min.js' : 'js',
 gulp.task( 'default', [ 'watch', 'build' ] );
 
 gulp.task( 'watch', function() {
-	gulp.watch( './index.html', [ 'index' ] );
+	gulp.watch( config.indexPath, [ 'index' ] );
 	gulp.watch( config.sassPath + '/*.scss', [ 'css' ] );
 	gulp.watch( config.jsPath + '/**/*.js', [ 'js' ] );
 	gulp.watch( config.jsPath + '/**/*.jsx', [ 'js' ] );
@@ -48,7 +49,7 @@ gulp.task( 'deploy', [ 'build' ], function () {
 		throw new Error( 'gulp deploy must be run with the --production flag to ensure the JavaScript bundle is minified' );
 	}
 
-	return gulp.src( './build/**/*' )
+	return gulp.src( config.buildPath + '/**/*' )
 		.pipe( deploy() )
 		.on( 'error', function( error ){
 			gutil.log( error.message );
@@ -56,11 +57,11 @@ gulp.task( 'deploy', [ 'build' ], function () {
 } );
 
 gulp.task( 'clean', function() {
-	return del( './build/' );
+	return del( config.buildPath );
 } );
 
 gulp.task( 'jshint', function () {
-	return gulp.src( [ './js/**/*', './gulpfile.js' ] )
+	return gulp.src( [ config.jsPath + '/**/*', './gulpfile.js' ] )
 		.pipe( react() )
 		.pipe( jshint() )
 		.pipe( jshint.reporter( 'default' ) );
@@ -92,19 +93,19 @@ gulp.task( 'css', function () {
 
 	return es.concat( cssFiles, sassFiles )
 		.pipe( concat( 'style.css' ) )
-		.pipe( gulp.dest( './build/stylesheets' ) );
+		.pipe( gulp.dest( config.buildPath + '/stylesheets' ) );
 } );
 
 // Copy assets from /assets into the root of the build directory
 gulp.task( 'assets', function() {
 	return gulp.src( './assets/*' ).
-		pipe( gulp.dest('./build' ) );
+		pipe( gulp.dest( config.buildPath ) );
 } );
 
 gulp.task( 'index', function() {
-	return gulp.src('./index.html' )
+	return gulp.src( config.indexPath )
 		.pipe( template( {
 			bundleFileName: bundleFileName
 		} ) )
-		.pipe( gulp.dest( './build' ) );
+		.pipe( gulp.dest( config.buildPath ) );
 } );
