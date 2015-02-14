@@ -9,6 +9,7 @@ var beep = require( 'beepbeep' ),
 	gulp = require( 'gulp' ),
 	gutil = require( 'gulp-util' ),
 	jshint = require( 'gulp-jshint' ),
+	mocha = require( 'gulp-mocha' ),
 	react = require( 'gulp-react' ),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
@@ -25,6 +26,7 @@ var config = {
 	indexPath: './index.html',
 	jsPath: './js',
 	sassPath: './stylesheets/scss',
+	testPath: './test/*',
 
 	// Files in the root that need to be copied over to the root of the build directory
 	// This excludes index.html which is handled separately due to its templating
@@ -43,7 +45,7 @@ gulp.task( 'watch', function() {
 } );
 
 gulp.task( 'build', function( callback ) {
-	runSequence( 'clean', [ 'jshint', 'js', 'css', 'assets', 'index' ], callback );
+	runSequence( 'clean', [ 'jshint', 'js', 'css', 'assets', 'index', 'test' ], callback );
 } );
 
 // Run `gulp deploy --production` to deploy to Github Pages
@@ -112,3 +114,8 @@ gulp.task( 'index', function() {
 		} ) )
 		.pipe( gulp.dest( config.buildPath ) );
 } );
+
+gulp.task( 'test', function () {
+	return gulp.src( config.testPath, { read: false } )
+		.pipe( mocha( { reporter: 'dot' } ) );
+});

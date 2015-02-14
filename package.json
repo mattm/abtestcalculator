@@ -11,6 +11,7 @@
     "react-zeroclipboard": "^0.3.1"
   },
   "devDependencies": {
+    "assert": "^1.3.0",
     "beepbeep": "^1.2.0",
     "browserify": "^8.0.3",
     "del": "^1.1.1",
@@ -19,6 +20,7 @@
     "gulp-concat": "^2.4.3",
     "gulp-gh-pages": "^0.4.0",
     "gulp-jshint": "^1.9.0",
+    "gulp-mocha": "^2.0.0",
     "gulp-react": "^2.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^1.2.4",
