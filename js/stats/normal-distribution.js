@@ -91,11 +91,9 @@ Object.defineProperties( NormalDistribution.prototype, {
 	'yValues': {
 		get: function() {
 			if ( this._yValues === undefined ) {
-				var yValues = [];
-				for ( var i = 0, l = this.xValues.length; i < l; i++ ) {
-					yValues.push( this.getDensity( this.xValues[ i ] ) );
-				}
-				this._yValues = yValues;
+				this._yValues = this.xValues.map( function( xValue ) {
+					return this.getDensity( xValue );
+				}, this );
 			}
 			return this._yValues;
 		}
