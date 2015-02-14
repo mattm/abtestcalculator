@@ -25,6 +25,10 @@ var config = {
 	indexPath: './index.html',
 	jsPath: './js',
 	sassPath: './stylesheets/scss',
+
+	// Files in the root that need to be copied over to the root of the build directory
+	// This excludes index.html which is handled separately due to its templating
+	assets: [ './CNAME', './favicon.ico' ]
 };
 
 var jsExtension = gutil.env.production ? 'min.js' : 'js',
@@ -98,7 +102,7 @@ gulp.task( 'css', function () {
 
 // Copy assets from /assets into the root of the build directory
 gulp.task( 'assets', function() {
-	return gulp.src( './assets/*' ).
+	return gulp.src( config.assets ).
 		pipe( gulp.dest( config.buildPath ) );
 } );
 
