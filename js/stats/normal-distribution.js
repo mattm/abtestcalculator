@@ -64,10 +64,6 @@ NormalDistribution.prototype = {
 			return this.getDensity( xValue );
 		}, this );
 	},
-
-	getConfidenceInterval: function() {
-		return this.getRange( this.Z_SCORE );
-	}
 };
 
 Object.defineProperties( NormalDistribution.prototype, {
