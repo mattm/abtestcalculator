@@ -13,7 +13,6 @@ function NormalDistribution( mean, sd ) {
 NormalDistribution.prototype = {
 	SD_TO_GRAPH: 4,
 	POINTS_PER_CURVE: 1000,
-	Z_SCORE: 1.645,
 
 	getX: function( z ) {
 		return this.mean + z * this.sd;
