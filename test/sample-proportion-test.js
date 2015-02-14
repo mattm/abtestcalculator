@@ -14,6 +14,6 @@ describe( 'sample proportion', function() {
 	it( 'should calculate mean and sd', function() {
 		var testSampleProportion = new SampleProportion( 100, 45 );
 		assert.equal( testSampleProportion.mean, 0.45 );
-		assert.equal( testSampleProportion.sd, Math.sqrt( 0.45 * ( 1 - 0.45 ) / 100 ) );
+		assert.equal( testSampleProportion.sd, 0.049749371855331 );
 	} );
 } );
