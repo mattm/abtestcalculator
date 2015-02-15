@@ -9,6 +9,7 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var config = require( '../config' ),
+	constants = require( 'constants' ),
 	ConversionDataInput = require( './conversion-data-input' ),
 	utils = require( '../utils' );
 
@@ -31,11 +32,11 @@ module.exports = React.createClass( {
 	handleKeyDown: function( event ) {
 		var currentValue = parseInt( event.target.value );
 
-		if ( event.keyCode === 38 ) {
+		if ( event.keyCode === constants.KEY_UP ) {
 			event.target.value = currentValue + 1;
 			this.updateGraphs();
 			event.preventDefault();
-		} else if ( event.keyCode === 40 && currentValue > 0 ) {
+		} else if ( event.keyCode === constants.KEY_DOWN && currentValue > 0 ) {
 			event.target.value = currentValue - 1;
 			this.updateGraphs();
 			event.preventDefault();
@@ -67,7 +68,7 @@ module.exports = React.createClass( {
 
 	// Prevent the cursor position from jumping to the beginning of the input field
 	preventUpDownDefaults: function( event ) {
-		if ( event.keyCode === 38 || event.keyCode === 40 ) {
+		if ( event.keyCode === constants.KEY_UP || event.keyCode === constants.KEY_DOWN ) {
 			event.preventDefault();
 		}
 	},
