@@ -4,9 +4,34 @@
  * Internal dependencies
  */
 var config = require( '../config' ),
-	canvasUtils = require( '../utils/canvas-utils' );
+	canvasUtils = require( '../utils/canvas-utils' ),
+	Rectangle = require( './rectangle' );
 
 module.exports = {
+	paintGraph: function( graphRenderer ) {
+		graphRenderer.setRect( this.getGraphRectangle() );
+		graphRenderer.renderBackground();
+		graphRenderer.setVariations( this.props.variations );
+		graphRenderer.render();
+	},
+
+	getGraphRectangle: function() {
+		return new Rectangle(
+			config.canvas.horizontalPadding,
+			config.canvas.paddingTop,
+			config.canvas.width - 2 * config.canvas.horizontalPadding,
+			config.canvas.height - config.canvas.paddingTop - config.canvas.paddingBottom
+		);
+	},
+
+	resetCanvas: function() {
+		this.getCanvasContext().clearRect( 0, 0, config.canvas.width, config.canvas.height );
+	},
+
+	getCanvasContext: function() {
+		return this.refs.canvas.getDOMNode().getContext( '2d' );
+	},
+
 	convertToHiDPICanvas: function() {
 		var pixelRatio = canvasUtils.getPixelRatio(),
 			canvas = this.refs.canvas.getDOMNode();
@@ -24,6 +49,7 @@ module.exports = {
 	},
 
 	componentDidUpdate: function() {
+		this.resetCanvas();
 		this.renderGraph();
 	},
 };

@@ -10,21 +10,13 @@ var React = require( 'react' );
  */
 var config = require( '../config' ),
 	GraphMixin = require( './graph-mixin' ),
-	SampleProportionsGraphRenderer = require( './sample-proportions-graph-renderer' ),
-	Rectangle = require( './rectangle' );
+	SampleProportionsGraphRenderer = require( './sample-proportions-graph-renderer' );
 
 module.exports = React.createClass( {
 	mixins: [ GraphMixin ],
 
 	renderGraph: function() {
-		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
-			sampleProportionsGraph = new SampleProportionsGraphRenderer( context ),
-			rectangle = new Rectangle( config.canvas.horizontalPadding, config.canvas.paddingTop, config.canvas.width - 2 * config.canvas.horizontalPadding, config.canvas.height - config.canvas.paddingTop - config.canvas.paddingBottom );
-		context.clearRect( 0, 0, config.canvas.width, config.canvas.height );
-		sampleProportionsGraph.setRect( rectangle );
-		sampleProportionsGraph.renderBackground();
-		sampleProportionsGraph.setVariations( this.props.variations );
-		sampleProportionsGraph.render();
+		this.paintGraph( new SampleProportionsGraphRenderer( this.getCanvasContext() ) );
 	},
 
 	render: function() {

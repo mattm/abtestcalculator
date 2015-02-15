@@ -10,21 +10,13 @@ var React = require( 'react' );
  */
 var config = require( '../config' ),
 	GraphMixin = require( './graph-mixin' ),
-	ImprovementGraphRenderer = require( './improvement-graph-renderer' ),
-	Rectangle = require( './rectangle' );
+	ImprovementGraphRenderer = require( './improvement-graph-renderer' );
 
 module.exports = React.createClass( {
 	mixins: [ GraphMixin ],
 
 	renderGraph: function() {
-		var context = this.refs.canvas.getDOMNode().getContext( '2d' ),
-			improvementGraph = new ImprovementGraphRenderer( context ),
-			rectangle = new Rectangle( config.canvas.horizontalPadding, config.canvas.paddingTop, config.canvas.width - 2 * config.canvas.horizontalPadding, config.canvas.height - config.canvas.paddingTop - config.canvas.paddingBottom );
-		context.clearRect( 0, 0, config.canvas.width, config.canvas.height );
-		improvementGraph.setRect( rectangle );
-		improvementGraph.renderBackground();
-		improvementGraph.setVariations( this.props.variations );
-		improvementGraph.render();
+		this.paintGraph( new ImprovementGraphRenderer( this.getCanvasContext() ) );
 	},
 
 	render: function() {
