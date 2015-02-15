@@ -42,6 +42,7 @@ gulp.task( 'watch', function() {
 	gulp.watch( config.indexPath, [ 'index' ] );
 	gulp.watch( config.sassPath + '/*', [ 'css' ] );
 	gulp.watch( config.jsPath + '/**/*', [ 'js' ] );
+	gulp.watch( config.testPath, [ 'js' ] );
 } );
 
 gulp.task( 'build', function( callback ) {
