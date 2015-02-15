@@ -17,7 +17,7 @@ describe( 'normal difference distribution', function() {
 			sampleProportionB = new SampleProportion( 100, 50 ),
 			normalDifferenceDistribution = new NormalDifferenceDistribution( sampleProportionA, sampleProportionB );
 
-		assert.equal( normalDifferenceDistribution.mean.toFixed(2), 0.05 );
+		assert.equal( normalDifferenceDistribution.mean.toFixed( 2 ), 0.05 );
 		assert.equal( normalDifferenceDistribution.sd, 0.07053367989832943 );
 	} );
 } );
