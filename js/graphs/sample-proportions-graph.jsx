@@ -8,8 +8,7 @@ var React = require( 'react' );
 /**
  * Internal dependencies
  */
-var config = require( '../config' ),
-	GraphMixin = require( './graph-mixin' ),
+var GraphMixin = require( './graph-mixin' ),
 	SampleProportionsGraphRenderer = require( './sample-proportions-graph-renderer' );
 
 module.exports = React.createClass( {
