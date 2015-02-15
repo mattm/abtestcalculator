@@ -9,7 +9,7 @@ var React = require( 'react' );
  * Internal dependencies
  */
 var config = require( '../config' ),
-	constants = require( 'constants' ),
+	constants = require( '../constants' ),
 	ConversionDataInput = require( './conversion-data-input' ),
 	utils = require( '../utils' );
 
