@@ -42,7 +42,7 @@ gulp.task( 'watch', function() {
 	gulp.watch( config.indexPath, [ 'index' ] );
 	gulp.watch( config.sassPath + '/*', [ 'css' ] );
 	gulp.watch( config.jsPath + '/**/*', [ 'js' ] );
-	gulp.watch( config.testPath, [ 'js' ] );
+	gulp.watch( config.testPath, [ 'test' ] );
 } );
 
 gulp.task( 'build', function( callback ) {
@@ -117,5 +117,8 @@ gulp.task( 'index', function() {
 
 gulp.task( 'test', function () {
 	return gulp.src( config.testPath, { read: false } )
-		.pipe( mocha( { reporter: 'dot' } ) );
+		.pipe( mocha( { reporter: 'dot' } ) )
+		.once('error', function () {
+			beep();
+		} );
 });
