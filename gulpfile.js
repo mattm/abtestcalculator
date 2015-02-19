@@ -76,7 +76,7 @@ gulp.task( 'jshint', function () {
 gulp.task( 'js', function( cb ) {
 	var mainPath = config.jsPath + '/main.js';
 
-	return browserify({
+	return browserify( {
 		entries: mainPath,
 		extensions: [ '.jsx' ]
 	} )
