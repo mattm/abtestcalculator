@@ -1,6 +1,7 @@
 'use strict';
 
-var beep = require( 'beepbeep' ),
+var babelify = require( 'babelify' ),
+	beep = require( 'beepbeep' ),
 	browserify = require( 'browserify' ),
 	concat = require( 'gulp-concat' ),
 	del = require( 'del' ),
@@ -81,6 +82,7 @@ gulp.task( 'js', function( cb ) {
 		extensions: [ '.jsx' ]
 	} )
 		.transform( reactify )
+		.transform( babelify )
 		.bundle()
 		.on( 'error', function( error ) {
 			beep();
