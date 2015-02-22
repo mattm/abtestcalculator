@@ -64,7 +64,7 @@ gulp.task( 'deploy', [ 'build' ], function () {
 } );
 
 gulp.task( 'clean', function() {
-	return del( config.buildPath );
+	return del( config.buildPath + '/*/**' );
 } );
 
 gulp.task( 'jshint', function () {
