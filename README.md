@@ -10,6 +10,10 @@ Next, install the project's dependencies by running `npm install`.
 
 Finally, simply run `gulp` from the command line and then open `build/index.html` in your browser.
 
+Because this uses ECMAScript 2015, you'll need to ensure you run `gulp` with the `--harmony` flag. You can do this with the following alias:
+
+```alias gulp='node --harmony `which gulp`'```
+
 ## The Math
 
 For an explanation of the math behind A/B testing significance calculations, checkout this excellent series by Aaron O'Connell:
