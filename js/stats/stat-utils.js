@@ -3,20 +3,21 @@
 /**
  * Internal dependencies
  */
-var NormalDifferenceDistribution = require( './normal-difference-distribution' );
+let NormalDifferenceDistribution = require( './normal-difference-distribution' );
 
 module.exports = {
 
 	// See: http://blog.42floors.com/math-split-testing-part-2-chance-better/
 	calculateProbabityBIsGratherThanA: function( proportionA, proportionB ) {
-		var normalDifferenceDistribution = new NormalDifferenceDistribution( proportionA, proportionB );
-		var z = ( proportionB.mean - proportionA.mean ) / ( normalDifferenceDistribution.sd * Math.sqrt(2) );
+		let normalDifferenceDistribution = new NormalDifferenceDistribution( proportionA, proportionB ),
+			z = ( proportionB.mean - proportionA.mean ) / ( normalDifferenceDistribution.sd * Math.sqrt(2) );
+
 		return ( 1 + this.erf( z ) ) / 2;
 	},
 
 	// Adapted from http://picomath.org/javascript/erf.js.html
 	erf: function( x ) {
-		var a1 = 0.254829592,
+		let a1 = 0.254829592,
 			a2 = -0.284496736,
 			a3 = 1.421413741,
 			a4 = -1.453152027,

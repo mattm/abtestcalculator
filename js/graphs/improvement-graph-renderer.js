@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-var colorUtils = require( '../utils/color-utils' ),
+let colorUtils = require( '../utils/color-utils' ),
 	GraphRenderer = require( './graph-renderer' ),
 	NormalDifferenceDistribution = require( '../stats/normal-difference-distribution' ),
 	NumberRange = require( '../stats/number-range' ),
@@ -42,7 +42,7 @@ ImprovementGraphRenderer.prototype.renderCenter = function() {
 };
 
 ImprovementGraphRenderer.prototype.getCenterLineColor = function() {
-	var color = this.distribution.mean > 0 ? this.POSITIVE_COLOR : this.NEGATIVE_COLOR;
+	let color = this.distribution.mean > 0 ? this.POSITIVE_COLOR : this.NEGATIVE_COLOR;
 
 	return colorUtils.hexToTransparentRGB( color, 0.5 );
 };
@@ -53,7 +53,7 @@ ImprovementGraphRenderer.prototype.prepareForRender = function() {
 };
 
 ImprovementGraphRenderer.prototype.renderNegativeCurvePart = function() {
-	var range = new NumberRange( -Infinity, 0 );
+	let range = new NumberRange( -Infinity, 0 );
 
 	this.xNegativeValues = this.distribution.getXBetween( range.min, range.max );
 	this.yNegativeValues = this.distribution.getYForXBetween( range.min, range.max );
@@ -61,7 +61,7 @@ ImprovementGraphRenderer.prototype.renderNegativeCurvePart = function() {
 };
 
 ImprovementGraphRenderer.prototype.renderPositiveCurvePart = function() {
-	var range = new NumberRange( 0, Infinity ),
+	let range = new NumberRange( 0, Infinity ),
 		xValues = this.distribution.getXBetween( range.min, range.max ),
 		yValues = this.distribution.getYForXBetween( range.min, range.max );
 
@@ -79,7 +79,7 @@ ImprovementGraphRenderer.prototype.renderCurvePart = function( xValues, yValues,
 };
 
 ImprovementGraphRenderer.prototype.renderCurveFilled = function( xValues, yValues, color ) {
-	var maxX = Math.max.apply( Math, xValues ),
+	let maxX = Math.max.apply( Math, xValues ),
 		minX = Math.min.apply( Math, xValues );
 
 	this.ctx.beginPath();
@@ -104,11 +104,11 @@ ImprovementGraphRenderer.prototype.renderCurveOutline = function( xValues, yValu
 };
 
 ImprovementGraphRenderer.prototype.renderAxisValues = function() {
-	var numTicks, canvasY, points, value, canvasX;
+	let numTicks, canvasY, points, value, canvasX;
 
 	numTicks = this.xAxisRange.getWidth() / this.calculateXAxisInterval() + 1;
 	canvasY = this.rect.bottom + this.X_AXIS_TICK_FONT_SIZE + this.X_AXIS_TICK_MARGIN_TOP;
-	for ( var i = 0, l = numTicks; i < l; i++ ) {
+	for ( let i = 0, l = numTicks; i < l; i++ ) {
 		points = this.xAxisRange.min + i * this.calculateXAxisInterval();
 		value = utils.formatPercentageImprovement( this.convertPointsToPercentage( points ) );
 		canvasX = this.rect.x + ( i / ( numTicks - 1 ) ) * this.rect.width;
@@ -117,7 +117,7 @@ ImprovementGraphRenderer.prototype.renderAxisValues = function() {
 };
 
 ImprovementGraphRenderer.prototype.convertPointsToPercentage = function( points ) {
-	var mean = this.getControl().proportion.mean,
+	let mean = this.getControl().proportion.mean,
 		ratio = (points + mean) / mean - 1;
 
 	return Math.round( ratio * 100 );
@@ -135,7 +135,7 @@ ImprovementGraphRenderer.prototype.calculateXAxisInterval = function() {
 };
 
 ImprovementGraphRenderer.prototype.calculateXAxisRange = function() {
-	var interval = this.calculateXAxisInterval();
+	let interval = this.calculateXAxisInterval();
 	this.xAxisRange = new NumberRange( Math.floor(this.distribution.xRange.min / interval) * interval, Math.ceil(this.distribution.xRange.max / interval) * interval );
 };
 

@@ -3,12 +3,12 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+let React = require( 'react' );
 
 /**
  * Internal dependencies
  */
-var statUtils = require( './stats/stat-utils' );
+let statUtils = require( './stats/stat-utils' );
 
 module.exports = React.createClass( {
 
@@ -35,7 +35,7 @@ module.exports = React.createClass( {
 	},
 
 	oddsOfImprovementInWords: function() {
-		var onlyWording = this.isSignificant() ? '' : 'only ',
+		let onlyWording = this.isSignificant() ? '' : 'only ',
 			winningElement = this.wasTestATie() ? this.getVariationBElement() : this.getWinningVariationElement();
 
 		return (
@@ -47,7 +47,7 @@ module.exports = React.createClass( {
 	},
 
 	getSignificanceInWords: function() {
-		var verb = this.isSignificant() ? 'can' : 'cannot';
+		let verb = this.isSignificant() ? 'can' : 'cannot';
 		return <p>You {verb} be confident that this result is a consequence of the changes you made and not a result of random chance.</p>;
 	},
 
@@ -120,7 +120,7 @@ module.exports = React.createClass( {
 	},
 
 	getOddsOfImprovement: function() {
-		var probability = this.wasVariationBTheWinner() ? this.getProbabilityBGreaterThanA() : this.getProbabilityAGreaterThanB();
+		let probability = this.wasVariationBTheWinner() ? this.getProbabilityBGreaterThanA() : this.getProbabilityAGreaterThanB();
 		return Math.round( probability * 100 );
 	},
 

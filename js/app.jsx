@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
+let React = require( 'react' ),
 	isInteger = require( 'is-integer' ),
 	isEmpty = require( 'lodash.isEmpty' ),
 	url = require( 'url' );
@@ -11,7 +11,7 @@ var React = require( 'react' ),
 /**
  * Internal dependencies
  */
-var canvasUtils = require( './utils/canvas-utils' ),
+let canvasUtils = require( './utils/canvas-utils' ),
 	config = require( './config' ),
 	ConversionDataForm = require( './form/conversion-data-form' ),
 	CopyURLButton = require( './copy-url-button' ),
@@ -23,7 +23,7 @@ var canvasUtils = require( './utils/canvas-utils' ),
 
 module.exports = React.createClass( {
 	getInitialState: function() {
-		var params = this.getURLParams(), initialState;
+		let params = this.getURLParams(), initialState;
 
 		initialState = {
 			nameA: config.variations.a.defaultName,
@@ -60,7 +60,7 @@ module.exports = React.createClass( {
 	},
 
 	hasValidDataParams: function() {
-		var params = this.getURLParams();
+		let params = this.getURLParams();
 
 		return utils.isIntegerString( params.ap ) &&
 			utils.isIntegerString( params.ac ) &&
@@ -92,13 +92,13 @@ module.exports = React.createClass( {
 	},
 
 	hasGaussianDistributions: function() {
-		var variations = this.getVariations();
+		let variations = this.getVariations();
 
 		return variations.a.isGaussian() && variations.b.isGaussian();
 	},
 
 	getGraphsElement: function() {
-		var variations;
+		let variations;
 
 		if ( canvasUtils.isCanvasSupported() ) {
 			variations = this.getVariations();
@@ -125,7 +125,7 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
-		var isValid = false,
+		let isValid = false,
 			results;
 
 		if ( this.hasIntegerInputs() ) {

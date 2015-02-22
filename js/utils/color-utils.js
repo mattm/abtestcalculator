@@ -2,7 +2,7 @@
 
 module.exports = {
 	hexToRGB: function( hex ) {
-		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
+		let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
 		if ( result ) {
 			return {
 				r: parseInt( result[1], 16 ),
@@ -15,7 +15,7 @@ module.exports = {
 	},
 
 	hexToTransparentRGB: function( hex, opacity ) {
-		var rgb = this.hexToRGB( hex );
+		let rgb = this.hexToRGB( hex );
 		return 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', ' + opacity + ')';
 	}
 };

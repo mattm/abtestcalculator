@@ -3,11 +3,12 @@
 /**
  * Internal dependencies
  */
-var NormalDistribution = require( './normal-distribution' );
+let NormalDistribution = require( './normal-distribution' );
 
 function SampleProportion( participants, conversions ) {
-	var mean = conversions / participants;
-	var sd = Math.sqrt( mean * ( 1 - mean ) / participants );
+	let mean = conversions / participants,
+		sd = Math.sqrt( mean * ( 1 - mean ) / participants );
+
 	NormalDistribution.call( this, mean, sd );
 }
 

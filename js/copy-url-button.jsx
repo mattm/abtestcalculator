@@ -3,18 +3,18 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
+let React = require( 'react' ),
 	ReactZeroClipboard = require( 'react-zeroclipboard' );
 
 /**
  * Internal dependencies
  */
-var analytics = require( './analytics' ),
+let analytics = require( './analytics' ),
 	config = require( './config' );
 
 module.exports = React.createClass( {
 	getResultsURL: function() {
-		var url, hasCustomVariationNames;
+		let url, hasCustomVariationNames;
 
 		url = 'http://www.abtestcalculator.com' +
 			'?ap=' + this.props.variations.a.participants +

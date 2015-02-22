@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+let React = require( 'react' );
 
 module.exports = React.createClass( {
 	render: function() {

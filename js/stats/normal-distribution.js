@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-var NumberRange = require( './number-range' );
+let NumberRange = require( './number-range' );
 
 function NormalDistribution( mean, sd ) {
 	this.mean = mean;
@@ -28,7 +28,7 @@ NormalDistribution.prototype = {
 
 	// See: See: http://en.wikipedia.org/wiki/Normal_distribution
 	getDensity: function( x ) {
-		var a = 1 / ( this.sd * Math.sqrt( 2 * Math.PI ) ),
+		let a = 1 / ( this.sd * Math.sqrt( 2 * Math.PI ) ),
 			b = Math.exp( -( Math.pow( x - this.mean, 2) ) / ( 2 * Math.pow( this.sd, 2 ) ) );
 
 		return a * b;
@@ -39,7 +39,7 @@ NormalDistribution.prototype = {
 	},
 
 	getCurveXValues: function() {
-		var xRange = this.xRange,
+		let xRange = this.xRange,
 			range = new NumberRange( xRange.min, xRange.max, this.POINTS_PER_CURVE );
 
 		return range.getValues();
@@ -58,7 +58,7 @@ NormalDistribution.prototype = {
 	},
 
 	getYForXBetween: function( minExclusive, maxInclusive ) {
-		var xValues = this.getXBetween( minExclusive, maxInclusive );
+		let xValues = this.getXBetween( minExclusive, maxInclusive );
 		return xValues.map( function( xValue ) {
 			return this.getDensity( xValue );
 		}, this );
@@ -82,7 +82,7 @@ Object.defineProperties( NormalDistribution.prototype, {
 	'xValues': {
 		get: function() {
 			if ( this._xValues === undefined ) {
-				var range = new NumberRange( this.xRange.min, this.xRange.max, this.POINTS_PER_CURVE );
+				let range = new NumberRange( this.xRange.min, this.xRange.max, this.POINTS_PER_CURVE );
 				this._xValues = range.getValues();
 			}
 			return this._xValues;

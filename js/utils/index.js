@@ -14,7 +14,7 @@ module.exports = {
 	},
 
 	formatPercentageImprovement: function( percentage ) {
-		var sign = percentage > 0 ? '+' : '';
+		let sign = percentage > 0 ? '+' : '';
 		return sign + percentage + '%';
 	}
 };

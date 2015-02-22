@@ -3,12 +3,12 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+let React = require( 'react' );
 
 /**
  * Internal dependencies
  */
-var config = require( '../config' ),
+let config = require( '../config' ),
 	constants = require( '../constants' ),
 	ConversionDataInput = require( './conversion-data-input' ),
 	utils = require( '../utils' );
@@ -30,7 +30,7 @@ module.exports = React.createClass( {
 	},
 
 	handleKeyDown: function( event ) {
-		var currentValue = parseInt( event.target.value );
+		let currentValue = parseInt( event.target.value );
 
 		if ( event.keyCode === constants.KEY_UP ) {
 			event.target.value = currentValue + 1;
@@ -58,7 +58,7 @@ module.exports = React.createClass( {
 	setVariationName: function( event ) {
 		event.preventDefault();
 
-		var newName = prompt( "What would you like to call this variation?", event.target.innerHTML );
+		let newName = prompt( "What would you like to call this variation?", event.target.innerHTML );
 
 		if ( newName ) {
 			event.target.innerHTML = newName;

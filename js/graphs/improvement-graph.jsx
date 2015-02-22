@@ -3,12 +3,12 @@
 /**
  * External dependencies
  */
-var React = require( 'react' );
+let React = require( 'react' );
 
 /**
  * Internal dependencies
  */
-var GraphMixin = require( './graph-mixin' ),
+let GraphMixin = require( './graph-mixin' ),
 	ImprovementGraphRenderer = require( './improvement-graph-renderer' );
 
 module.exports = React.createClass( {

@@ -3,12 +3,12 @@
 /**
  * External dependencies
  */
-var numeral = require( 'numeral' );
+let numeral = require( 'numeral' );
 
 /**
  * Internal dependencies
  */
-var colorUtils = require( '../utils/color-utils' ),
+let colorUtils = require( '../utils/color-utils' ),
 	GraphRenderer = require( './graph-renderer' ),
 	NumberRange = require( '../stats/number-range' );
 
@@ -26,7 +26,7 @@ SampleProportionsGraphRenderer.prototype.render = function() {
 };
 
 SampleProportionsGraphRenderer.prototype.calculateXAxisRange = function() {
-	var exactRange = this.calculateXAxisRangeExact();
+	let exactRange = this.calculateXAxisRangeExact();
 
 	this.xAxisRange = new NumberRange(
 		Math.floor( exactRange.min / this.getXAxisInterval() ) * this.getXAxisInterval(),
@@ -35,7 +35,7 @@ SampleProportionsGraphRenderer.prototype.calculateXAxisRange = function() {
 };
 
 SampleProportionsGraphRenderer.prototype.calculateXAxisRangeExact = function() {
-	var xAxisRange, min, max;
+	let xAxisRange, min, max;
 
 	this.variations.forEach( function( variation ) {
 		xAxisRange = variation.proportion.xRange;
@@ -50,7 +50,7 @@ SampleProportionsGraphRenderer.prototype.calculateXAxisRangeExact = function() {
 };
 
 SampleProportionsGraphRenderer.prototype.getXAxisInterval = function() {
-	var width = this.calculateXAxisRangeExact().getWidth();
+	let width = this.calculateXAxisRangeExact().getWidth();
 
 	if ( width < 0.05 ) {
 		return 0.01;
@@ -62,7 +62,7 @@ SampleProportionsGraphRenderer.prototype.getXAxisInterval = function() {
 };
 
 SampleProportionsGraphRenderer.prototype.calculateYAxisRange = function() {
-	var yAxisRange, max;
+	let yAxisRange, max;
 
 	this.variations.forEach( function( variation ) {
 		yAxisRange = variation.proportion.getYAxisRange();
@@ -118,14 +118,14 @@ SampleProportionsGraphRenderer.prototype.renderCenter = function( variation ) {
 };
 
 SampleProportionsGraphRenderer.prototype.renderAxisValues = function() {
-	var numTicks, canvasY, i, l, proportion, percentage, canvasX;
+	let numTicks, canvasY;
 
 	numTicks = this.xAxisRange.getWidth() / this.getXAxisInterval() + 1;
 	canvasY = this.rect.bottom + this.X_AXIS_TICK_FONT_SIZE + this.X_AXIS_TICK_MARGIN_TOP;
-	for ( i = 0, l = numTicks; i < l; i++ ) {
-		proportion = this.xAxisRange.min + i * this.getXAxisInterval();
-		percentage = numeral( proportion ).format( '0%' );
-		canvasX = this.rect.x + ( i / ( numTicks - 1 ) ) * this.rect.width;
+	for ( let i = 0, l = numTicks; i < l; i++ ) {
+		let proportion = this.xAxisRange.min + i * this.getXAxisInterval(),
+			percentage = numeral( proportion ).format( '0%' ),
+			canvasX = this.rect.x + ( i / ( numTicks - 1 ) ) * this.rect.width;
 		this.renderAxisTextWithTick( percentage, canvasX, canvasY );
 	}
 };

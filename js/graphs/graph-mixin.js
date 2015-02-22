@@ -3,7 +3,7 @@
 /**
  * Internal dependencies
  */
-var config = require( '../config' ),
+let config = require( '../config' ),
 	canvasUtils = require( '../utils/canvas-utils' ),
 	Rectangle = require( './rectangle' );
 
@@ -33,7 +33,7 @@ module.exports = {
 	},
 
 	convertToHiDPICanvas: function() {
-		var pixelRatio = canvasUtils.getPixelRatio(),
+		let pixelRatio = canvasUtils.getPixelRatio(),
 			canvas = this.refs.canvas.getDOMNode();
 
 		canvas.width = config.canvas.width * pixelRatio;
