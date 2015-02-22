@@ -30,7 +30,7 @@ module.exports = React.createClass( {
 	},
 
 	handleKeyDown: function( event ) {
-		let currentValue = parseInt( event.target.value );
+		let currentValue = parseInt( event.target.value ) || 0;
 
 		if ( event.keyCode === constants.KEY_UP ) {
 			event.target.value = currentValue + 1;
