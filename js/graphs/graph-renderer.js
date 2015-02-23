@@ -69,7 +69,7 @@ class GraphRenderer {
 		this.ctx.fillStyle = this.X_AXIS_TEXT_COLOR;
 		this.ctx.fillText( value, canvasX, canvasY );
 	}
-};
+}
 
 // See: http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes
 // "Class properties and prototype data properties need be created outside the declaration."
