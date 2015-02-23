@@ -10,7 +10,7 @@ var babelify = require( 'babelify' ),
 	gulp = require( 'gulp' ),
 	gutil = require( 'gulp-util' ),
 	jshint = require( 'gulp-jshint' ),
-	mocha = require( 'gulp-mocha' ),
+	mocha = require( 'gulp-spawn-mocha' ),
 	react = require( 'gulp-react' ),
 	reactify = require( 'reactify' ),
 	rename = require( 'gulp-rename' ),
@@ -117,9 +117,20 @@ gulp.task( 'index', function() {
 		.pipe( gulp.dest( config.buildPath ) );
 } );
 
+/*
+	TODO: We use gulp-spawn-mocha here because gulp-mocha does not
+	process the 'compilers' option which we need in order for the tests
+	to work with the ES6 classes. gulp-mocha throws the following error
+	for the 'class' token:
+
+		Uncaught SyntaxError: Unexpected reserved word
+
+	The only problem is that gulp-spawn-mocha does not throw an
+	error when the tests fail so this task's error handler is never executed
+*/
 gulp.task( 'test', function () {
 	return gulp.src( config.testPath, { read: false } )
-		.pipe( mocha( { reporter: 'dot' } ) )
+		.pipe( mocha( { reporter: 'dot', compilers: 'js:babel/register' } ) )
 		.once('error', function () {
 			beep();
 		} );
