@@ -20,7 +20,7 @@ class Variation {
 			nq = this.participants * ( 1 - this.proportion.mean );
 
 		return this.participants >= 30 && np >= 5 && nq >= 5;
-	};
+	}
 }
 
 module.exports = Variation;
