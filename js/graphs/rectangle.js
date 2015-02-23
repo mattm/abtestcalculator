@@ -1,10 +1,12 @@
 'use strict';
 
-function Rectangle( x, y, width, height ) {
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
+class Rectangle {
+	constructor( x, y, width, height ) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
 }
 
 Object.defineProperties( Rectangle.prototype, {
