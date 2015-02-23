@@ -43,7 +43,7 @@ describe( 'normal distribution', function() {
 		var yMin = Math.min.apply( Math, normalDistribution.yValues ),
 			yMax = Math.max.apply( Math, normalDistribution.yValues );
 
-		assert.equal( yMin, 0.0026900887543677503 );
+		assert.equal( yMin, 0.0026900887543677508 );
 		assert.equal( yMax, 8.018977277611471 );
 	} );
 } );
