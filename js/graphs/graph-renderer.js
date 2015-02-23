@@ -3,19 +3,6 @@
 class GraphRenderer {
 	constructor( context ) {
 		this.ctx = context;
-
-		// Probably a better way to do this
-		// Or not: http://stackoverflow.com/questions/22528967/es6-class-variable-alternatives
-		this.OUTLINE_LINE_WIDTH = 2;
-		this.OUTLINE_OPACITY = 1;
-		this.FILL_OPACITY = 0.7;
-
-		this.X_AXIS_INTERVAL = 0.05;
-		this.X_AXIS_TICK_FONT_SIZE = 11;
-		this.X_AXIS_TICK_TICKER_HEIGHT = 6;
-		this.X_AXIS_TICK_MARGIN_TOP = 8;
-		this.X_AXIS_TICK_COLOR = '#bbb';
-		this.X_AXIS_TEXT_COLOR = '#ccc';
 	}
 
 	setRect( rect ) {
@@ -91,5 +78,17 @@ class GraphRenderer {
 		this.ctx.fillText( value, canvasX, canvasY );
 	}
 };
+
+// See: http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes
+GraphRenderer.prototype.OUTLINE_LINE_WIDTH = 2;
+GraphRenderer.prototype.OUTLINE_OPACITY = 1;
+GraphRenderer.prototype.FILL_OPACITY = 0.7;
+
+GraphRenderer.prototype.X_AXIS_INTERVAL = 0.05;
+GraphRenderer.prototype.X_AXIS_TICK_FONT_SIZE = 11;
+GraphRenderer.prototype.X_AXIS_TICK_TICKER_HEIGHT = 6;
+GraphRenderer.prototype.X_AXIS_TICK_MARGIN_TOP = 8;
+GraphRenderer.prototype.X_AXIS_TICK_COLOR = '#bbb';
+GraphRenderer.prototype.X_AXIS_TEXT_COLOR = '#ccc';
 
 module.exports = GraphRenderer;

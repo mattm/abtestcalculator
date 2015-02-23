@@ -5,9 +5,6 @@
  */
 let NumberRange = require( './number-range' );
 
-const SD_TO_GRAPH = 4;
-const POINTS_PER_CURVE = 1000;
-
 class NormalDistribution {
 	constructor( mean, sd ) {
 		this.mean = mean;
@@ -40,7 +37,7 @@ class NormalDistribution {
 
 	getCurveXValues() {
 		let xRange = this.xRange,
-			range = new NumberRange( xRange.min, xRange.max, POINTS_PER_CURVE );
+			range = new NumberRange( xRange.min, xRange.max, this.POINTS_PER_CURVE );
 
 		return range.getValues();
 	}
@@ -74,7 +71,7 @@ Object.defineProperties( NormalDistribution.prototype, {
 	'xRange': {
 		get: function() {
 			if ( this._xRange === undefined ) {
-				this._xRange = this.getRange( SD_TO_GRAPH );
+				this._xRange = this.getRange( this.SD_TO_GRAPH );
 			}
 			return this._xRange;
 		}
@@ -82,7 +79,7 @@ Object.defineProperties( NormalDistribution.prototype, {
 	'xValues': {
 		get: function() {
 			if ( this._xValues === undefined ) {
-				let range = new NumberRange( this.xRange.min, this.xRange.max, POINTS_PER_CURVE );
+				let range = new NumberRange( this.xRange.min, this.xRange.max, this.POINTS_PER_CURVE );
 				this._xValues = range.getValues();
 			}
 			return this._xValues;
@@ -99,5 +96,8 @@ Object.defineProperties( NormalDistribution.prototype, {
 		}
 	}
 } );
+
+NormalDistribution.prototype.SD_TO_GRAPH = 4;
+NormalDistribution.prototype.POINTS_PER_CURVE = 1000;
 
 module.exports = NormalDistribution;

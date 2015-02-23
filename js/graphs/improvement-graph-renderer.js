@@ -12,9 +12,6 @@ let colorUtils = require( '../utils/color-utils' ),
 class ImprovementGraphRenderer extends GraphRenderer {
 	constructor( canvasId ) {
 		super( canvasId );
-
-		this.NEGATIVE_COLOR = '#ff0000';
-		this.POSITIVE_COLOR = '#22B722';
 	}
 
 	render() {
@@ -141,5 +138,8 @@ class ImprovementGraphRenderer extends GraphRenderer {
 		this.yAxisRange = this.distribution.getYAxisRange();
 	}
 }
+
+ImprovementGraphRenderer.prototype.NEGATIVE_COLOR = '#ff0000';
+ImprovementGraphRenderer.prototype.POSITIVE_COLOR = '#22B722';
 
 module.exports = ImprovementGraphRenderer;
