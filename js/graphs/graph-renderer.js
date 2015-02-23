@@ -80,6 +80,7 @@ class GraphRenderer {
 };
 
 // See: http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes
+// "Class properties and prototype data properties need be created outside the declaration."
 GraphRenderer.prototype.OUTLINE_LINE_WIDTH = 2;
 GraphRenderer.prototype.OUTLINE_OPACITY = 1;
 GraphRenderer.prototype.FILL_OPACITY = 0.7;
