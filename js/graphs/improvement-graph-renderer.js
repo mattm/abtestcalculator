@@ -32,11 +32,11 @@ class ImprovementGraphRenderer extends GraphRenderer {
 		this.ctx.lineTo( this.distributionXToCanvasX( this.distribution.mean ), this.distributionYToCanvasY( this.distribution.getPeakDensity() ) );
 		this.ctx.closePath();
 		this.ctx.lineWidth = 1;
-		this.ctx.strokeStyle = this.getCenterLineColor();
+		this.ctx.strokeStyle = this.centerLineColor;
 		this.ctx.stroke();
 	}
 
-	getCenterLineColor() {
+	get centerLineColor() {
 		let color = this.distribution.mean > 0 ? this.POSITIVE_COLOR : this.NEGATIVE_COLOR;
 
 		return colorUtils.hexToTransparentRGB( color, 0.5 );
@@ -112,7 +112,7 @@ class ImprovementGraphRenderer extends GraphRenderer {
 	}
 
 	convertPointsToPercentage( points ) {
-		let mean = this.getControl().proportion.mean,
+		let mean = this.control.proportion.mean,
 			ratio = (points + mean) / mean - 1;
 
 		return Math.round( ratio * 100 );
@@ -122,7 +122,7 @@ class ImprovementGraphRenderer extends GraphRenderer {
 		if ( this.variations.length !== 2 ) {
 			throw 'Normal difference distribution only supports two variations';
 		}
-		this.distribution = new NormalDifferenceDistribution( this.getControl().proportion, this.getExperiment().proportion );
+		this.distribution = new NormalDifferenceDistribution( this.control.proportion, this.experiment.proportion );
 	}
 
 	calculateXAxisInterval() {

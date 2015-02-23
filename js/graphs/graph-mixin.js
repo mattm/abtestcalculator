@@ -9,9 +9,9 @@ let config = require( '../config' ),
 
 module.exports = {
 	paintGraph: function( graphRenderer ) {
-		graphRenderer.setRect( this.getGraphRectangle() );
+		graphRenderer.variations = [ this.props.variations.a, this.props.variations.b ];
+		graphRenderer.rect = this.getGraphRectangle();
 		graphRenderer.renderBackground();
-		graphRenderer.setVariations( this.props.variations );
 		graphRenderer.render();
 	},
 

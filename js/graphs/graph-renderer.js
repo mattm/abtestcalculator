@@ -5,24 +5,16 @@ class GraphRenderer {
 		this.ctx = context;
 	}
 
-	setRect( rect ) {
-		this.rect = rect;
-	}
-
 	renderBackground() {
 		this.ctx.fillStyle = 'rgba(0,0,0,0)';
 		this.ctx.clearRect( this.rect.x, this.rect.y, this.rect.width, this.rect.height );
 	}
 
-	setVariations( variations ) {
-		this.variations = [ variations.a, variations.b ];
-	}
-
-	getControl() {
+	get control() {
 		return this.variations[ 0 ];
 	}
 
-	getExperiment() {
+	get experiment() {
 		return this.variations[ 1 ];
 	}
 
