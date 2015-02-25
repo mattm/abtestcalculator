@@ -99,7 +99,7 @@ module.exports = React.createClass( {
 				</div>
 				<div className="variation">
 					<span className="label">
-						<a href="#" className="variation-a" ref="nameA" onClick={ this.setVariationName }>{ this.props.variations.a.name }</a>
+						<a href="#" className="variation-a" tabIndex="-1" ref="nameA" onClick={ this.setVariationName }>{ this.props.variations.a.name }</a>
 					</span>
 					<ConversionDataInput
 						placeholderText="Participants A"
@@ -118,7 +118,7 @@ module.exports = React.createClass( {
 				</div>
 				<div className="variation">
 					<span className="label">
-						<a href="#" className="variation-b" ref="nameB" onClick={ this.setVariationName }>{ this.props.variations.b.name }</a>
+						<a href="#" className="variation-b" tabIndex="-1" ref="nameB" onClick={ this.setVariationName }>{ this.props.variations.b.name }</a>
 					</span>
 					<ConversionDataInput
 						placeholderText="Participants B"
